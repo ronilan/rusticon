@@ -54,13 +54,13 @@ cargo run --release
 
 ## Files
 - Command line argument to provide file name `rusticon ./icons/favicon.svg` 
-- Can open files created by [Rusticon](https://github.com/ronilan/rusticon)) (or by [Crubmicon](https://github.com/ronilan/crumbicon)).
+- Can open files created by [Rusticon](https://github.com/ronilan/rusticon) (or by [Crubmicon](https://github.com/ronilan/crumbicon)).
 - Will abort when file is not created by either of those.
 
 # Gallery
 
 > Made something cool? Make a pull request!
 
-<img src="./gallery/selfie.svg" width="64"><img src="./gallery/luffy.svg" width="64"><img src="./gallery/pinky.svg" width="64"><img src="./gallery/lake.svg" width="64"><img src="./gallery/mondrian.svg" width="64">
+<img src="./gallery/selfie.svg" width="64"><img src="./gallery/selfie-crumbicon.svg" width="64"><img src="./gallery/luffy.svg" width="64"><img src="./gallery/pinky.svg" width="64"><img src="./gallery/lake.svg" width="64"><img src="./gallery/mondrian.svg" width="64">
 
 ###### Fabriqué au Canada : Made in Canada 🇨🇦
