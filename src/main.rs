@@ -71,7 +71,7 @@ fn main() {
     let mut palette_colors = vec![None; 8];
     let mut canvas16_data = vec![None; 16 * 16];
     let mut canvas8_data = vec![None; 8 * 8];
-    let mut size = 8;
+    let mut size = 16;
     let mut file_path = "favicon.svg".to_string();
     let mut paintbrush = None;
 
