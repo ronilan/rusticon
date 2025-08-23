@@ -10,6 +10,10 @@ It's written in [Rust](https://www.rust-lang.org/).
 
 # Install
 
+## Pre Built Binaries
+
+Pre built binaries are provided for each [release](https://github.com/ronilan/rusticon/releases).
+
 ## From crates.io
 Rusticon is published as a crate on [crates.io](https://crates.io/crates/rusticon). If you have Cargo, you can install it with
 ```sh
@@ -50,12 +54,12 @@ cargo run --release
 
 ## Files
 - Command line argument to provide file name `rusticon ./icons/favicon.svg` 
-- Can open files created by Rusticon (or by [Crubmicon](https://github.com/ronilan/crumbicon)).
-- Will abort when file is not created by Crumbicon, but better just avoid.
+- Can open files created by [Rusticon](https://github.com/ronilan/rusticon)) (or by [Crubmicon](https://github.com/ronilan/crumbicon)).
+- Will abort when file is not created by either of those.
 
 # Gallery
 
-> Made something cool with Crumbicon? Make a pull request!
+> Made something cool? Make a pull request!
 
 <img src="./gallery/selfie.svg" width="64"><img src="./gallery/luffy.svg" width="64"><img src="./gallery/pinky.svg" width="64"><img src="./gallery/lake.svg" width="64"><img src="./gallery/mondrian.svg" width="64">
 
