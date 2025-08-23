@@ -10,12 +10,6 @@ It's written in [Rust](https://www.rust-lang.org/).
 
 # Install
 
-<!-- ## Pre Built Binaries
-
-Pre built binaries are provided for each [release](https://github.com/ronilan/rusticon/releases).
-
-Note: `*-macos-15.tar.gz` is for Apple Silicon, `*-macos-13.tar.gz` is for Intel CPU. -->
-
 ## From crates.io
 Rusticon is published as a crate on [crates.io](https://crates.io/crates/rusticon). If you have Cargo, you can install it with
 ```sh
