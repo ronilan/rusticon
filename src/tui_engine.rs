@@ -244,16 +244,6 @@ impl<'a, S> Default for Element<'a, S> {
 
 // Check if mouse is over the element
 // Assumes uniform row widths and single-character cells for precise detection
-pub fn _mouse_over(x: u16, y: u16, look: &Look, mx: u16, my: u16) -> bool {
-    let cells = look.cells();
-    let height = cells.len() as u16;
-    if height == 0 {
-        return false;
-    }
-    let width = cells[0].len() as u16;
-    mx >= x && mx < x + width && my >= y && my < y + height
-}
-
 pub fn mouse_over<S>(el: &Element<S>, event: &EventData) -> bool {
     // Ensure valid mouse coordinates
     let (mx, my) = match (event.x, event.y) {
