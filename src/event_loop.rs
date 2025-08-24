@@ -163,6 +163,7 @@ where
     let mut events = EventStream::new();
 
     // Notify listeners of initial state
+    // Will allow downstream users of event loop to draw initial UI
     {
         let s = state.borrow();
         for l in listeners.iter_mut() {
