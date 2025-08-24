@@ -98,7 +98,6 @@ pub fn import_file(
     // Compute size assuming square
     let size = (crumbicon_data.len() as f64).sqrt() as u8;
 
-
     // Valid Crumbicon check
     if !crumbicon_data.is_empty()
         && !crumbicon_palette.is_empty()

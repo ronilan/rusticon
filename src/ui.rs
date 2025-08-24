@@ -111,20 +111,18 @@ fn canvas_data_from_click(
     mouse_y: u16,
     fill: bool,
 ) {
-    if mouse_over(el.x.get(), el.y.get(), &el.look, mouse_x, mouse_y) {
-        let row = mouse_y.saturating_sub(el.y.get()) as usize;
-        let col = mouse_x.saturating_sub(el.x.get()) as usize / 2;
-        if row < size && col < size {
-            if fill {
-                // Flood fill starting at (row, col)
-                let target = data[row * size + col];
-                if target != paintbrush {
-                    flood_fill(data, size, row, col, target, paintbrush);
-                }
-            } else {
-                // Single cell paint
-                data[row * size + col] = paintbrush;
+    let row = mouse_y.saturating_sub(el.y.get()) as usize;
+    let col = mouse_x.saturating_sub(el.x.get()) as usize / 2;
+    if row < size && col < size {
+        if fill {
+            // Flood fill starting at (row, col)
+            let target = data[row * size + col];
+            if target != paintbrush {
+                flood_fill(data, size, row, col, target, paintbrush);
             }
+        } else {
+            // Single cell paint
+            data[row * size + col] = paintbrush;
         }
     }
 }
@@ -227,15 +225,35 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
         if state.size == 16 {
             state.mouse_x = event.x.unwrap();
             state.mouse_y = event.y.unwrap();
-            canvas_data_from_click(
-                el,
-                16,
-                &mut state.canvas16_data,
-                state.paintbrush,
+            if mouse_over(
+                el.x.get(),
+                el.y.get(),
+                &el.look,
                 state.mouse_x,
                 state.mouse_y,
-                event.modifiers.contains(&"shift".to_string()),
-            );
+            ) {
+                if event.modifiers.contains(&"ctrl".to_string()) {
+                    // Handle ctrl-click for color picking
+                    let row = state.mouse_y.saturating_sub(el.y.get()) as usize;
+                    let col = state.mouse_x.saturating_sub(el.x.get()) as usize / 2;
+                    if row < 16 && col < 16 {
+                        state.paintbrush = state.canvas16_data[row * 16 + col];
+                        state.candidate = state.paintbrush;
+                        set_palette_in_state(state, state.candidate);
+                    }
+                } else {
+                    canvas_data_from_click(
+                        el,
+                        16,
+                        &mut state.canvas16_data,
+                        state.paintbrush,
+                        state.mouse_x,
+                        state.mouse_y,
+                        event.modifiers.contains(&"shift".to_string()),
+                    );
+                }
+            }
+
             let look = canvas_look_from_data(16, &state.canvas16_data);
             el.look.update(look);
             draw_if_fits(el);
@@ -265,15 +283,36 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
         if state.size == 8 {
             state.mouse_x = event.x.unwrap();
             state.mouse_y = event.y.unwrap();
-            canvas_data_from_click(
-                el,
-                8,
-                &mut state.canvas8_data,
-                state.paintbrush,
+
+            if mouse_over(
+                el.x.get(),
+                el.y.get(),
+                &el.look,
                 state.mouse_x,
                 state.mouse_y,
-                event.modifiers.contains(&"shift".to_string()),
-            );
+            ) {
+                if event.modifiers.contains(&"ctrl".to_string()) {
+                    // Handle ctrl-click for color picking
+                    let row = state.mouse_y.saturating_sub(el.y.get()) as usize;
+                    let col = state.mouse_x.saturating_sub(el.x.get()) as usize / 2;
+                    if row < 8 && col < 8 {
+                        state.paintbrush = state.canvas8_data[row * 8 + col];
+                        state.candidate = state.paintbrush;
+                        set_palette_in_state(state, state.candidate);
+                    }
+                } else {
+                    canvas_data_from_click(
+                        el,
+                        8,
+                        &mut state.canvas8_data,
+                        state.paintbrush,
+                        state.mouse_x,
+                        state.mouse_y,
+                        event.modifiers.contains(&"shift".to_string()),
+                    );
+                }
+            }
+
             let look = canvas_look_from_data(8, &state.canvas8_data);
             el.look.update(look);
             draw_if_fits(el);
