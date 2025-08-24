@@ -244,7 +244,7 @@ impl<'a, S> Default for Element<'a, S> {
 
 // Check if mouse is over the element
 // Assumes uniform row widths and single-character cells for precise detection
-pub fn mouse_over(x: u16, y: u16, look: &Look, mx: u16, my: u16) -> bool {
+pub fn _mouse_over(x: u16, y: u16, look: &Look, mx: u16, my: u16) -> bool {
     let cells = look.cells();
     let height = cells.len() as u16;
     if height == 0 {
@@ -252,6 +252,27 @@ pub fn mouse_over(x: u16, y: u16, look: &Look, mx: u16, my: u16) -> bool {
     }
     let width = cells[0].len() as u16;
     mx >= x && mx < x + width && my >= y && my < y + height
+}
+
+pub fn mouse_over<S>(el: &Element<S>, event: &EventData) -> bool {
+    // Ensure valid mouse coordinates
+    let (mx, my) = match (event.x, event.y) {
+        (Some(x), Some(y)) => (x, y),
+        _ => return false,
+    };
+
+    let cells = el.look.cells();
+    if cells.is_empty() {
+        return false;
+    }
+
+    let height = cells.len() as u16;
+    let width = cells[0].len() as u16;
+    if width == 0 {
+        return false;
+    }
+
+    mx >= el.x.get() && mx < el.x.get() + width && my >= el.y.get() && my < el.y.get() + height
 }
 
 /// Returns the current terminal width in columns
