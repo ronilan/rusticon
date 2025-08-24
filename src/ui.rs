@@ -286,6 +286,15 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
 
             el.x.set(state.app_x + 31);
             el.y.set(state.app_y + 7);
+
+            // erase the 16x16 area
+            let eraser: Element<AppState> = Element::new(
+                state.app_x + 23,
+                state.app_y + 3,
+                Look::from(vec![vec![" ".to_string(); 32]; 16]),
+            );
+            draw_if_fits(&eraser);
+
             draw_if_fits(el);
         }
     }));
@@ -749,14 +758,6 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
         ) {
             state.size = 8;
             state.canvas8_data = vec![None; 64];
-
-            // erase the 16x16 area
-            let eraser: Element<AppState> = Element::new(
-                state.app_x + 23,
-                state.app_y + 3,
-                Look::from(vec![vec![" ".to_string(); 32]; 16]),
-            );
-            draw_if_fits(&eraser);
         }
     }));
     button_size_8.on_state = Some(Box::new(|el, state| {

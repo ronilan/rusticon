@@ -1,18 +1,18 @@
-use tui_engine::{run_tui, Elements};
-use std::env;
-use std::time::Duration;
-
 mod event_loop;
-mod tui_engine;
 mod export;
 mod import;
 mod message;
 mod splash;
+mod tui_engine;
 mod ui;
+
+use std::env;
+use std::time::Duration;
 
 use export::export_svg;
 use import::crumbicon;
 use message::draw_message;
+use tui_engine::{run_tui, Elements};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct SplashState {
@@ -71,7 +71,7 @@ fn main() {
     let mut palette_colors = vec![None; 8];
     let mut canvas16_data = vec![None; 16 * 16];
     let mut canvas8_data = vec![None; 8 * 8];
-    let mut size = 16;
+    let mut size = 8;
     let mut file_path = "favicon.svg".to_string();
     let mut paintbrush = None;
 
