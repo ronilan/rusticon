@@ -157,6 +157,6 @@ pub fn import_file(
             ))
         }
         // Neither valid crumbicon nor image → error
-        Err(_) => Err(format!("Invalid  file: {}", file_path)),
+        Err(_) => Err(format!("Invalid file: {}", file_path)),
     }
 }
