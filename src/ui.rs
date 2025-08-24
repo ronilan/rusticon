@@ -32,7 +32,7 @@ fn draw_if_fits<S>(el: &Element<S>) {
 fn ideal_palette_index(curr: usize, palette: &Vec<Option<u8>>) -> usize {
     match palette.iter().position(|c| c.is_none()) {
         Some(idx) => idx,                   // first empty slot
-        None => (curr + 1) % palette.len(), // wrap around if full
+        None => curr, // stay in place if full
     }
 }
 

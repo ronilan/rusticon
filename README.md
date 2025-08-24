@@ -46,7 +46,7 @@ cargo run --release
 - Click to place them on the canvas.
 - Drag to draw multiple pixels.
 - Shift + Click for flood fill.
-- Ctrl + Click to select color from canvas.
+- Ctrl + Click to pick color from canvas.
 - Palette at bottom allows to "collect colors". Click to choose where to place selected.
 - Save to save and exit.
 - Exit to exit without save.
