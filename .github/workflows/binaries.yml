@@ -84,5 +84,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ env.ASSET }}
-          name: ${{ matrix.build }}
           fail_on_unmatched_files: false
