@@ -109,7 +109,9 @@ fn main() {
     let mut canvas8_data = vec![None; 8 * 8];
 
     // Command-line argument
-    let file_path = env::args().nth(1).unwrap_or_else(|| "favicon.svg".to_string());
+    let file_path = env::args()
+        .nth(1)
+        .unwrap_or_else(|| "favicon.svg".to_string());
 
     // Shared state for background result
     let result_holder = load_file_in_background(file_path.clone());

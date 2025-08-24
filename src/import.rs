@@ -82,12 +82,18 @@ pub fn import_file(
         let mut new_path = Path::new(file_path).to_path_buf();
         new_path.set_extension("svg"); // force `.svg` extension
 
-        return Ok((
-            vec![None; 8 * 8],                       // default 8x8 empty pixels
-            vec![None; 8],                           // default empty palette
-            8,                                       // default size 8
-            new_path.to_string_lossy().into_owned(), // fallback path
-        ));
+        if new_path.exists() {
+            // If the .svg exists, try to read it (call import_file)
+            return import_file(&new_path.to_string_lossy());
+        } else {
+            // Neither original file nor .svg exists → return default empty 8x8 icon
+            return Ok((
+                vec![None; 8 * 8],                       // default 8x8 empty pixels
+                vec![None; 8],                           // default empty palette
+                8,                                       // default size 8
+                new_path.to_string_lossy().into_owned(), // fallback path
+            ));
+        }
     };
 
     // Extract crumbicon data & palette
