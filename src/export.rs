@@ -23,9 +23,6 @@ pub fn export_svg<P: AsRef<Path>>(
     px: usize,
     target: P,
 ) -> Result<(), String> {
-    assert_eq!(data.len(), rows * cols, "data len must be rows*cols");
-    assert_eq!(palette.len(), 8, "palette must have 8 entries");
-
     let width = cols * px;
     let height = rows * px;
 
