@@ -4,6 +4,32 @@ use crate::tui_engine::{columns, draw, rows, Element, Elements, Look};
 
 use crate::SplashState;
 
+fn sliding_text(n: usize) -> String {
+    let width = 40;
+    let text = "An icon editor for the terminal";
+    let text_len = text.len();
+
+    if text_len >= width {
+        return text.chars().take(width).collect();
+    }
+
+    let max_pad = width - text_len;
+    let cycle = max_pad * 2;
+    let pos = n % cycle;
+    let pad = if pos <= max_pad { pos } else { cycle - pos };
+
+    // Pad left and right to make the string exactly `width`
+    let right_pad = width - text_len - pad;
+    format!(
+        "{:pad$}{}{:right_pad$}",
+        "",
+        text,
+        "",
+        pad = pad,
+        right_pad = right_pad
+    )
+}
+
 pub fn build_elements<'a>() -> Elements<'a, SplashState> {
     let elements: Elements<SplashState> = Elements::new();
 
@@ -29,11 +55,7 @@ pub fn build_elements<'a>() -> Elements<'a, SplashState> {
             vec![bold(&color(((n + 5) % 5) as u8, "|  _ <| |_| \\__ \\ |_| | (_| (_) | | | |").unwrap())],
             vec![bold(&color(((n + 2) % 5) as u8, "|_| \\_\\___,_|___/\\__|_|\\___\\___/|_| |_| ").unwrap())],
             vec![format!("{:>39}", "").to_string()],
-            vec![format!(
-                "{:>width$}",
-                "An icon editor for the terminal",
-                width = (32 + n / 2) as usize
-            )],
+            vec![sliding_text(n as usize).to_string()],
         ];
 
         el.look.update(Look::from(art));
@@ -42,9 +64,7 @@ pub fn build_elements<'a>() -> Elements<'a, SplashState> {
 
         draw(el);
 
-        if event.loop_count == 14 {
-            state.exit_flag = true;
-        }
+        state.loop_count = event.loop_count
     }));
 
     elements.push(splash);

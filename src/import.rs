@@ -62,7 +62,7 @@ pub fn load_and_resize_image<P: AsRef<Path>>(path: P) -> Result<Vec<Vec<[u8; 4]>
 }
 
 /// Reads a "Crumbicon" file, or if invalid, tries to open the provided file as a regular image.
-/// 
+///
 /// # Returns
 /// - `Vec<Option<u8>>`: flattened pixel data (None = transparent, Some = ANSI8 color)
 /// - `Vec<Option<u8>>`: palette of unique ANSI8 colors used
@@ -73,9 +73,7 @@ pub fn import_file(
 ) -> Result<(Vec<Option<u8>>, Vec<Option<u8>>, u8, String), String> {
     let path = Path::new(file_path);
 
-    // ------------------------------
-    // 1. Attempt to read as Crumbicon
-    // ------------------------------
+    // Attempt to read as Crumbicon
     let text = if path.exists() {
         // File exists → read content (ignore errors for now)
         fs::read_to_string(path).unwrap_or_default()
@@ -85,16 +83,14 @@ pub fn import_file(
         new_path.set_extension("svg"); // force `.svg` extension
 
         return Ok((
-            vec![None; 8 * 8],          // default 8x8 empty pixels
-            vec![None; 8],              // default empty palette
-            8,                          // default size 8
+            vec![None; 8 * 8],                       // default 8x8 empty pixels
+            vec![None; 8],                           // default empty palette
+            8,                                       // default size 8
             new_path.to_string_lossy().into_owned(), // fallback path
         ));
     };
 
-    // -----------------------------------
-    // 2. Extract crumbicon data & palette
-    // -----------------------------------
+    // Extract crumbicon data & palette
     let crumbicon_data = get_crumbicon_data(&text, "<!-- crumbicon-data:", "crumbicon-data -->");
     let crumbicon_palette =
         get_crumbicon_data(&text, "<!-- crumbicon-palette:", "crumbicon-palette -->");
@@ -102,9 +98,8 @@ pub fn import_file(
     // Compute size assuming square
     let size = (crumbicon_data.len() as f64).sqrt() as u8;
 
-    // --------------------------
-    // 3. Valid Crumbicon check
-    // --------------------------
+
+    // Valid Crumbicon check
     if !crumbicon_data.is_empty()
         && !crumbicon_palette.is_empty()
         && size as usize * size as usize == crumbicon_data.len()
@@ -118,13 +113,11 @@ pub fn import_file(
         ));
     }
 
-    // ----------------------------------------
-    // 4. Fallback: try loading as regular image
-    // ----------------------------------------
+    // Try loading as regular image
     match load_and_resize_image(file_path) {
         Ok(pixels_2d) => {
             let mut data = Vec::with_capacity(16 * 16); // flattened pixel array
-            let mut palette = Vec::new();                // unique ANSI8 colors
+            let mut palette = Vec::new(); // unique ANSI8 colors
 
             // Convert RGBA 16x16 image to Crumbicon-style pixel data
             for row in &pixels_2d {
@@ -159,9 +152,6 @@ pub fn import_file(
             ))
         }
         // Neither valid crumbicon nor image → error
-        Err(_) => Err(format!(
-            "Invalid  file: {}",
-            file_path
-        )),
+        Err(_) => Err(format!("Invalid  file: {}", file_path)),
     }
 }
