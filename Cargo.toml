@@ -1,6 +1,6 @@
 [package]
 name = "rusticon"
-version = "0.1.3"
+version = "0.2.0"
 edition = "2021"
 
 description = "Rusticon is a mouse driven SVG favicon editor for your terminal."
@@ -9,7 +9,7 @@ authors = ["Yaron (Ron) Ilan"]
 homepage = "https://github.com/ronilan/rusticon"
 repository = "https://github.com/ronilan/rusticon"
 readme = "README.md"
-keywords = ["favicon", "icon", "svg", "terminal"]
+keywords = ["favicon", "icon", "svg", "terminal", "image"]
 categories = ["command-line-utilities", "graphics", "web-programming"]
 exclude = ["examples", "media"]
 
