@@ -66,7 +66,7 @@ fn canvas_look_from_data(size: usize, data: &[Option<u8>]) -> Look {
     Look::from(rows)
 }
 
-/// Simple 4-way flood fill
+/// Simple 4-way iterative flood fill
 fn flood_fill(
     data: &mut Vec<Option<u8>>,
     size: usize,
@@ -75,30 +75,20 @@ fn flood_fill(
     target: Option<u8>,
     replacement: Option<u8>,
 ) {
-    if row >= size || col >= size {
-        return;
-    }
-    let idx = row * size + col;
-    if data[idx] != target {
-        return;
-    }
-    data[idx] = replacement;
+    let mut stack = vec![(row, col)];
 
-    // Up
-    if row > 0 {
-        flood_fill(data, size, row - 1, col, target, replacement);
-    }
-    // Down
-    if row + 1 < size {
-        flood_fill(data, size, row + 1, col, target, replacement);
-    }
-    // Left
-    if col > 0 {
-        flood_fill(data, size, row, col - 1, target, replacement);
-    }
-    // Right
-    if col + 1 < size {
-        flood_fill(data, size, row, col + 1, target, replacement);
+    while let Some((r, c)) = stack.pop() {
+        if r >= size || c >= size { continue; }
+
+        let idx = r * size + c;
+        if data[idx] != target { continue; }
+
+        data[idx] = replacement;
+
+        if r > 0 { stack.push((r - 1, c)); }       // Up
+        if r + 1 < size { stack.push((r + 1, c)); } // Down
+        if c > 0 { stack.push((r, c - 1)); }       // Left
+        if c + 1 < size { stack.push((r, c + 1)); } // Right
     }
 }
 
