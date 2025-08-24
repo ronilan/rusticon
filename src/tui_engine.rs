@@ -188,6 +188,9 @@ impl<'a, S> Elements<'a, S> {
     }
 
     pub fn iter(&self) -> std::cell::Ref<'_, Vec<Element<'a, S>>> {
+        // `self.inner` is an `Rc<RefCell<Vec<Element<'a, S>>>>`.
+        // `.borrow()` immutably borrows the inner Vec<Element>.
+        // It returns a `Ref<'_, Vec<Element<'a, S>>>`, which implements `Deref<Target=Vec<...>>`.
         self.inner.borrow()
     }
 }
@@ -334,7 +337,8 @@ where
         on_loop: Box::new({
             let el_ref = el_ref.clone();
             move |state: &mut S, event| {
-                for el in el_ref.iter().iter() {
+                let elements_borrow = el_ref.iter();
+                for el in elements_borrow.iter() {
                     if let Some(cb) = &el.on_loop {
                         cb(el, state, &event);
                     }
@@ -344,7 +348,8 @@ where
         on_keypress: Box::new({
             let el_ref = el_ref.clone();
             move |state: &mut S, event| {
-                for el in el_ref.iter().iter() {
+                let elements_borrow = el_ref.iter();
+                for el in elements_borrow.iter() {
                     if let Some(cb) = &el.on_keypress {
                         cb(el, state, &event);
                     }
@@ -354,7 +359,8 @@ where
         on_move: Box::new({
             let el_ref = el_ref.clone();
             move |state: &mut S, event| {
-                for el in el_ref.iter().iter() {
+                let elements_borrow = el_ref.iter();
+                for el in elements_borrow.iter() {
                     if let Some(cb) = &el.on_move {
                         cb(el, state, &event);
                     }
@@ -364,7 +370,8 @@ where
         on_click: Box::new({
             let el_ref = el_ref.clone();
             move |state: &mut S, event| {
-                for el in el_ref.iter().iter() {
+                let elements_borrow = el_ref.iter();
+                for el in elements_borrow.iter() {
                     if let Some(cb) = &el.on_click {
                         cb(el, state, &event);
                     }
@@ -374,7 +381,8 @@ where
         on_state: Box::new({
             let el_ref = el_ref.clone();
             move |state: &S| {
-                for el in el_ref.iter().iter() {
+                let elements_borrow = el_ref.iter(); // borrow the Vec<Element>
+                for el in elements_borrow.iter() {
                     if let Some(cb) = &el.on_state {
                         cb(el, state);
                     }
@@ -401,6 +409,7 @@ where
     S: Clone + PartialEq + 'static,
 {
     clear_screen();
+    // intitial draw as defined by user
     draw_all(&elements);
 
     let mut listeners = build_listeners(&elements);
