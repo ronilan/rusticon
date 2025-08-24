@@ -78,17 +78,29 @@ fn flood_fill(
     let mut stack = vec![(row, col)];
 
     while let Some((r, c)) = stack.pop() {
-        if r >= size || c >= size { continue; }
+        if r >= size || c >= size {
+            continue;
+        }
 
         let idx = r * size + c;
-        if data[idx] != target { continue; }
+        if data[idx] != target {
+            continue;
+        }
 
         data[idx] = replacement;
 
-        if r > 0 { stack.push((r - 1, c)); }       // Up
-        if r + 1 < size { stack.push((r + 1, c)); } // Down
-        if c > 0 { stack.push((r, c - 1)); }       // Left
-        if c + 1 < size { stack.push((r, c + 1)); } // Right
+        if r > 0 {
+            stack.push((r - 1, c));
+        } // Up
+        if r + 1 < size {
+            stack.push((r + 1, c));
+        } // Down
+        if c > 0 {
+            stack.push((r, c - 1));
+        } // Left
+        if c + 1 < size {
+            stack.push((r, c + 1));
+        } // Right
     }
 }
 
@@ -213,13 +225,11 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
 
     canvas16.on_click = Some(Box::new(|el, state, event| {
         if state.size == 16 {
-            state.mouse_x = event.x.unwrap();
-            state.mouse_y = event.y.unwrap();
             if mouse_over(el, event) {
                 if event.modifiers.contains(&"ctrl".to_string()) {
                     // Handle ctrl-click for color picking
-                    let row = state.mouse_y.saturating_sub(el.y.get()) as usize;
-                    let col = state.mouse_x.saturating_sub(el.x.get()) as usize / 2;
+                    let row = event.y.unwrap().saturating_sub(el.y.get()) as usize;
+                    let col = event.x.unwrap().saturating_sub(el.x.get()) as usize / 2;
                     if row < 16 && col < 16 {
                         state.paintbrush = state.canvas16_data[row * 16 + col];
                         state.candidate = state.paintbrush;
@@ -231,8 +241,8 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
                         16,
                         &mut state.canvas16_data,
                         state.paintbrush,
-                        state.mouse_x,
-                        state.mouse_y,
+                        event.x.unwrap(),
+                        event.y.unwrap(),
                         event.modifiers.contains(&"shift".to_string()),
                     );
                 }
@@ -265,14 +275,11 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
 
     canvas8.on_click = Some(Box::new(|el, state, event| {
         if state.size == 8 {
-            state.mouse_x = event.x.unwrap();
-            state.mouse_y = event.y.unwrap();
-
             if mouse_over(el, event) {
                 if event.modifiers.contains(&"ctrl".to_string()) {
                     // Handle ctrl-click for color picking
-                    let row = state.mouse_y.saturating_sub(el.y.get()) as usize;
-                    let col = state.mouse_x.saturating_sub(el.x.get()) as usize / 2;
+                    let row = event.y.unwrap().saturating_sub(el.y.get()) as usize;
+                    let col = event.x.unwrap().saturating_sub(el.x.get()) as usize / 2;
                     if row < 8 && col < 8 {
                         state.paintbrush = state.canvas8_data[row * 8 + col];
                         state.candidate = state.paintbrush;
@@ -284,8 +291,8 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
                         8,
                         &mut state.canvas8_data,
                         state.paintbrush,
-                        state.mouse_x,
-                        state.mouse_y,
+                        event.x.unwrap(),
+                        event.y.unwrap(),
                         event.modifiers.contains(&"shift".to_string()),
                     );
                 }
@@ -328,22 +335,18 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
         ),
     );
     color_picker.on_move = Some(Box::new(|el, state, event| {
-        state.mouse_x = event.x.unwrap();
-        state.mouse_y = event.y.unwrap();
         if mouse_over(el, event) {
-            let row = state.mouse_y.saturating_sub(el.y.get()) as u8;
-            let col = state.mouse_x.saturating_sub(el.x.get()) as u8;
+            let row = event.y.unwrap().saturating_sub(el.y.get()) as u8;
+            let col = event.x.unwrap().saturating_sub(el.x.get()) as u8;
             let code = row * 12 + col + 16;
             state.candidate = Some(code);
             state.picker_mode = true;
         }
     }));
     color_picker.on_click = Some(Box::new(|el, state, event| {
-        state.mouse_x = event.x.unwrap();
-        state.mouse_y = event.y.unwrap();
         if mouse_over(el, event) {
-            let row = state.mouse_y.saturating_sub(el.y.get()) as u8;
-            let col = state.mouse_x.saturating_sub(el.x.get()) as u8;
+            let row = event.y.unwrap().saturating_sub(el.y.get()) as u8;
+            let col = event.x.unwrap().saturating_sub(el.x.get()) as u8;
             let code = row * 12 + col + 16;
             state.paintbrush = Some(code);
             state.candidate = Some(code);
@@ -377,22 +380,18 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
         ),
     );
     gray_picker.on_move = Some(Box::new(|el, state, event| {
-        state.mouse_x = event.x.unwrap();
-        state.mouse_y = event.y.unwrap();
         if mouse_over(el, event) {
-            let row = state.mouse_y.saturating_sub(el.y.get()) as u8;
-            let col = state.mouse_x.saturating_sub(el.x.get()) as u8;
+            let row = event.y.unwrap().saturating_sub(el.y.get()) as u8;
+            let col = event.x.unwrap().saturating_sub(el.x.get()) as u8;
             let code = (row * 2 + col + 232) as u8;
             state.candidate = Some(code);
             state.picker_mode = true;
         }
     }));
     gray_picker.on_click = Some(Box::new(|el, state, event| {
-        state.mouse_x = event.x.unwrap();
-        state.mouse_y = event.y.unwrap();
         if mouse_over(el, event) {
-            let row = state.mouse_y.saturating_sub(el.y.get());
-            let col = state.mouse_x.saturating_sub(el.x.get());
+            let row = event.y.unwrap().saturating_sub(el.y.get()) as u8;
+            let col = event.x.unwrap().saturating_sub(el.x.get()) as u8;
             let code = (row * 2 + col + 232) as u8;
             state.paintbrush = Some(code);
             state.candidate = Some(code);
@@ -427,20 +426,16 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
     );
 
     sixteen_picker.on_move = Some(Box::new(|el, state, event| {
-        state.mouse_x = event.x.unwrap();
-        state.mouse_y = event.y.unwrap();
         if mouse_over(el, event) {
-            let row = state.mouse_y.saturating_sub(el.y.get()) as u8;
+            let row = event.y.unwrap().saturating_sub(el.y.get()) as u8;
             let code = rgb_to_ansi8(ansi8_to_rgb(row));
             state.candidate = Some(code);
             state.picker_mode = true;
         }
     }));
     sixteen_picker.on_click = Some(Box::new(|el, state, event| {
-        state.mouse_x = event.x.unwrap();
-        state.mouse_y = event.y.unwrap();
         if mouse_over(el, event) {
-            let row = state.mouse_y.saturating_sub(el.y.get()) as u8;
+            let row = event.y.unwrap().saturating_sub(el.y.get()) as u8;
             let code = rgb_to_ansi8(ansi8_to_rgb(row));
             state.paintbrush = Some(code);
             state.candidate = Some(code);
@@ -467,16 +462,12 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
     );
 
     empty_picker.on_move = Some(Box::new(|el, state, event| {
-        state.mouse_x = event.x.unwrap();
-        state.mouse_y = event.y.unwrap();
         if mouse_over(el, event) {
             state.candidate = None;
             state.picker_mode = true;
         }
     }));
     empty_picker.on_click = Some(Box::new(|el, state, event| {
-        state.mouse_x = event.x.unwrap();
-        state.mouse_y = event.y.unwrap();
         if mouse_over(el, event) {
             state.paintbrush = None;
             state.candidate = None;
@@ -505,34 +496,24 @@ pub fn build_elements<'a>() -> Elements<'a, AppState> {
             .collect();
         Look::from(vec![row])
     });
-
     palette_picker.on_move = Some(Box::new(|el, state, event| {
-        if let (Some(mouse_x), Some(mouse_y)) = (event.x, event.y) {
-            state.mouse_x = mouse_x;
-            state.mouse_y = mouse_y;
+        if mouse_over(el, event) {
+            let col_rel = event.x.unwrap().saturating_sub(el.x.get()) as usize;
+            let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
+                col_rel / 4
+            } else {
+                state.palette_index
+            };
 
-            if mouse_over(el, event) {
-                let col_rel = mouse_x.saturating_sub(el.x.get()) as usize;
-                let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
-                    col_rel / 4
-                } else {
-                    state.palette_index
-                };
-
-                if selected < state.palette_colors.len() {
-                    state.candidate = state.palette_colors[selected];
-                    state.picker_mode = true;
-                }
+            if selected < state.palette_colors.len() {
+                state.candidate = state.palette_colors[selected];
+                state.picker_mode = true;
             }
         }
     }));
     palette_picker.on_click = Some(Box::new(|el, state, event| {
-        state.mouse_x = event.x.unwrap();
-        state.mouse_y = event.y.unwrap();
-
         if mouse_over(el, event) {
-            let col_rel = state.mouse_x.saturating_sub(el.x.get()) as usize;
-
+            let col_rel = event.x.unwrap().saturating_sub(el.x.get()) as usize;
             let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
                 col_rel / 4
             } else {
