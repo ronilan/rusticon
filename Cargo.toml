@@ -17,6 +17,7 @@ exclude = ["examples", "media"]
 crossterm = { version = "0.29", features = ["event-stream"] }
 futures = "0.3.31"
 futures-timer = "3.0.3"
+image = "0.25.6"
 terminal_style = "0.4.0"
 
 [[bin]]

@@ -6,11 +6,10 @@ mod splash;
 mod tui_engine;
 mod ui;
 
-use std::env;
-use std::time::Duration;
+use std::{env, time::Duration};
 
 use export::export_svg;
-use import::crumbicon;
+use import::import_file;
 use message::draw_message;
 use tui_engine::{run_tui, Elements};
 
@@ -68,12 +67,12 @@ fn exit_ui(state: &AppState) -> bool {
 
 fn main() {
     // Default empty canvas
-    let mut palette_colors = vec![None; 8];
     let mut canvas16_data = vec![None; 16 * 16];
     let mut canvas8_data = vec![None; 8 * 8];
-    let mut size = 8;
     let mut file_path = "favicon.svg".to_string();
-    let mut paintbrush = None;
+    let size;
+    let palette_colors;
+    let paintbrush;
 
     // Command-line argument
     let args: Vec<String> = env::args().collect();
@@ -82,24 +81,23 @@ fn main() {
     }
 
     // Try to load crumbicon if file exists
-    if std::path::Path::new(&file_path).exists() {
-        match crumbicon(&file_path) {
-            Ok((data, palette, icon_size)) => {
-                palette_colors = palette;
-                paintbrush = palette_colors[0];
-                size = icon_size;
-                if size == 16 {
-                    canvas16_data = data;
-                } else {
-                    canvas8_data = data;
-                }
+    match import_file(&file_path) {
+        Ok((data, palette, icon_size, returned_path)) => {
+            palette_colors = palette;
+            paintbrush = palette_colors[0];
+            size = icon_size;
+            if size == 16 {
+                canvas16_data = data;
+            } else {
+                canvas8_data = data;
             }
-            Err(err_msg) => {
-                draw_message(&err_msg, 196); // File exists but invalid
-                std::process::exit(1); // exit on invalid file
-            }
+            file_path = returned_path;
         }
-    } // else  File missing → silent blank canvas
+        Err(err_msg) => {
+            draw_message(&err_msg, 196); // File exists but invalid
+            std::process::exit(1); // exit on invalid file
+        }
+    }
 
     // Splash screen
     let splash_state = SplashState { exit_flag: false };
