@@ -94,7 +94,7 @@ fn handle_final_save(final_ui_state: &AppState) {
             &final_ui_state.palette_colors,
             size,
             size,
-            30,
+            32,
             &final_ui_state.file_path,
         ) {
             Ok(_) => draw_message("Export succeeded!", 10),
