@@ -35,6 +35,9 @@ fn modifiers_map(modifiers: KeyModifiers) -> Vec<String> {
     if modifiers.contains(KeyModifiers::ALT) {
         result.push("alt".to_string());
     }
+    if modifiers.contains(KeyModifiers::META) {
+        result.push("meta".to_string());
+    }
     result
 }
 
@@ -119,7 +122,6 @@ pub fn setup() {
 
 /// Restore terminal to normal state
 fn teardown() {
-    disable_raw_mode().expect("Failed to disable raw mode");
     let mut stdout = stdout();
 
     execute!(
@@ -131,6 +133,8 @@ fn teardown() {
         DisableMouseCapture                         // disable mouse events
     )
     .expect("Failed to reset terminal");
+
+    disable_raw_mode().ok();
 }
 
 // -----------------------------
@@ -210,103 +214,115 @@ where
             loop_count += 1;
 
             // --- EVENT HANDLING ---
-            let maybe_event = block_on(async {
+            let maybe_event: Option<Result<Event, std::io::Error>> = block_on(async {
                 futures::select! {
-                    event = events.next().fuse() => Some(event), // wait for terminal event
-                    _ = Delay::new(tick_rate).fuse() => None,   // or timeout tick
+                    event = events.next().fuse() => event,       // terminal event
+                    _ = Delay::new(tick_rate).fuse() => None,   // timeout → just return None
                 }
             });
 
-            if let Some(Some(Ok(event))) = maybe_event {
-                match event {
-                    // ----- KEY EVENTS -----
-                    Event::Key(key_event) => {
-                        // Ctrl-C exits loop only if no alt_exit was provided
-                        if alt_exit.is_none()
-                            && key_event.code == KeyCode::Char('c')
-                            && key_event.modifiers.contains(KeyModifiers::CONTROL)
-                        {
-                            should_exit = true;
+            // Handle EOF gracefully
+            if let Some(event_result) = maybe_event {
+                match event_result {
+                    Ok(event) => match event {
+                        // ----- KEY EVENTS -----
+                        Event::Key(key_event) => {
+                            // Ctrl-C exits loop only if no alt_exit was provided
+                            if alt_exit.is_none()
+                                && key_event.code == KeyCode::Char('c')
+                                && key_event.modifiers.contains(KeyModifiers::CONTROL)
+                            {
+                                should_exit = true;
+                                continue;
+                            }
+
+                            let key = key_map(&key_event);
+                            let old_state = state.borrow().clone();
+
+                            for l in listeners.iter_mut() {
+                                let mut s = state.borrow_mut();
+                                if let Some(ref k) = key {
+                                    (l.on_keypress)(
+                                        &mut s,
+                                        EventData {
+                                            loop_count,
+                                            key: Some(k.clone()),
+                                            modifiers: modifiers_map(key_event.modifiers),
+                                            ..Default::default()
+                                        },
+                                    );
+                                }
+                            }
+
+                            // Notify if state changed
+                            let new_state = state.borrow();
+                            if *new_state != old_state {
+                                for l in listeners.iter_mut() {
+                                    (l.on_state)(&new_state);
+                                }
+                            }
                             continue;
                         }
 
-                        let key = key_map(&key_event);
+                        // ----- MOUSE EVENTS -----
+                        Event::Mouse(mouse_event) => {
+                            let pos = (mouse_event.column, mouse_event.row);
+                            let old_state = state.borrow().clone();
 
-                        let old_state = state.borrow().clone();
-
-                        for l in listeners.iter_mut() {
-                            let mut s = state.borrow_mut();
-                            (l.on_keypress)(
-                                &mut s,
-                                EventData {
-                                    loop_count,
-                                    key: Some(key.clone().unwrap()),
-                                    modifiers: modifiers_map(key_event.modifiers),
-                                    ..Default::default()
-                                },
-                            );
-                        }
-
-                        // Notify listeners if state changed
-                        let new_state = state.borrow();
-                        if *new_state != old_state {
                             for l in listeners.iter_mut() {
-                                (l.on_state)(&new_state);
+                                let mut s = state.borrow_mut();
+                                // Trigger on_move ONLY when the mouse actually moved
+                                if matches!(mouse_event.kind, MouseEventKind::Moved) {
+                                    (l.on_move)(
+                                        &mut s,
+                                        EventData {
+                                            loop_count,
+                                            x: Some(pos.0),
+                                            y: Some(pos.1),
+                                            modifiers: modifiers_map(mouse_event.modifiers),
+                                            ..Default::default()
+                                        },
+                                    );
+                                }
+
+                                // Trigger on_click for left-up or drag
+                                if matches!(
+                                    mouse_event.kind,
+                                    MouseEventKind::Up(MouseButton::Left)
+                                        | MouseEventKind::Drag(MouseButton::Left)
+                                ) {
+                                    (l.on_click)(
+                                        &mut s,
+                                        EventData {
+                                            loop_count,
+                                            x: Some(pos.0),
+                                            y: Some(pos.1),
+                                            modifiers: modifiers_map(mouse_event.modifiers),
+                                            ..Default::default()
+                                        },
+                                    );
+                                }
                             }
+
+                            // Notify if state changed
+                            let new_state = state.borrow();
+                            if *new_state != old_state {
+                                for l in listeners.iter_mut() {
+                                    (l.on_state)(&new_state);
+                                }
+                            }
+                            continue;
                         }
-                        continue;
+
+                        _ => {} // Ignore other events
+                    },
+                    Err(_) => {
+                        // Treat IO errors from EventStream as EOF → exit gracefully
+                        should_exit = true;
                     }
-
-                    // ----- MOUSE EVENTS -----
-                    Event::Mouse(mouse_event) => {
-                        let pos = (mouse_event.column, mouse_event.row);
-                        let old_state = state.borrow().clone();
-
-                        for l in listeners.iter_mut() {
-                            let mut s = state.borrow_mut();
-                            (l.on_move)(
-                                &mut s,
-                                EventData {
-                                    loop_count,
-                                    x: Some(pos.0),
-                                    y: Some(pos.1),
-                                    modifiers: modifiers_map(mouse_event.modifiers),
-                                    ..Default::default()
-                                },
-                            );
-
-                            // Treat left-up or drag as click
-                            if matches!(
-                                mouse_event.kind,
-                                MouseEventKind::Up(MouseButton::Left)
-                                    | MouseEventKind::Drag(MouseButton::Left)
-                            ) {
-                                (l.on_click)(
-                                    &mut s,
-                                    EventData {
-                                        loop_count,
-                                        x: Some(pos.0),
-                                        y: Some(pos.1),
-                                        modifiers: modifiers_map(mouse_event.modifiers),
-                                        ..Default::default()
-                                    },
-                                );
-                            }
-                        }
-
-                        // Notify if state changed
-                        let new_state = state.borrow();
-                        if *new_state != old_state {
-                            for l in listeners.iter_mut() {
-                                (l.on_state)(&new_state);
-                            }
-                        }
-                        continue;
-                    }
-
-                    _ => {} // Ignore other events
                 }
             }
+            // If maybe_event is None, that means it was a tick → do nothing, loop continues
         }
     }));
 
