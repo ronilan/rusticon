@@ -143,12 +143,12 @@ fn teardown() {
 
 /// Runs the event loop until exit
 /// - `state`: initial application state
-/// - `tick_rate`: how often to tick when no events occur
 /// - `listeners`: collection of callback hooks
+///  - `tick_rate`: how often to tick when no events occur
 pub fn start<'a, S>(
     state: S,
-    tick_rate: Duration,
     listeners: &mut [Listener<'a, S>],
+    tick_rate: Duration,
     alt_exit: Option<&dyn Fn(&S) -> bool>,
 ) -> S
 where

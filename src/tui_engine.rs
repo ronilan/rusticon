@@ -409,9 +409,9 @@ where
 // -----------------------------
 // TUI Runner
 // -----------------------------
-pub fn run_tui<'a, S>(
-    elements: Elements<'a, S>,
+pub fn run<'a, S>(
     state: S,
+    elements: Elements<'a, S>,
     tick_rate: Option<Duration>,
     alt_exit: Option<&dyn Fn(&S) -> bool>,
 ) -> S
@@ -428,7 +428,7 @@ where
     let tick_rate = tick_rate.unwrap_or_else(|| Duration::from_millis(33));
 
     // simply return the result of start
-    start(state, tick_rate, &mut listeners, alt_exit)
+    start(state,  &mut listeners, tick_rate,alt_exit)
 }
 
 // Re-export EventData for convenience

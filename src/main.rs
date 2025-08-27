@@ -16,7 +16,7 @@ use std::{
 use export::export_svg;
 use import::import_file;
 use message::draw_message;
-use tui_engine::{run_tui, Elements};
+use tui_engine::{run, Elements};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct SplashState {
@@ -121,12 +121,12 @@ fn main() {
     let splash_elements: Elements<'_, SplashState> = splash::build_elements();
 
     // Run splash until result_holder contains Some(...)
-    run_tui(
-        splash_elements,
+    run(
         splash_state,
+        splash_elements,
         Some(Duration::from_millis(SPLASH_DELAY_MS)),
-        // run_tui accepts an optional exit condition: a closure that returns true when the UI should exit.
-        // wrap the closure in Some because run_tui expects an Option<&dyn Fn(&S) -> bool>.
+        // run accepts an optional exit condition: a closure that returns true when the UI should exit.
+        // wrap the closure in Some because run expects an Option<&dyn Fn(&S) -> bool>.
         // the closure takes one argument, which is the current state.
         Some(&|state| exit_splash(state, &result_holder)),
     );
@@ -162,7 +162,7 @@ fn main() {
 
             // Run main UI
             let elements: Elements<'_, AppState> = ui::build_elements();
-            let final_ui_state = run_tui(elements, ui_state, None, Some(&exit_ui));
+            let final_ui_state = run(ui_state, elements, None, Some(&exit_ui));
 
             // Final save if needed
             handle_final_save(&final_ui_state);
