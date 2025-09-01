@@ -118,6 +118,19 @@ impl From<Vec<Vec<String>>> for Look {
     }
 }
 
+impl From<Vec<Vec<&str>>> for Look {
+    fn from(cells: Vec<Vec<&str>>) -> Self {
+        Self {
+            cells: RefCell::new(
+                cells
+                    .into_iter()
+                    .map(|row| row.into_iter().map(|s| s.to_string()).collect())
+                    .collect(),
+            ),
+        }
+    }
+}
+
 // Single-row construction from iterator
 impl<T: ToString> FromIterator<T> for Look {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
@@ -125,6 +138,25 @@ impl<T: ToString> FromIterator<T> for Look {
         Self {
             cells: RefCell::new(vec![row]),
         }
+    }
+}
+
+impl<'a> Stylable for &'a Look {
+    type Output = Look;
+
+    fn apply<F>(&self, f: F) -> Self::Output
+    where
+        F: Fn(&str) -> String,
+    {
+        (*self).apply(f)
+    }
+
+    fn apply_result<F, E>(&self, f: F) -> Result<Self::Output, E>
+    where
+        F: Fn(&str) -> Result<String, E>,
+        E: std::fmt::Debug,
+    {
+        (*self).apply_result(f)
     }
 }
 
@@ -192,6 +224,12 @@ impl<'a, S> Elements<'a, S> {
         // `.borrow()` immutably borrows the inner Vec<Element>.
         // It returns a `Ref<'_, Vec<Element<'a, S>>>`, which implements `Deref<Target=Vec<...>>`.
         self.inner.borrow()
+    }
+
+    pub fn extend(&self, other: Elements<'a, S>) {
+        let mut self_borrow = self.inner.borrow_mut();
+        let mut other_borrow = other.inner.borrow_mut();
+        self_borrow.append(&mut other_borrow);
     }
 }
 
@@ -420,7 +458,7 @@ where
     S: Clone + PartialEq + 'static,
 {
     clear_screen();
-    // intitial draw as defined by user
+    // initial draw as defined by user
     draw_all(&elements);
 
     let mut listeners = build_listeners(&elements);
@@ -428,7 +466,7 @@ where
     let tick_rate = tick_rate.unwrap_or_else(|| Duration::from_millis(33));
 
     // simply return the result of start
-    start(state,  &mut listeners, tick_rate,alt_exit)
+    start(state, &mut listeners, tick_rate, alt_exit)
 }
 
 // Re-export EventData for convenience

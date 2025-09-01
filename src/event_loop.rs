@@ -45,6 +45,7 @@ fn modifiers_map(modifiers: KeyModifiers) -> Vec<String> {
 fn key_map(key: &KeyEvent) -> Option<String> {
     use KeyCode::*;
     match key.code {
+        Enter => Some("enter".into()),
         Up => Some("up".into()),
         Down => Some("down".into()),
         Left => Some("left".into()),
