@@ -2,7 +2,8 @@ mod event_loop;
 mod export;
 mod import;
 mod message;
-mod splash;
+mod rusticon_screen;
+mod splash_screen;
 mod tui_engine;
 mod ui;
 
@@ -41,7 +42,7 @@ pub struct AppState {
 }
 
 const MIN_SPLASH_LOOPS: usize = 20;
-const SPLASH_DELAY_MS: u64 = 66; // ~15 FPS
+const SPLASH_DELAY_MS: u64 = 100; // ~10 FPS
 
 fn load_file_in_background(
     path: String,
@@ -118,7 +119,7 @@ fn main() {
 
     // Splash screen state
     let splash_state = SplashState { loop_count: 0 };
-    let splash_elements: Elements<'_, SplashState> = splash::build_elements();
+    let splash_elements: Elements<'_, SplashState> = splash_screen::build();
 
     // Run splash until result_holder contains Some(...)
     run(
@@ -161,7 +162,8 @@ fn main() {
             };
 
             // Run main UI
-            let elements: Elements<'_, AppState> = ui::build_elements();
+            //let elements: Elements<'_, AppState> = uix::build_elements();
+            let elements: Elements<'_, AppState> = rusticon_screen::build();
             let final_ui_state = run(ui_state, elements, None, Some(&exit_ui));
 
             // Final save if needed

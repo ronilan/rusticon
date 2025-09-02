@@ -1,7 +1,4 @@
-use terminal_style::format::{bold, color, faint};
-
-use crate::tui_engine::{columns, draw, rows, Element, Elements, Look};
-
+use crate::tui_engine::*;
 use crate::SplashState;
 
 fn bouncing_text(n: usize) -> String {
@@ -31,16 +28,15 @@ fn bouncing_text(n: usize) -> String {
 }
 
 fn art_row(n: u8, s: &str) -> String {
-    bold(color(n, s).unwrap_or_else(|_| s.to_string()))
+    terminal_style::format::bold(
+        terminal_style::format::color(n, s).unwrap_or_else(|_| s.to_string()),
+    )
 }
 
-pub fn build_elements<'a>() -> Elements<'a, SplashState> {
-    let elements: Elements<SplashState> = Elements::new();
+pub fn build<'a>() -> Element<'a, SplashState> {
+    let mut splash_logo = Element::new(0, 0, Look::new());
 
-    // Splash
-    let mut splash = Element::new(0, 0, Look::new());
-
-    splash.on_loop = Some(Box::new(|el, state: &mut SplashState, event| {
+    splash_logo.on_loop = Some(Box::new(|el, state: &mut SplashState, event| {
         let n = event.loop_count as u16;
 
         let term_cols = columns();
@@ -71,24 +67,5 @@ pub fn build_elements<'a>() -> Elements<'a, SplashState> {
         state.loop_count = event.loop_count
     }));
 
-    elements.push(splash);
-
-    // Footer
-    let mut footer = Element::new(0, 0, Look::new());
-
-    footer.on_state = Some(Box::new(|el, _event| {
-        let term_cols = columns();
-        let term_rows = rows();
-
-        let text = "Made with Rust";
-        el.x.set((term_cols.saturating_sub(text.len() as u16)) / 2);
-        el.y.set(term_rows.saturating_sub(1));
-        el.look.update(bold(faint(Look::from(text))));
-
-        draw(el)
-    }));
-
-    elements.push(footer);
-
-    elements
+    splash_logo
 }
