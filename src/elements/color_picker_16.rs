@@ -1,5 +1,5 @@
 use crate::tui_engine::*;
-use crate::ui::utils::*;
+use crate::elements::utils::*;
 use crate::AppState;
 
 const X: u16 = 1;
@@ -51,7 +51,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
         }
     }));
     color_picker_16.on_state = Some(Box::new(|el, state| {
-        crate::ui::draw_relative(el, X, Y, state);
+        crate::elements::draw_relative(el, X, Y, state);
     }));
 
     color_picker_16

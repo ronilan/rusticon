@@ -5,7 +5,7 @@ mod message;
 mod rusticon_screen;
 mod splash_screen;
 mod tui_engine;
-mod ui;
+mod elements;
 
 use std::{
     env,

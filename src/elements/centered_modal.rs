@@ -1,5 +1,5 @@
 use crate::tui_engine::*;
-use crate::ui::{APP_HEIGHT, APP_WIDTH};
+use crate::elements::{APP_HEIGHT, APP_WIDTH};
 use crate::AppState;
 
 pub fn build<'a>() -> Element<'a, AppState> {

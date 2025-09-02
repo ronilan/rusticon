@@ -19,13 +19,13 @@ pub fn build<'a>() -> Element<'a, AppState> {
                 state.app_y + 3,
                 Look::from(vec![vec![" ".to_string(); 32]; 16]),
             );
-            crate::ui::draw_relative(&eraser, X, Y, state);
+            crate::elements::draw_relative(&eraser, X, Y, state);
         }
     }));
     button_8.on_state = Some(Box::new(|el, state| {
         el.x.set(state.app_x + 67);
         el.y.set(state.app_y + 2);
-        crate::ui::draw_relative(el, X, Y, state);
+        crate::elements::draw_relative(el, X, Y, state);
     }));
 
     button_8

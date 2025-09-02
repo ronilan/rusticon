@@ -14,7 +14,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
         };
 
         el.look.update(text);
-        crate::ui::draw_relative(el, X, Y, state);
+        crate::elements::draw_relative(el, X, Y, state);
     }));
 
     label_color_selected

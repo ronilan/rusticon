@@ -15,7 +15,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
         }
     }));
     button_16.on_state = Some(Box::new(|el, state| {
-        crate::ui::draw_relative(el, X, Y, state);
+        crate::elements::draw_relative(el, X, Y, state);
     }));
 
     button_16

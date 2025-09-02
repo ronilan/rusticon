@@ -79,7 +79,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
 
         el.look.update(look);
 
-        crate::ui::draw_relative(el, X, Y, state);
+        crate::elements::draw_relative(el, X, Y, state);
     }));
 
     color_picker_palette

@@ -29,7 +29,7 @@ X, Y,
             .collect();
         el.look.update(rows);
 
-        crate::ui::draw_relative(el, X, Y, state);
+        crate::elements::draw_relative(el, X, Y, state);
     }));
 
     color_candidate
