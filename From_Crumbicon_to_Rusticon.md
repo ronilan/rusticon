@@ -59,11 +59,11 @@ The following is a logical representation of a single listener with the internal
 ]
 ```
 
-To achieve the same in Rust, listeners are represented as a mutable slice of [`Listener`](https://github.com/ronilan/rusticon/blob/main/src/event_loop.rs#L75-L184) structs, each containing the five callback fields.
+To achieve the same in Rust, listeners are represented as a mutable slice of [`Listener`](https://github.com/ronilan/rusticon/blob/main/src/event_loop.rs#L75-L104) structs, each containing the five callback fields.
 
 In Crumb, the loop itself is an `until` loop. It actively tracks state and exits when the state changes to a specific value set by the user. In Rust, the loop is a `while` loop with an explicit exit flag. In Crumb, the state could be voided at any point to cause exit. Mimicking this pattern in a statically typed language would be cumbersome for the user. Instead, Rusticon provides a default exit mechanism (`Ctrl+C`) and accepts an [optional custom exit](https://github.com/ronilan/rusticon/blob/main/src/event_loop.rs#L231-L238).
 
-The native Crumb `event` is synchronous: it halts the loop for a specified duration, resuming only when a key or mouse event occurs or when the timeout expires. The captured event is "raw" and includes escape sequences. Parsing those escape codes into higher-level event handler calls was the job of the Crumb event loop. Rust has no built-in equivalent, but the [`crossterm`](https://crates.io/crates/crossterm) crate provides a simpler and more powerful event system. It thus became a project dependency.  
+The native Crumb `event` is synchronous: it halts the loop for a specified duration, resuming only when a key or mouse event occurs or when the timeout expires. The captured event is "raw" and includes escape sequences. Parsing those escape codes into higher-level event handler calls is the job of the Crumb event loop. Rust has no built-in event equivalent, but the [`crossterm`](https://crates.io/crates/crossterm) crate provides a simpler and more powerful event system. It thus became a project dependency.  
 
 Crumb’s synchronous `event` introduced an issue: fast sequences of input events could be missed because no listener was active between loop iterations. Rust’s async event system solves this problem, ensuring all events are captured reliably.
 
@@ -73,7 +73,7 @@ One last key difference is scope. In Crumb, the event loop’s state and tempora
 
 The Crumb TUI, built on top of the Crumb event loop, is a minimal reactive declarative framework. It operates on an array of UI elements, in which each element is a list with two internal lists. The second item is the listener mentioned above. When the TUI runs, the listener arrays of all elements are extracted and passed down to the event loop.
 
-The first item in each element list is a list representing "props" of the element. It has three items: x, y, and look, where the look is a two-dimensional array (in Crumb’s case, a list of lists).
+The first item in each element list is a list representing the "props" of the element. It has three items: x, y, and look, where the look is a two-dimensional array (in Crumb’s case, a list of lists).
 
 The following is a logical representation of "props":
 
@@ -101,7 +101,7 @@ To make this setup convenient, the Rust version of `Look` provides multiple `Fro
 
 The application UI is built out of Elements. With the upstream TUI providing compatible functionality, both the Crumb version and the Rust version were made with an identical set of elements. Since those elements also have identical look-and-feel, they also share identical "props" and an identical set of functions. 
 
-Because code splitting is easier in Rust than in Crumb, each element is its own module. However, reading the code, the elements are still comparable side-by-side.
+Because code splitting is easier in Rust than in Crumb, each element in Rusticon is its own module. However, reading the code, the elements are still comparable side-by-side.
 
 For example, the box displaying the selected color as implemented in Crumb:
 
@@ -165,7 +165,7 @@ One interesting choice was made with how elements are defined in Rust. The patte
 
 ### UX
 
-Crumbicon’s most obvious missing feature is the ability to open image files for editing as icons. Writing an image-processing library in Crumb would have been clearly "out of scope." Rust, with its rich ecosystem of crates, simplifies this task.
+Crumbicon’s most obvious missing feature is the ability to open image files for editing as icons. Writing an image-processing library in Crumb would have been clearly "out of scope." Rust, with its rich ecosystem of crates, greatly simplifies this task.
 
 Using the [`image`](https://crates.io/crates/image) crate, Rusticon can open and scale image files. Because this may take a second or two, the splash screen was adapted to act as an async load indicator.
 
@@ -174,13 +174,13 @@ Rusticon remains a "toy" app, albeit slightly more useful.
 
 ### The Missing Piece
 
-With the app ported, enhanced functionality introduced and a layered stack in place, it is important to point out the one thing that the Crumb stack can do but the Rust one can not.
+With the app ported, enhanced functionality introduced, and a layered stack in place, it is important to point out the one thing that the Crumb stack can do but the Rust one can not.
 
-Full featured UI frameworks would usually keep a data structure of their elements/components and a mechanism to allow elements/components to access other elements/components in that data structure. It is usually implemented in the form of a tree (e.g. [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) and [Impossible.js](https://github.com/ronilan/that-is-impossible)) or in the form of an array (e.g [BlockLike.js](https://github.com/ronilan/BlockLike)). Neither [`tui.crumb`](https://github.com/ronilan/tui.crumb) usable nor Rust [`tui_engine`](./src/tui_engine.rs) implementation provide such mechanism. 
+Full featured UI frameworks would usually keep a data structure of their elements/components and a mechanis that allows said elements/components to access other elements/components in that same data structure. It is usually implemented in the form of a tree (e.g. [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) and [Impossible.js](https://github.com/ronilan/that-is-impossible)) or in the form of an array (e.g [BlockLike.js](https://github.com/ronilan/BlockLike)). Neither [`tui.crumb`](https://github.com/ronilan/tui.crumb) usable nor Rust [`tui_engine`](./src/tui_engine.rs) implementation provide such mechanism. 
 
-In Crumb, and thus in `tui.crumb` dynamic scoping provides the cross reference functionality. This allows the event functions of one element to have reference to all other elements in the application and act on them. Rust implementation can't do that. Crumbicon uses that ability to detect when the [mouse is no longer over any of the color pickers](https://github.com/ronilan/crumbicon/blob/main/src/elements.crumb#L189-L197). To support same in Rust, the state, a data structure shared between all components, was used in lieu of direct reference. A [`picker_mode`](https://github.com/ronilan/rusticon/blob/main/src/main.rs#L35) field solves the problem. 
+In Crumb, and thus in `tui.crumb` dynamic scoping provides the cross reference functionality. This allows the event functions of one element to have reference to all other elements in the application and act on them. Rust implementation can't do that. Crumbicon uses that ability to detect when the [mouse is no longer over any of the color pickers](https://github.com/ronilan/crumbicon/blob/main/src/elements.crumb#L189-L197). To support same in Rusticon, the state, a data structure shared between all components, was used in lieu of direct reference. A [`picker_mode`](https://github.com/ronilan/rusticon/blob/main/src/main.rs#L35) field solves that specific problem. 
 
-While effective, this approach highlights the limitations of this little TUI implementation as such approach would not scale well to more complex UIs.
+While effective, this approach highlights the limitations of this little TUI implementation, as such approach would not scale well to more complex UIs.
 
 ## Binaries
 
