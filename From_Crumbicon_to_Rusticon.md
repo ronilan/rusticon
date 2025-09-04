@@ -196,7 +196,7 @@ Crumb has practically no tooling. There is a syntax highlight extension for VS C
 
 Rust, by contrast, has excellent tooling. Working with Cargo and VS Code makes things flow smoothly. And then there are the LLMs.
 
-ChatGPT, and the like, [can't "write" Crumb](https://chatgpt.com/s/t_68b9d9a5189c819180829f6a0270e2bb). There just seem to be too little to work with. However, since Crumb is both simple and verbose, the LLMs are pretty good at ["reading it" and then "translating it"](https://chatgpt.com/c/68b9d9ec-ae38-8331-a65a-d6b7ec15bb5f). This reduces the tedium of porting, though careful review is still required. Thus, while one does have to keep on their toes while using LLMs produced code, just like with running, being on one's toes does allow one to move noticeably faster.
+ChatGPT, and the like, [can't "write" Crumb](https://chatgpt.com/s/t_68b9d9a5189c819180829f6a0270e2bb). There just seem to be too little to work with. However, since Crumb is both simple and verbose, the LLMs are pretty good at ["reading it" and then "translating it"](https://chatgpt.com/s/t_68b9da3fdb348191bbd89481bea71faf). This reduces the tedium of porting, though careful review is still required. Thus, while one does have to keep on their toes while using LLMs produced code, just like with running, being on one's toes does allow one to move noticeably faster.
 
 ## Closing Thoughts
 
