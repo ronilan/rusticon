@@ -1,6 +1,6 @@
 # From Crumbicon to Rusticon
 
-Rusticon is a Rust-based port of [Crumbicon](https://github.com/ronilan/crumbicon), originally written in the [Crumb programming language](https://github.com/liam-ilan/crumb). It replicates the same functionality and user experience—and then extends it a little.  
+Rusticon is a Rust-based port of [Crumbicon](https://github.com/ronilan/crumbicon), originally written in the [Crumb programming language](https://github.com/liam-ilan/crumb). It replicates the same functionality and user experience (and then extends it a little). 
 
 <p align=center><img src="./media/crumbicon-to-rusticon.png" alt="banner" width="640" style="border: 1px solid #999; border-radius: 5px"/></p>
 
@@ -15,7 +15,7 @@ The two programming languages, Crumb and Rust, are not very much alike.
 
 > **Rust** is: *"a high-level, statically typed, compiled, general-purpose programming language with a strong emphasis on safety and performance, featuring expressive syntax, modern concurrency primitives, and a robust standard library."*
 
-One distinction stands out: Crumb is **dynamically scoped**, a rarity among programming languages. It is also purely functional and forbids side effects (other than I/O). These two attributes make writing Crumb programs “different from normal.” While Crumb is a very simple language, working with it requires carefully crafting the code. Writing the original Crumbicon application in Crumb was therefore not straightforward.
+One distinction stands out: Crumb is **dynamically scoped**, a rarity among programming languages. It is also purely functional and forbids side effects (other than I/O). These two attributes make writing Crumb programs “different from normal.” While Crumb is a very simple language, working with it requires carefully crafting the code. Writing the original Crumbicon application in Crumb was therefore quite a laboring task.
 
 The idea behind this little project was to take something hand-crafted for one very specific, somewhat obscure world, and see if it could be adapted to a completely new one—while maintaining an identical look-and-feel and keeping the internals as similar as possible.
 
@@ -25,7 +25,7 @@ Crumbicon was built on top of three "usables" (Crumb’s equivalent of packages)
 
 - **[colors.crumb](https://github.com/ronilan/colors.crumb)** — basic terminal styling functions plus RGB, HEX, and ANSI conversion  
 - **[event-loop.crumb](https://github.com/ronilan/event-loop.crumb)** — a basic event loop  
-- **[tui.crumb](https://github.com/ronilan/tui.crumb)** — an element-based reactive TUI framework (still WIP)
+- **[tui.crumb](https://github.com/ronilan/tui.crumb)** — an element-based declerarive reactive TUI framework (still WIP)
 
 ```
 Application <--> TUI <--> Event Loop
