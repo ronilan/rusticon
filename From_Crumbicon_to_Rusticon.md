@@ -17,7 +17,7 @@ The two programming languages, Crumb and Rust, are not very much alike.
 
 One distinction stands out: Crumb is **dynamically scoped**, a rarity among programming languages. It is also purely functional and forbids side effects (other than I/O). These two attributes make writing Crumb programs “different from normal.” While Crumb is a very simple language, working with it requires carefully crafting the code. Writing the original Crumbicon application in Crumb was therefore quite a laboring task.
 
-The idea behind this little project was to take something hand-crafted for one very specific, somewhat obscure world, and see if it could be adapted to a completely new one—while maintaining an identical look-and-feel and keeping the internals as similar as possible.
+The idea behind this porting project was to take something hand-crafted for one very specific, somewhat obscure world, and see if it could be adapted to a completely new one—while maintaining an identical look-and-feel and keeping the internals as similar as possible.
 
 ## Architecture
 
@@ -39,7 +39,7 @@ To keep the port simple, Rusticon preserves the same architecture with strict se
 
 Color conversion and terminal formatting are utilities with a clear spec. In Crumb, the lack of built-in mathematical functions (e.g., base conversion) made implementing these a [little more interesting](https://github.com/ronilan/colors.crumb/blob/main/colors.crumb#L18). The functionality was designed around the needs of the TUI: formatting strings, arrays, and 2D arrays.  
 
-In Rusticon, this role is handled by the [`terminal_style`](https://crates.io/crates/terminal_style) crate, which provides [nearly identical functionality](https://github.com/ronilan/terminal_style). The crate exposes a `Stylable` trait, which defines a standard way to apply transformations or styles to strings. This is then later used by the TUI.
+In Rusticon, this role is handled by the [`terminal_style`](https://crates.io/crates/terminal_style) crate, which provides [nearly identical functionality](https://github.com/ronilan/terminal_style). The crate also exposes a `Stylable` trait, which defines a standard way to apply transformations or styles to strings. This is then later used by the TUI.
 
 ### Event Loop
 
@@ -59,7 +59,7 @@ The following is a logical representation of a single listener with the internal
 ]
 ```
 
-To achieve the same in Rust, listeners are represented as a mutable slice of `Listener` structs, each containing the five callback fields.
+To achieve the same in Rust, listeners are represented as a mutable slice of [`Listener`](https://github.com/ronilan/rusticon/blob/main/src/event_loop.rs#L75-L184) structs, each containing the five callback fields.
 
 In Crumb, the loop itself is an `until` loop. It actively tracks state and exits when the state changes to a specific value set by the user. In Rust, the loop is a `while` loop with an explicit exit flag. In Crumb, the state could be voided at any point to cause exit. Mimicking this pattern in a statically typed language would be cumbersome for the user. Instead, Rusticon provides a default exit mechanism (`Ctrl+C`) and accepts an [optional custom exit](https://github.com/ronilan/rusticon/blob/main/src/event_loop.rs#L231-L238).
 
