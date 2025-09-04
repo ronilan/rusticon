@@ -184,7 +184,7 @@ While effective, this approach highlights the limitations of this little TUI imp
 
 ## Binaries
 
-Both programs are provided as standalone binaries. Rusticon ones are compiled. Crumbicon ones are made using Loaf, a Crumb program that compiles other Crumb programs into standalone binaries by injecting the source of the Crumb program into the Crumb interpreter’s source code, compiling the scripts along with the runtime.
+Both programs are provided as standalone binaries. Rusticon ones are compiled. Crumbicon ones are made using [Loaf](https://github.com/liam-ilan/loaf), a Crumb program that compiles other Crumb programs into standalone binaries by injecting the source of the Crumb program into the Crumb interpreter’s source code, compiling the scripts along with the runtime.
 
 Rusticon works on the trifecta of Mac/Windows/Linux. Crumb is for POSIX-compliant systems only, hence no Windows.
 
