@@ -1,8 +1,8 @@
 use crate::tui_engine::*;
 use crate::AppState;
 
-const X: u16 = 61;
-const Y: u16 = 11;
+static X: u16 = 61;
+static Y: u16 = 11;
 
 pub fn build<'a>() -> Element<'a, AppState> {
     let mut color_candidate: Element<AppState> = Element::new(

@@ -1,8 +1,8 @@
 use crate::tui_engine::*;
 use crate::AppState;
 
-const X: u16 = 74;
-const Y: u16 = 2;
+static X: u16 = 74;
+static Y: u16 = 2;
 
 pub fn build<'a>() -> Element<'a, AppState> {
     let mut button_16: Element<AppState> =

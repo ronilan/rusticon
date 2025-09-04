@@ -1,8 +1,8 @@
 use crate::tui_engine::*;
 use crate::AppState;
 
-const X: u16 = 59;
-const Y: u16 = 2;
+static X: u16 = 59;
+static Y: u16 = 2;
 
 pub fn build<'a>() -> Element<'a, AppState> {
     let mut label_new: Element<AppState> = Element::new(X, Y, Look::from("New:"));

@@ -1,8 +1,8 @@
 use crate::tui_engine::*;
 use crate::AppState;
 
-const X: u16 = 62;
-const Y: u16 = 8;
+static X: u16 = 62;
+static Y: u16 = 8;
 
 pub fn build<'a>() -> Element<'a, AppState> {
     let mut label_color_selected: Element<AppState> = Element::new(X, Y, Look::new());
