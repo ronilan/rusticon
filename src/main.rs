@@ -1,3 +1,4 @@
+mod elements;
 mod event_loop;
 mod export;
 mod import;
@@ -5,7 +6,6 @@ mod message;
 mod rusticon_screen;
 mod splash_screen;
 mod tui_engine;
-mod elements;
 
 use std::{
     env,

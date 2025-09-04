@@ -1,5 +1,5 @@
-use crate::tui_engine::*;
 use crate::elements::{APP_HEIGHT, APP_WIDTH};
+use crate::tui_engine::*;
 use crate::AppState;
 
 // ---------------- Screen ---------------- //
@@ -23,6 +23,6 @@ pub fn build<'a>() -> Element<'a, AppState> {
     screen.on_move = Some(Box::new(|_el, state, _event| {
         state.picker_mode = false;
     }));
-    
+
     screen
 }

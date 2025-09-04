@@ -17,10 +17,10 @@ pub(crate) mod color_picker_empty;
 pub(crate) mod color_picker_gray;
 pub(crate) mod color_picker_palette;
 
-pub(crate) mod label_color_selected;
-pub(crate) mod color_selected;
 pub(crate) mod color_candidate;
+pub(crate) mod color_selected;
 pub(crate) mod label_color_candidate;
+pub(crate) mod label_color_selected;
 
 pub(crate) mod button_16;
 pub(crate) mod button_8;
