@@ -6,7 +6,8 @@ It creates, and then edits svg images that can be used as website favicons (i.e.
 
 It's written in [Rust](https://www.rust-lang.org/).
 
-<p align=center><img src="./media/social.png" alt="banner" width="640"/></p>
+
+<p align=center><img src="./media/social.png" alt="banner" width="640" style="border: 1px solid #999; border-radius: 5px"/></p>
 
 # Install
 
