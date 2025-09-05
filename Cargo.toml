@@ -1,6 +1,6 @@
 [package]
 name = "rusticon"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 
 description = "Rusticon is a mouse driven SVG favicon editor for your terminal."
