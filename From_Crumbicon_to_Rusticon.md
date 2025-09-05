@@ -192,7 +192,7 @@ Crumbicon is 123 KB, Rusticon is 2.6 MB. Note that Rusticon is not optimized for
 
 ## Tooling
 
-Crumb has practically no tooling. There is a syntax highlight extension for VS Code and that’s it. When Crumbicon was originally written, even that did not exist yet.  
+Crumb has practically no tooling. There is a [syntax highlight extension](https://marketplace.visualstudio.com/items?itemName=liamilan.crumb) for VS Code and that’s it. When Crumbicon was originally written, even that did not exist yet.  
 
 Rust, by contrast, has excellent tooling. Working with Cargo and VS Code makes things flow smoothly. And then there are the LLMs.
 
@@ -202,6 +202,6 @@ ChatGPT, and the like, [can't "write" Crumb](https://chatgpt.com/s/t_68b9d9a5189
 
 After completing the Rusticon to Crumbicon port, a similar task was taken on with [Rewordle](https://github.com/ronilan/rewordle), creating a [Rust version of the game](https://github.com/ronilan/rewordle-rust). With both projects successful, it seems that there might be some potential for future developments around the TUI for both languages.
 
-Stay tuned.
+To be continued...
 
 ###### Vancouver, BC, 5 September 2025
