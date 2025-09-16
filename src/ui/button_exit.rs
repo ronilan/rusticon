@@ -1,12 +1,11 @@
 use crate::AppState;
-use little_tui::engine::{mouse_over_base, BaseElement};
 use little_tui::*;
 
 static X: u16 = 67;
 static Y: u16 = 19;
 
-pub fn build<'a>() -> BaseElement<'a, AppState> {
-    let mut button_exit: BaseElement<AppState> = BaseElement::new(
+pub fn build<'a>() -> Element<'a, AppState> {
+    let mut button_exit: Element<AppState> = Element::new(
         Pos::new(X, Y),
         terminal_style::format::underline(Look::from("Exit")),
     );
@@ -17,7 +16,7 @@ pub fn build<'a>() -> BaseElement<'a, AppState> {
         }
     }));
     button_exit.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over_base(el, event) {
+        if mouse_over(el, event) {
             state.exit_flag = true;
         }
     }));

@@ -14,7 +14,7 @@ use std::{
 
 use export::export_svg;
 use import::import_file;
-use little_tui::engine::{run, BaseElements};
+use little_tui::{set, Elements};
 use message::draw_message;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -117,10 +117,10 @@ fn main() {
 
     // Splash screen state
     let splash_state = SplashState { loop_count: 0 };
-    let splash_elements: BaseElements<'_, SplashState> = splash_screen::build();
+    let splash_elements: Elements<'_, SplashState> = splash_screen::build();
 
     // Run splash until result_holder contains Some(...)
-    run(
+    set(
         splash_state,
         splash_elements,
         Some(Duration::from_millis(SPLASH_DELAY_MS)),
@@ -161,8 +161,8 @@ fn main() {
 
             // Run main UI
             //let elements: Elements<'_, AppState> = uix::build_elements();
-            let elements: BaseElements<'_, AppState> = rusticon_screen::build();
-            let final_ui_state = run(ui_state, elements, None, Some(&exit_ui));
+            let elements: Elements<'_, AppState> = rusticon_screen::build();
+            let final_ui_state = set(ui_state, elements, None, Some(&exit_ui));
 
             // Final save if needed
             handle_final_save(&final_ui_state);

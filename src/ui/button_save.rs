@@ -1,12 +1,11 @@
 use crate::AppState;
-use little_tui::engine::{mouse_over_base, BaseElement};
 use little_tui::*;
 
 static X: u16 = 75;
 static Y: u16 = 19;
 
-pub fn build<'a>() -> BaseElement<'a, AppState> {
-    let mut button_save: BaseElement<AppState> = BaseElement::new(
+pub fn build<'a>() -> Element<'a, AppState> {
+    let mut button_save: Element<AppState> = Element::new(
         Pos::new(X, Y),
         terminal_style::format::underline(Look::from("Save")),
     );
@@ -18,7 +17,7 @@ pub fn build<'a>() -> BaseElement<'a, AppState> {
         }
     }));
     button_save.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over_base(el, event) {
+        if mouse_over(el, event) {
             state.save_flag = true;
         }
     }));

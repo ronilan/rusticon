@@ -1,13 +1,12 @@
 use crate::ui::utils::*;
 use crate::AppState;
-use little_tui::engine::{mouse_over_base, BaseElement};
 use little_tui::*;
 
 static X: u16 = 16;
 static Y: u16 = 2;
 
-pub fn build<'a>() -> BaseElement<'a, AppState> {
-    let mut color_picker_gray: BaseElement<AppState> = BaseElement::new(
+pub fn build<'a>() -> Element<'a, AppState> {
+    let mut color_picker_gray: Element<AppState> = Element::new(
         Pos::new(X, Y),
         Look::from(
             (0..12)
@@ -23,7 +22,7 @@ pub fn build<'a>() -> BaseElement<'a, AppState> {
         ),
     );
     color_picker_gray.on_move = Some(Box::new(|el, state, event| {
-        if mouse_over_base(el, event) {
+        if mouse_over(el, event) {
             let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
             let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
             let code = (row * 2 + col + 232) as u8;
@@ -32,7 +31,7 @@ pub fn build<'a>() -> BaseElement<'a, AppState> {
         }
     }));
     color_picker_gray.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over_base(el, event) {
+        if mouse_over(el, event) {
             let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
             let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
             let code = (row * 2 + col + 232) as u8;

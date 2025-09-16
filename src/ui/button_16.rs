@@ -1,18 +1,17 @@
 use crate::AppState;
-use little_tui::engine::{mouse_over_base, BaseElement};
 use little_tui::*;
 
 static X: u16 = 74;
 static Y: u16 = 2;
 
-pub fn build<'a>() -> BaseElement<'a, AppState> {
-    let mut button_16: BaseElement<AppState> = BaseElement::new(
+pub fn build<'a>() -> Element<'a, AppState> {
+    let mut button_16: Element<AppState> = Element::new(
         Pos::new(X, Y),
         terminal_style::format::underline(Look::from("16x16")),
     );
 
     button_16.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over_base(el, event) {
+        if mouse_over(el, event) {
             state.size = 16;
             state.canvas16_data = vec![None; 256];
         }

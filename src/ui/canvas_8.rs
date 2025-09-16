@@ -1,17 +1,16 @@
 use crate::ui::utils::*;
 use crate::AppState;
-use little_tui::engine::{mouse_over_base, BaseElement};
 use little_tui::*;
 
 static X: u16 = 31;
 static Y: u16 = 7;
 
-pub fn build<'a>() -> BaseElement<'a, AppState> {
-    let mut canvas_8: BaseElement<AppState> = BaseElement::new(Pos::new(X, Y), Look::new());
+pub fn build<'a>() -> Element<'a, AppState> {
+    let mut canvas_8: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());
 
     canvas_8.on_click = Some(Box::new(|el, state, event| {
         if state.size == 8 {
-            if mouse_over_base(el, event) {
+            if mouse_over(el, event) {
                 if event.modifiers.contains(&"ctrl".to_string()) {
                     // Handle ctrl-click for color picking
                     let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as usize;

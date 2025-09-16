@@ -1,8 +1,8 @@
 use crate::AppState;
-use little_tui::engine::BaseElements;
+use little_tui::Elements;
 
-pub fn build<'a>() -> BaseElements<'a, AppState> {
-    let elements: BaseElements<AppState> = BaseElements::new();
+pub fn build<'a>() -> Elements<'a, AppState> {
+    let elements: Elements<AppState> = Elements::new();
 
     elements.push(crate::ui::screen::build());
     elements.push(crate::ui::centered_modal::build());

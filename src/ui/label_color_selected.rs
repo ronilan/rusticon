@@ -1,13 +1,11 @@
 use crate::AppState;
-use little_tui::engine::BaseElement;
 use little_tui::*;
 
 static X: u16 = 62;
 static Y: u16 = 8;
 
-pub fn build<'a>() -> BaseElement<'a, AppState> {
-    let mut label_color_selected: BaseElement<AppState> =
-        BaseElement::new(Pos::new(X, Y), Look::new());
+pub fn build<'a>() -> Element<'a, AppState> {
+    let mut label_color_selected: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());
 
     label_color_selected.on_state = Some(Box::new(|el, state| {
         let text = match state.paintbrush {

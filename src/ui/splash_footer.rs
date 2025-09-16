@@ -1,9 +1,8 @@
 use crate::SplashState;
-use little_tui::engine::{draw_base, BaseElement};
 use little_tui::*;
 
-pub fn build<'a>() -> BaseElement<'a, SplashState> {
-    let mut splash_footer = BaseElement::new(Pos::new(0, 0), Look::new());
+pub fn build<'a>() -> Element<'a, SplashState> {
+    let mut splash_footer = Element::new(Pos::new(0, 0), Look::new());
 
     splash_footer.on_state = Some(Box::new(|el, _event| {
         let term_cols = columns();
@@ -19,7 +18,7 @@ pub fn build<'a>() -> BaseElement<'a, SplashState> {
                 Look::from(text),
             )));
 
-        draw_base(el)
+        draw(el)
     }));
 
     splash_footer

@@ -1,18 +1,17 @@
 use crate::AppState;
-use little_tui::engine::{mouse_over_base, BaseElement};
 use little_tui::*;
 
 static X: u16 = 67;
 static Y: u16 = 2;
 
-pub fn build<'a>() -> BaseElement<'a, AppState> {
-    let mut button_8: BaseElement<AppState> = BaseElement::new(
+pub fn build<'a>() -> Element<'a, AppState> {
+    let mut button_8: Element<AppState> = Element::new(
         Pos::new(X, Y),
         terminal_style::format::underline(Look::from("8x8")),
     );
 
     button_8.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over_base(el, event) {
+        if mouse_over(el, event) {
             state.size = 8;
             state.canvas8_data = vec![None; 64];
 
@@ -20,7 +19,7 @@ pub fn build<'a>() -> BaseElement<'a, AppState> {
             // canvas 16 position
             static EX: u16 = 23;
             static EY: u16 = 3;
-            let eraser: BaseElement<AppState> = BaseElement::new(
+            let eraser: Element<AppState> = Element::new(
                 Pos::new(EX, EY),
                 Look::from(vec![vec![" ".to_string(); 32]; 16]),
             );

@@ -32,16 +32,15 @@ pub(crate) mod label_end;
 
 // --- Utility
 use crate::AppState;
-use little_tui::engine::{draw_base, BaseElement};
 use little_tui::*;
 
 pub(crate) static APP_WIDTH: u16 = 80; // Width of the game window
 pub(crate) static APP_HEIGHT: u16 = 24; // Height of the game window
 
-pub(crate) fn draw_relative<S>(el: &BaseElement<S>, x: u16, y: u16, state: &AppState) {
+pub(crate) fn draw_relative<S>(el: &Element<S>, x: u16, y: u16, state: &AppState) {
     if columns() >= APP_WIDTH && rows() >= APP_HEIGHT {
         el.pos.x.set(state.app_x + x);
         el.pos.y.set(state.app_y + y);
-        draw_base(el);
+        draw(el);
     }
 }

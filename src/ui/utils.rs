@@ -1,5 +1,4 @@
 use crate::AppState;
-use little_tui::engine::BaseElement;
 use little_tui::*;
 
 // Palette helpers
@@ -79,7 +78,7 @@ pub(crate) fn flood_fill(
 }
 
 pub(crate) fn canvas_data_from_click(
-    el: &BaseElement<AppState>,
+    el: &Element<AppState>,
     size: usize,
     data: &mut Vec<Option<u8>>,
     paintbrush: Option<u8>,

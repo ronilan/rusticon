@@ -1,12 +1,11 @@
 use crate::AppState;
-use little_tui::engine::BaseElement;
 use little_tui::*;
 
 static X: u16 = 61;
 static Y: u16 = 9;
 
-pub fn build<'a>() -> BaseElement<'a, AppState> {
-    let mut color_selected: BaseElement<AppState> = BaseElement::new(
+pub fn build<'a>() -> Element<'a, AppState> {
+    let mut color_selected: Element<AppState> = Element::new(
         Pos::new(X, Y),
         Look::from(vec![vec![" ".to_string(); 15]; 2]),
     );
