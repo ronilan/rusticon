@@ -1,9 +1,10 @@
-use crate::elements::{APP_HEIGHT, APP_WIDTH};
-use crate::tui_engine::*;
+use crate::ui::{APP_HEIGHT, APP_WIDTH};
 use crate::AppState;
+use little_tui::engine::{draw_base, BaseElement};
+use little_tui::*;
 
-pub fn build<'a>() -> Element<'a, AppState> {
-    let mut centered_modal: Element<AppState> = Element::new(0, 0, Look::new());
+pub fn build<'a>() -> BaseElement<'a, AppState> {
+    let mut centered_modal: BaseElement<AppState> = BaseElement::new(Pos::new(0, 0), Look::new());
 
     centered_modal.on_state = Some(Box::new(|el, _state| {
         let terminal_too_small = columns() < APP_WIDTH || rows() < APP_HEIGHT;
@@ -33,10 +34,10 @@ pub fn build<'a>() -> Element<'a, AppState> {
             }
 
             el.look.update(look_rows);
-            draw(el);
+            draw_base(el);
         } else {
             el.look.update("");
-            draw(el);
+            draw_base(el);
         }
     }));
 

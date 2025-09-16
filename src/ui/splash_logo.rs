@@ -1,5 +1,6 @@
-use crate::tui_engine::*;
 use crate::SplashState;
+use little_tui::engine::{draw_base, BaseElement};
+use little_tui::*;
 
 fn bouncing_text(n: usize) -> String {
     let width = 40;
@@ -33,8 +34,8 @@ fn art_row(n: u8, s: &str) -> String {
     )
 }
 
-pub fn build<'a>() -> Element<'a, SplashState> {
-    let mut splash_logo = Element::new(0, 0, Look::new());
+pub fn build<'a>() -> BaseElement<'a, SplashState> {
+    let mut splash_logo = BaseElement::new(Pos::new(0, 0), Look::new());
 
     splash_logo.on_loop = Some(Box::new(|el, state: &mut SplashState, event| {
         let n = event.loop_count as u16;
@@ -59,10 +60,10 @@ pub fn build<'a>() -> Element<'a, SplashState> {
         ];
 
         el.look.update(Look::from(art));
-        el.x.set(x);
-        el.y.set(y);
+        el.pos.x.set(x);
+        el.pos.y.set(y);
 
-        draw(el);
+        draw_base(el);
 
         state.loop_count = event.loop_count
     }));

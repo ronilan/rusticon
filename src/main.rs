@@ -1,11 +1,9 @@
-mod elements;
-mod event_loop;
 mod export;
 mod import;
 mod message;
 mod rusticon_screen;
 mod splash_screen;
-mod tui_engine;
+mod ui;
 
 use std::{
     env,
@@ -16,8 +14,8 @@ use std::{
 
 use export::export_svg;
 use import::import_file;
+use little_tui::engine::{run, BaseElements};
 use message::draw_message;
-use tui_engine::{run, Elements};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct SplashState {
@@ -119,7 +117,7 @@ fn main() {
 
     // Splash screen state
     let splash_state = SplashState { loop_count: 0 };
-    let splash_elements: Elements<'_, SplashState> = splash_screen::build();
+    let splash_elements: BaseElements<'_, SplashState> = splash_screen::build();
 
     // Run splash until result_holder contains Some(...)
     run(
@@ -163,7 +161,7 @@ fn main() {
 
             // Run main UI
             //let elements: Elements<'_, AppState> = uix::build_elements();
-            let elements: Elements<'_, AppState> = rusticon_screen::build();
+            let elements: BaseElements<'_, AppState> = rusticon_screen::build();
             let final_ui_state = run(ui_state, elements, None, Some(&exit_ui));
 
             // Final save if needed

@@ -1,5 +1,6 @@
-use crate::tui_engine::*;
 use crate::AppState;
+use little_tui::engine::BaseElement;
+use little_tui::*;
 
 // Palette helpers
 pub(crate) fn ideal_palette_index(curr: usize, palette: &Vec<Option<u8>>) -> usize {
@@ -78,7 +79,7 @@ pub(crate) fn flood_fill(
 }
 
 pub(crate) fn canvas_data_from_click(
-    el: &Element<AppState>,
+    el: &BaseElement<AppState>,
     size: usize,
     data: &mut Vec<Option<u8>>,
     paintbrush: Option<u8>,
@@ -86,8 +87,8 @@ pub(crate) fn canvas_data_from_click(
     mouse_y: u16,
     fill: bool,
 ) {
-    let row = mouse_y.saturating_sub(el.y.get()) as usize;
-    let col = mouse_x.saturating_sub(el.x.get()) as usize / 2;
+    let row = mouse_y.saturating_sub(el.pos.y.get()) as usize;
+    let col = mouse_x.saturating_sub(el.pos.x.get()) as usize / 2;
     if row < size && col < size {
         if fill {
             // Flood fill starting at (row, col)

@@ -1,12 +1,13 @@
-use crate::elements::{APP_HEIGHT, APP_WIDTH};
-use crate::tui_engine::*;
+use crate::ui::{APP_HEIGHT, APP_WIDTH};
 use crate::AppState;
+use little_tui::engine::BaseElement;
+use little_tui::*;
 
 // ---------------- Screen ---------------- //
 // utility element with no visible look.
 // clears screen on resize, "mouse out" of pickers.
-pub fn build<'a>() -> Element<'a, AppState> {
-    let mut screen: Element<AppState> = Element::new(0, 0, Look::new());
+pub fn build<'a>() -> BaseElement<'a, AppState> {
+    let mut screen: BaseElement<AppState> = BaseElement::new(Pos::new(0, 0), Look::new());
 
     screen.on_loop = Some(Box::new(|_el, state, _event| {
         let x = columns().saturating_sub(APP_WIDTH) / 2;

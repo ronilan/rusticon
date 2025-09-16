@@ -1,8 +1,9 @@
-use crate::tui_engine::*;
 use crate::AppState;
+use little_tui::engine::{draw_base, BaseElement};
+use little_tui::*;
 
-pub fn build<'a>() -> Element<'a, AppState> {
-    let mut title_bar: Element<AppState> = Element::new(0, 0, Look::new());
+pub fn build<'a>() -> BaseElement<'a, AppState> {
+    let mut title_bar: BaseElement<AppState> = BaseElement::new(Pos::new(0, 0), Look::new());
 
     title_bar.on_state = Some(Box::new(move |el, state| {
         let cols = crossterm::terminal::size().unwrap().0 as usize;
@@ -16,7 +17,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
 
         el.look
             .update(vec![vec![terminal_style::format::inverse(&line)]]);
-        draw(el);
+        draw_base(el);
     }));
 
     title_bar

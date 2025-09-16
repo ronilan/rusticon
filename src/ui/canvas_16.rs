@@ -1,20 +1,21 @@
-use crate::elements::utils::*;
-use crate::tui_engine::*;
+use crate::ui::utils::*;
 use crate::AppState;
+use little_tui::engine::{mouse_over_base, BaseElement};
+use little_tui::*;
 
 static X: u16 = 23;
 static Y: u16 = 3;
 
-pub fn build<'a>() -> Element<'a, AppState> {
-    let mut canvas_16: Element<AppState> = Element::new(0, 0, Look::new());
+pub fn build<'a>() -> BaseElement<'a, AppState> {
+    let mut canvas_16: BaseElement<AppState> = BaseElement::new(Pos::new(X, Y), Look::new());
 
     canvas_16.on_click = Some(Box::new(|el, state, event| {
         if state.size == 16 {
-            if mouse_over(el, event) {
+            if mouse_over_base(el, event) {
                 if event.modifiers.contains(&"ctrl".to_string()) {
                     // Handle ctrl-click for color picking
-                    let row = event.y.unwrap().saturating_sub(el.y.get()) as usize;
-                    let col = event.x.unwrap().saturating_sub(el.x.get()) as usize / 2;
+                    let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as usize;
+                    let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as usize / 2;
                     if row < 16 && col < 16 {
                         state.paintbrush = state.canvas16_data[row * 16 + col];
                         state.candidate = state.paintbrush;
@@ -26,8 +27,8 @@ pub fn build<'a>() -> Element<'a, AppState> {
                         16,
                         &mut state.canvas16_data,
                         state.paintbrush,
-                        event.x.unwrap(),
-                        event.y.unwrap(),
+                        event.pos.x.get(),
+                        event.pos.y.get(),
                         event.modifiers.contains(&"shift".to_string()),
                     );
                 }
@@ -35,7 +36,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
 
             let look = canvas_look_from_data(16, &state.canvas16_data);
             el.look.update(look);
-            crate::elements::draw_relative(el, X, Y, state);
+            crate::ui::draw_relative(el, X, Y, state);
         }
     }));
     canvas_16.on_state = Some(Box::new(|el, state| {
@@ -43,7 +44,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
             let look = canvas_look_from_data(16, &state.canvas16_data);
             el.look.update(look);
 
-            crate::elements::draw_relative(el, X, Y, state);
+            crate::ui::draw_relative(el, X, Y, state);
         }
     }));
 

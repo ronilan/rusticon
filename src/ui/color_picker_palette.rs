@@ -1,11 +1,12 @@
-use crate::tui_engine::*;
 use crate::AppState;
+use little_tui::engine::{mouse_over_base, BaseElement};
+use little_tui::*;
 
 static X: u16 = 23;
 static Y: u16 = 21;
 
-pub fn build<'a>() -> Element<'a, AppState> {
-    let mut color_picker_palette: Element<AppState> = Element::new(X, Y, {
+pub fn build<'a>() -> BaseElement<'a, AppState> {
+    let mut color_picker_palette: BaseElement<AppState> = BaseElement::new(Pos::new(X, Y), {
         let row: Vec<String> = (0..32)
             .map(|index| {
                 if index % 4 == 1 || index % 4 == 2 {
@@ -19,8 +20,8 @@ pub fn build<'a>() -> Element<'a, AppState> {
     });
 
     color_picker_palette.on_move = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            let col_rel = event.x.unwrap().saturating_sub(el.x.get()) as usize;
+        if mouse_over_base(el, event) {
+            let col_rel = event.pos.x.get().saturating_sub(el.pos.x.get()) as usize;
             let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
                 col_rel / 4
             } else {
@@ -34,8 +35,8 @@ pub fn build<'a>() -> Element<'a, AppState> {
         }
     }));
     color_picker_palette.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            let col_rel = event.x.unwrap().saturating_sub(el.x.get()) as usize;
+        if mouse_over_base(el, event) {
+            let col_rel = event.pos.x.get().saturating_sub(el.pos.x.get()) as usize;
             let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
                 col_rel / 4
             } else {
@@ -79,7 +80,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
 
         el.look.update(look);
 
-        crate::elements::draw_relative(el, X, Y, state);
+        crate::ui::draw_relative(el, X, Y, state);
     }));
 
     color_picker_palette

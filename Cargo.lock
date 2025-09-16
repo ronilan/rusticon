@@ -609,6 +609,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f5e54036fe321fd421e10d732f155734c4e4afd610dd556d9a82833ab3ee0bed"
 
 [[package]]
+name = "little_tui"
+version = "0.1.0"
+dependencies = [
+ "crossterm",
+ "futures",
+ "futures-timer",
+ "terminal_style",
+]
+
+[[package]]
+name = "little_tui_macros"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "lock_api"
 version = "0.4.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1005,6 +1024,8 @@ dependencies = [
  "futures",
  "futures-timer",
  "image",
+ "little_tui",
+ "little_tui_macros",
  "terminal_style",
 ]
 

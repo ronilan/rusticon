@@ -1,14 +1,14 @@
-use crate::elements::utils::*;
-use crate::tui_engine::*;
+use crate::ui::utils::*;
 use crate::AppState;
+use little_tui::engine::{mouse_over_base, BaseElement};
+use little_tui::*;
 
 static X: u16 = 3;
 static Y: u16 = 2;
 
-pub fn build<'a>() -> Element<'a, AppState> {
-    let mut color_picker_216: Element<AppState> = Element::new(
-        X,
-        Y,
+pub fn build<'a>() -> BaseElement<'a, AppState> {
+    let mut color_picker_216: BaseElement<AppState> = BaseElement::new(
+        Pos::new(X, Y),
         Look::from(
             (0..18)
                 .map(|row| {
@@ -24,18 +24,18 @@ pub fn build<'a>() -> Element<'a, AppState> {
         ),
     );
     color_picker_216.on_move = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            let row = event.y.unwrap().saturating_sub(el.y.get()) as u8;
-            let col = event.x.unwrap().saturating_sub(el.x.get()) as u8;
+        if mouse_over_base(el, event) {
+            let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
+            let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
             let code = row * 12 + col + 16;
             state.candidate = Some(code);
             state.picker_mode = true;
         }
     }));
     color_picker_216.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            let row = event.y.unwrap().saturating_sub(el.y.get()) as u8;
-            let col = event.x.unwrap().saturating_sub(el.x.get()) as u8;
+        if mouse_over_base(el, event) {
+            let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
+            let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
             let code = row * 12 + col + 16;
             state.paintbrush = Some(code);
             state.candidate = Some(code);
@@ -43,7 +43,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
         }
     }));
     color_picker_216.on_state = Some(Box::new(|el, state| {
-        crate::elements::draw_relative(el, X, Y, state);
+        crate::ui::draw_relative(el, X, Y, state);
     }));
 
     color_picker_216

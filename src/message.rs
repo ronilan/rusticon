@@ -1,6 +1,6 @@
 use terminal_style::format::{bold, color};
 
-use crate::tui_engine::{columns, draw, rows, Element, Look};
+use little_tui::{columns, draw, rows, Element, Look, Pos};
 
 /// Draws a full-screen message centered in the terminal
 pub fn draw_message(msg: &str, color_code: u8) {
@@ -29,6 +29,6 @@ pub fn draw_message(msg: &str, color_code: u8) {
     let look = bold(color(color_code, Look::from(screen)).unwrap());
 
     // Draw element
-    let mut el: Element<'_, ()> = Element::new(0, 0, look);
+    let mut el: Element<'_, ()> = Element::new(Pos::new(0, 0), look);
     draw(&mut el);
 }

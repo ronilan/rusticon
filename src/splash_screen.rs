@@ -1,11 +1,11 @@
-use crate::tui_engine::*;
 use crate::SplashState;
+use little_tui::engine::BaseElements;
 
-pub fn build<'a>() -> Elements<'a, SplashState> {
-    let elements: Elements<SplashState> = Elements::new();
+pub fn build<'a>() -> BaseElements<'a, SplashState> {
+    let elements: BaseElements<SplashState> = BaseElements::new();
 
-    elements.push(crate::elements::splash_logo::build());
-    elements.push(crate::elements::splash_footer::build());
+    elements.push(crate::ui::splash_logo::build());
+    elements.push(crate::ui::splash_footer::build());
 
     elements
 }

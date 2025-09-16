@@ -1,12 +1,15 @@
-use crate::tui_engine::*;
 use crate::AppState;
+use little_tui::engine::BaseElement;
+use little_tui::*;
 
 static X: u16 = 61;
 static Y: u16 = 11;
 
-pub fn build<'a>() -> Element<'a, AppState> {
-    let mut color_candidate: Element<AppState> =
-        Element::new(X, Y, Look::from(vec![vec![" ".to_string(); 15]; 2]));
+pub fn build<'a>() -> BaseElement<'a, AppState> {
+    let mut color_candidate: BaseElement<AppState> = BaseElement::new(
+        Pos::new(X, Y),
+        Look::from(vec![vec![" ".to_string(); 15]; 2]),
+    );
 
     color_candidate.on_state = Some(Box::new(|el, state| {
         let look = Look::from(vec![vec![" ".to_string(); 15]; 2]);
@@ -24,7 +27,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
             el.look.update(look);
         }
 
-        crate::elements::draw_relative(el, X, Y, state);
+        crate::ui::draw_relative(el, X, Y, state);
     }));
 
     color_candidate
