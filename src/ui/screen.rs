@@ -8,7 +8,7 @@ use little_tui::*;
 pub fn build<'a>() -> Element<'a, AppState> {
     let mut screen: Element<AppState> = Element::new(Pos::new(0, 0), Look::new());
 
-    screen.on_loop = Some(Box::new(|_el, state, _event| {
+    screen.listener.on_loop = Some(Box::new(|_el, state, _event| {
         let x = columns().saturating_sub(APP_WIDTH) / 2;
         let y = rows().saturating_sub(APP_HEIGHT) / 2;
 
@@ -20,7 +20,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
             state.app_y = y;
         }
     }));
-    screen.on_move = Some(Box::new(|_el, state, _event| {
+    screen.listener.on_move = Some(Box::new(|_el, state, _event| {
         state.picker_mode = false;
     }));
 

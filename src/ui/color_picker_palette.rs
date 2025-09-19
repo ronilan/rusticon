@@ -18,7 +18,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
         Look::from(vec![row])
     });
 
-    color_picker_palette.on_move = Some(Box::new(|el, state, event| {
+    color_picker_palette.listener.on_move = Some(Box::new(|el, state, event| {
         if mouse_over(el, event) {
             let col_rel = event.pos.x.get().saturating_sub(el.pos.x.get()) as usize;
             let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
@@ -33,7 +33,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
             }
         }
     }));
-    color_picker_palette.on_click = Some(Box::new(|el, state, event| {
+    color_picker_palette.listener.on_click = Some(Box::new(|el, state, event| {
         if mouse_over(el, event) {
             let col_rel = event.pos.x.get().saturating_sub(el.pos.x.get()) as usize;
             let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
@@ -48,7 +48,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
             }
         }
     }));
-    color_picker_palette.on_state = Some(Box::new(|el, state| {
+    color_picker_palette.listener.on_state = Some(Box::new(|el, state| {
         let pl = state.palette_index;
         let pll = &state.palette_colors;
 

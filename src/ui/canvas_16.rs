@@ -8,7 +8,7 @@ static Y: u16 = 3;
 pub fn build<'a>() -> Element<'a, AppState> {
     let mut canvas_16: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());
 
-    canvas_16.on_click = Some(Box::new(|el, state, event| {
+    canvas_16.listener.on_click = Some(Box::new(|el, state, event| {
         if state.size == 16 {
             if mouse_over(el, event) {
                 if event.modifiers.contains(&"ctrl".to_string()) {
@@ -38,7 +38,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
             crate::ui::draw_relative(el, X, Y, state);
         }
     }));
-    canvas_16.on_state = Some(Box::new(|el, state| {
+    canvas_16.listener.on_state = Some(Box::new(|el, state| {
         if state.size == 16 {
             let look = canvas_look_from_data(16, &state.canvas16_data);
             el.look.update(look);

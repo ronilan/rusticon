@@ -10,7 +10,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
         terminal_style::format::underline(Look::from("8x8")),
     );
 
-    button_8.on_click = Some(Box::new(|el, state, event| {
+    button_8.listener.on_click = Some(Box::new(|el, state, event| {
         if mouse_over(el, event) {
             state.size = 8;
             state.canvas8_data = vec![None; 64];
@@ -26,7 +26,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
             crate::ui::draw_relative(&eraser, EX, EY, state);
         }
     }));
-    button_8.on_state = Some(Box::new(|el, state| {
+    button_8.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);
     }));
 

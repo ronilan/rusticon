@@ -10,7 +10,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
         Look::from(vec![vec![" ".to_string(); 15]; 2]),
     );
 
-    color_selected.on_state = Some(Box::new(|el, state| {
+    color_selected.listener.on_state = Some(Box::new(|el, state| {
         let look = Look::from(vec![vec![" ".to_string(); 15]; 2]);
 
         if let Some(pb) = state.paintbrush {

@@ -7,7 +7,7 @@ static Y: u16 = 2;
 pub fn build<'a>() -> Element<'a, AppState> {
     let mut label_new: Element<AppState> = Element::new(Pos::new(X, Y), Look::from("New:"));
 
-    label_new.on_state = Some(Box::new(|el, state| {
+    label_new.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);
     }));
 

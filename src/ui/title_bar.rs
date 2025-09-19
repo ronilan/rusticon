@@ -4,7 +4,7 @@ use little_tui::*;
 pub fn build<'a>() -> Element<'a, AppState> {
     let mut title_bar: Element<AppState> = Element::new(Pos::new(0, 0), Look::new());
 
-    title_bar.on_state = Some(Box::new(move |el, state| {
+    title_bar.listener.on_state = Some(Box::new(move |el, state| {
         let cols = crossterm::terminal::size().unwrap().0 as usize;
 
         let mut line = " ".repeat(cols);

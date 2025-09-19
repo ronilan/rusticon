@@ -10,18 +10,18 @@ pub fn build<'a>() -> Element<'a, AppState> {
         terminal_style::format::underline(Look::from("Save")),
     );
 
-    button_save.on_loop = Some(Box::new(|_el, state, _event| {
+    button_save.listener.on_loop = Some(Box::new(|_el, state, _event| {
         if state.save_flag {
             // wait till next loop to exit
             state.exit_flag = true;
         }
     }));
-    button_save.on_click = Some(Box::new(|el, state, event| {
+    button_save.listener.on_click = Some(Box::new(|el, state, event| {
         if mouse_over(el, event) {
             state.save_flag = true;
         }
     }));
-    button_save.on_state = Some(Box::new(|el, state| {
+    button_save.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);
     }));
 

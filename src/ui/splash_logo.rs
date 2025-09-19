@@ -36,7 +36,7 @@ fn art_row(n: u8, s: &str) -> String {
 pub fn build<'a>() -> Element<'a, SplashState> {
     let mut splash_logo = Element::new(Pos::new(0, 0), Look::new());
 
-    splash_logo.on_loop = Some(Box::new(|el, state: &mut SplashState, event| {
+    splash_logo.listener.on_loop = Some(Box::new(|el, state: &mut SplashState, event| {
         let n = event.loop_count as u16;
 
         let term_cols = columns();

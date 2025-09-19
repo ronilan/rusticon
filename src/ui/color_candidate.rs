@@ -10,7 +10,7 @@ pub fn build<'a>() -> Element<'a, AppState> {
         Look::from(vec![vec![" ".to_string(); 15]; 2]),
     );
 
-    color_candidate.on_state = Some(Box::new(|el, state| {
+    color_candidate.listener.on_state = Some(Box::new(|el, state| {
         let look = Look::from(vec![vec![" ".to_string(); 15]; 2]);
 
         let color_source = if state.picker_mode {
