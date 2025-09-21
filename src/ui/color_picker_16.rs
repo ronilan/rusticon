@@ -27,27 +27,23 @@ pub fn build<'a>() -> Element<'a, AppState> {
     );
 
     color_picker_16.listener.on_move = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
-            let ansi_code: u8 =
-                terminal_style::color::rgb_to_ansi8(terminal_style::color::ansi8_to_rgb(row))
-                    .try_into()
-                    .unwrap();
-            state.candidate = Some(ansi_code);
-            state.picker_mode = true;
-        }
+        let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
+        let ansi_code: u8 =
+            terminal_style::color::rgb_to_ansi8(terminal_style::color::ansi8_to_rgb(row))
+                .try_into()
+                .unwrap();
+        state.candidate = Some(ansi_code);
+        state.picker_mode = true;
     }));
     color_picker_16.listener.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
-            let ansi_code: u8 =
-                terminal_style::color::rgb_to_ansi8(terminal_style::color::ansi8_to_rgb(row))
-                    .try_into()
-                    .unwrap();
-            state.paintbrush = Some(ansi_code);
-            state.candidate = Some(ansi_code);
-            set_palette_in_state(state, state.candidate);
-        }
+        let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
+        let ansi_code: u8 =
+            terminal_style::color::rgb_to_ansi8(terminal_style::color::ansi8_to_rgb(row))
+                .try_into()
+                .unwrap();
+        state.paintbrush = Some(ansi_code);
+        state.candidate = Some(ansi_code);
+        set_palette_in_state(state, state.candidate);
     }));
     color_picker_16.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);

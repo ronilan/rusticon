@@ -10,21 +10,19 @@ pub fn build<'a>() -> Element<'a, AppState> {
         terminal_style::format::underline(Look::from("8x8")),
     );
 
-    button_8.listener.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            state.size = 8;
-            state.canvas8_data = vec![None; 64];
+    button_8.listener.on_click = Some(Box::new(|_el, state, _event| {
+        state.size = 8;
+        state.canvas8_data = vec![None; 64];
 
-            // erase the 16x16 area
-            // canvas 16 position
-            static EX: u16 = 23;
-            static EY: u16 = 3;
-            let eraser: Element<AppState> = Element::new(
-                Pos::new(EX, EY),
-                Look::from(vec![vec![" ".to_string(); 32]; 16]),
-            );
-            crate::ui::draw_relative(&eraser, EX, EY, state);
-        }
+        // erase the 16x16 area
+        // canvas 16 position
+        static EX: u16 = 23;
+        static EY: u16 = 3;
+        let eraser: Element<AppState> = Element::new(
+            Pos::new(EX, EY),
+            Look::from(vec![vec![" ".to_string(); 32]; 16]),
+        );
+        crate::ui::draw_relative(&eraser, EX, EY, state);
     }));
     button_8.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);

@@ -14,18 +14,14 @@ pub fn build<'a>() -> Element<'a, AppState> {
         ]),
     );
 
-    color_picker_empty.listener.on_move = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            state.candidate = None;
-            state.picker_mode = true;
-        }
+    color_picker_empty.listener.on_move = Some(Box::new(|_el, state, _event| {
+        state.candidate = None;
+        state.picker_mode = true;
     }));
-    color_picker_empty.listener.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            state.paintbrush = None;
-            state.candidate = None;
-            set_palette_in_state(state, state.candidate);
-        }
+    color_picker_empty.listener.on_click = Some(Box::new(|_el, state, _event| {
+        state.paintbrush = None;
+        state.candidate = None;
+        set_palette_in_state(state, state.candidate);
     }));
     color_picker_empty.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);

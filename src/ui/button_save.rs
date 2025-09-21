@@ -16,10 +16,8 @@ pub fn build<'a>() -> Element<'a, AppState> {
             state.exit_flag = true;
         }
     }));
-    button_save.listener.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            state.save_flag = true;
-        }
+    button_save.listener.on_click = Some(Box::new(|_el, state, _event| {
+        state.save_flag = true;
     }));
     button_save.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);

@@ -23,23 +23,19 @@ pub fn build<'a>() -> Element<'a, AppState> {
         ),
     );
     color_picker_216.listener.on_move = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
-            let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
-            let code = row * 12 + col + 16;
-            state.candidate = Some(code);
-            state.picker_mode = true;
-        }
+        let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
+        let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
+        let code = row * 12 + col + 16;
+        state.candidate = Some(code);
+        state.picker_mode = true;
     }));
     color_picker_216.listener.on_click = Some(Box::new(|el, state, event| {
-        if mouse_over(el, event) {
-            let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
-            let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
-            let code = row * 12 + col + 16;
-            state.paintbrush = Some(code);
-            state.candidate = Some(code);
-            set_palette_in_state(state, state.candidate);
-        }
+        let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
+        let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
+        let code = row * 12 + col + 16;
+        state.paintbrush = Some(code);
+        state.candidate = Some(code);
+        set_palette_in_state(state, state.candidate);
     }));
     color_picker_216.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);
