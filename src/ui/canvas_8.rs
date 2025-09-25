@@ -5,7 +5,7 @@ use little_tui::*;
 static X: u16 = 31;
 static Y: u16 = 7;
 
-pub fn build<'a>() -> Element<'a, AppState> {
+pub fn build<'a>() -> Element<AppState> {
     let mut canvas_8: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());
 
     canvas_8.listener.on_click = Some(Box::new(|el, state, event| {

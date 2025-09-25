@@ -5,7 +5,7 @@ use little_tui::*;
 static X: u16 = 16;
 static Y: u16 = 18;
 
-pub fn build<'a>() -> Element<'a, AppState> {
+pub fn build<'a>() -> Element<AppState> {
     let mut color_picker_empty: Element<AppState> = Element::new(
         Pos::new(X, Y),
         Look::from(vec![

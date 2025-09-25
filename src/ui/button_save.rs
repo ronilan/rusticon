@@ -4,7 +4,7 @@ use little_tui::*;
 static X: u16 = 75;
 static Y: u16 = 19;
 
-pub fn build<'a>() -> Element<'a, AppState> {
+pub fn build<'a>() -> Element<AppState> {
     let mut button_save: Element<AppState> = Element::new(
         Pos::new(X, Y),
         terminal_style::format::underline(Look::from("Save")),

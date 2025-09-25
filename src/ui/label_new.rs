@@ -4,7 +4,7 @@ use little_tui::*;
 static X: u16 = 59;
 static Y: u16 = 2;
 
-pub fn build<'a>() -> Element<'a, AppState> {
+pub fn build<'a>() -> Element<AppState> {
     let mut label_new: Element<AppState> = Element::new(Pos::new(X, Y), Look::from("New:"));
 
     label_new.listener.on_state = Some(Box::new(|el, state| {

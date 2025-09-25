@@ -4,7 +4,7 @@ use little_tui::*;
 static X: u16 = 23;
 static Y: u16 = 21;
 
-pub fn build<'a>() -> Element<'a, AppState> {
+pub fn build<'a>() -> Element<AppState> {
     let mut color_picker_palette: Element<AppState> = Element::new(Pos::new(X, Y), {
         let row: Vec<String> = (0..32)
             .map(|index| {

@@ -29,6 +29,6 @@ pub fn draw_message(msg: &str, color_code: u8) {
     let look = bold(color(color_code, Look::from(screen)).unwrap());
 
     // Draw element
-    let mut el: Element<'_, ()> = Element::new(Pos::new(0, 0), look);
+    let mut el: Element<()> = Element::new(Pos::new(0, 0), look);
     draw(&mut el);
 }

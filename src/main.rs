@@ -117,7 +117,7 @@ fn main() {
 
     // Splash screen state
     let splash_state = SplashState { loop_count: 0 };
-    let splash_elements: Elements<'_, SplashState> = splash_screen::build();
+    let splash_elements: Elements<SplashState> = splash_screen::build();
 
     // Run splash until result_holder contains Some(...)
     set(
@@ -161,7 +161,7 @@ fn main() {
 
             // Run main UI
             //let elements: Elements<'_, AppState> = uix::build_elements();
-            let elements: Elements<'_, AppState> = rusticon_screen::build();
+            let elements: Elements<AppState> = rusticon_screen::build();
             let final_ui_state = set(ui_state, elements, None, Some(&exit_ui));
 
             // Final save if needed

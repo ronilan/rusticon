@@ -1,7 +1,7 @@
 use crate::SplashState;
 use little_tui::Elements;
 
-pub fn build<'a>() -> Elements<'a, SplashState> {
+pub fn build<'a>() -> Elements<SplashState> {
     let elements: Elements<SplashState> = Elements::new();
 
     elements.push(crate::ui::splash_logo::build());
