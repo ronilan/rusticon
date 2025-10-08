@@ -1,8 +1,8 @@
 use crate::AppState;
 use little_tui::*;
 
-static X: u16 = 62;
-static Y: u16 = 13;
+static X: i16 = 62;
+static Y: i16 = 13;
 
 pub fn build<'a>() -> Element<AppState> {
     let mut label_color_candidate: Element<AppState> =

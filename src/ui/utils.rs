@@ -82,8 +82,8 @@ pub(crate) fn canvas_data_from_click(
     size: usize,
     data: &mut Vec<Option<u8>>,
     paintbrush: Option<u8>,
-    mouse_x: u16,
-    mouse_y: u16,
+    mouse_x: i16,
+    mouse_y: i16,
     fill: bool,
 ) {
     let row = mouse_y.saturating_sub(el.pos.y.get()) as usize;

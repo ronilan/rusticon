@@ -1,8 +1,8 @@
 use crate::AppState;
 use little_tui::*;
 
-static X: u16 = 67;
-static Y: u16 = 19;
+static X: i16 = 67;
+static Y: i16 = 19;
 
 pub fn build<'a>() -> Element<AppState> {
     let mut button_exit: Element<AppState> = Element::new(
@@ -11,7 +11,7 @@ pub fn build<'a>() -> Element<AppState> {
     );
 
     button_exit.listener.on_keypress = Some(Box::new(|_el, state, event| {
-        if event.key == Some("c".to_string()) && event.modifiers.contains(&"ctrl".to_string()) {
+        if event.key == "c" && event.modifiers.contains(&"ctrl".to_string()) {
             state.exit_flag = true;
         }
     }));

@@ -2,8 +2,8 @@ use crate::ui::utils::*;
 use crate::AppState;
 use little_tui::*;
 
-static X: u16 = 31;
-static Y: u16 = 7;
+static X: i16 = 31;
+static Y: i16 = 7;
 
 pub fn build<'a>() -> Element<AppState> {
     let mut canvas_8: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());

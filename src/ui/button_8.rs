@@ -1,8 +1,8 @@
 use crate::AppState;
 use little_tui::*;
 
-static X: u16 = 67;
-static Y: u16 = 2;
+static X: i16 = 67;
+static Y: i16 = 2;
 
 pub fn build<'a>() -> Element<AppState> {
     let mut button_8: Element<AppState> = Element::new(
@@ -16,8 +16,8 @@ pub fn build<'a>() -> Element<AppState> {
 
         // erase the 16x16 area
         // canvas 16 position
-        static EX: u16 = 23;
-        static EY: u16 = 3;
+        static EX: i16 = 23;
+        static EY: i16 = 3;
         let eraser: Element<AppState> = Element::new(
             Pos::new(EX, EY),
             Look::from(vec![vec![" ".to_string(); 32]; 16]),

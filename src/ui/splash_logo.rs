@@ -44,8 +44,8 @@ pub fn build<'a>() -> Element<SplashState> {
         let art_width = 39;
         let art_height = 6;
 
-        let x = (term_cols.saturating_sub(art_width)) / 2;
-        let y = (term_rows.saturating_sub(art_height)) / 2;
+        let x = ((term_cols.saturating_sub(art_width)) / 2) as i16;
+        let y = ((term_rows.saturating_sub(art_height)) / 2) as i16;
 
         #[rustfmt::skip]
         let art = vec![
