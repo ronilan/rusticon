@@ -19,7 +19,7 @@ pub fn build<'a>() -> Element<AppState> {
     });
 
     color_picker_palette.listener.on_move = Some(Box::new(|el, state, event| {
-        let col_rel = event.pos.x.get().saturating_sub(el.pos.x.get()) as usize;
+        let col_rel = event.coords.x.get().saturating_sub(el.pos.x.get()) as usize;
         let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
             col_rel / 4
         } else {
@@ -32,7 +32,7 @@ pub fn build<'a>() -> Element<AppState> {
         }
     }));
     color_picker_palette.listener.on_click = Some(Box::new(|el, state, event| {
-        let col_rel = event.pos.x.get().saturating_sub(el.pos.x.get()) as usize;
+        let col_rel = event.coords.x.get().saturating_sub(el.pos.x.get()) as usize;
         let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
             col_rel / 4
         } else {

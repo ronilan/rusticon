@@ -23,15 +23,15 @@ pub fn build<'a>() -> Element<AppState> {
         ),
     );
     color_picker_216.listener.on_move = Some(Box::new(|el, state, event| {
-        let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
-        let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
+        let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as u8;
+        let col = event.coords.x.get().saturating_sub(el.pos.x.get()) as u8;
         let code = row * 12 + col + 16;
         state.candidate = Some(code);
         state.picker_mode = true;
     }));
     color_picker_216.listener.on_click = Some(Box::new(|el, state, event| {
-        let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
-        let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as u8;
+        let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as u8;
+        let col = event.coords.x.get().saturating_sub(el.pos.x.get()) as u8;
         let code = row * 12 + col + 16;
         state.paintbrush = Some(code);
         state.candidate = Some(code);

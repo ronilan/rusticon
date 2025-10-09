@@ -12,8 +12,8 @@ pub fn build<'a>() -> Element<AppState> {
         if state.size == 16 {
             if event.modifiers.contains(&"ctrl".to_string()) {
                 // Handle ctrl-click for color picking
-                let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as usize;
-                let col = event.pos.x.get().saturating_sub(el.pos.x.get()) as usize / 2;
+                let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as usize;
+                let col = event.coords.x.get().saturating_sub(el.pos.x.get()) as usize / 2;
                 if row < 16 && col < 16 {
                     state.paintbrush = state.canvas16_data[row * 16 + col];
                     state.candidate = state.paintbrush;
@@ -25,8 +25,8 @@ pub fn build<'a>() -> Element<AppState> {
                     16,
                     &mut state.canvas16_data,
                     state.paintbrush,
-                    event.pos.x.get(),
-                    event.pos.y.get(),
+                    event.coords.x.get(),
+                    event.coords.y.get(),
                     event.modifiers.contains(&"shift".to_string()),
                 );
             }

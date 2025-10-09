@@ -27,7 +27,7 @@ pub fn build<'a>() -> Element<AppState> {
     );
 
     color_picker_16.listener.on_move = Some(Box::new(|el, state, event| {
-        let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
+        let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as u8;
         let ansi_code: u8 =
             terminal_style::color::rgb_to_ansi8(terminal_style::color::ansi8_to_rgb(row))
                 .try_into()
@@ -36,7 +36,7 @@ pub fn build<'a>() -> Element<AppState> {
         state.picker_mode = true;
     }));
     color_picker_16.listener.on_click = Some(Box::new(|el, state, event| {
-        let row = event.pos.y.get().saturating_sub(el.pos.y.get()) as u8;
+        let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as u8;
         let ansi_code: u8 =
             terminal_style::color::rgb_to_ansi8(terminal_style::color::ansi8_to_rgb(row))
                 .try_into()
