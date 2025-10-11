@@ -2,7 +2,7 @@ use crate::ui::{APP_HEIGHT, APP_WIDTH};
 use crate::AppState;
 use little_tui::*;
 
-pub fn build<'a>() -> Element<AppState> {
+pub fn build() -> Element<AppState> {
     let mut centered_modal: Element<AppState> = Element::new(Pos::new(0, 0), Look::new());
 
     centered_modal.listener.on_state = Some(Box::new(|el, _state| {

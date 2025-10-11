@@ -18,7 +18,7 @@ pub fn build<'a>() -> Element<AppState> {
         Look::from(vec![row])
     });
 
-    color_picker_palette.listener.on_move = Some(Box::new(|el, state, event| {
+    color_picker_palette.listener.on_mouse = Some(Box::new(|el, state, event| {
         let col_rel = event.coords.x.get().saturating_sub(el.pos.x.get()) as usize;
         let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
             col_rel / 4
@@ -26,22 +26,17 @@ pub fn build<'a>() -> Element<AppState> {
             state.palette_index
         };
 
-        if selected < state.palette_colors.len() {
-            state.candidate = state.palette_colors[selected];
-            state.picker_mode = true;
+        if event.kind == "click" {
+            if selected < state.palette_colors.len() {
+                state.paintbrush = state.palette_colors[selected];
+                state.palette_index = selected;
+            }
         }
-    }));
-    color_picker_palette.listener.on_click = Some(Box::new(|el, state, event| {
-        let col_rel = event.coords.x.get().saturating_sub(el.pos.x.get()) as usize;
-        let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
-            col_rel / 4
-        } else {
-            state.palette_index
-        };
-
-        if selected < state.palette_colors.len() {
-            state.paintbrush = state.palette_colors[selected];
-            state.palette_index = selected;
+        if event.kind == "move" {
+            if selected < state.palette_colors.len() {
+                state.candidate = state.palette_colors[selected];
+                state.picker_mode = true;
+            }
         }
     }));
     color_picker_palette.listener.on_state = Some(Box::new(|el, state| {

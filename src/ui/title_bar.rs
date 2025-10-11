@@ -1,7 +1,7 @@
 use crate::AppState;
 use little_tui::*;
 
-pub fn build<'a>() -> Element<AppState> {
+pub fn build() -> Element<AppState> {
     let mut title_bar: Element<AppState> = Element::new(Pos::new(0, 0), Look::new());
 
     title_bar.listener.on_state = Some(Box::new(move |el, state| {

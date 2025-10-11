@@ -1,7 +1,7 @@
 use crate::AppState;
 use little_tui::Elements;
 
-pub fn build<'a>() -> Elements<AppState> {
+pub fn build() -> Elements<AppState> {
     let elements: Elements<AppState> = Elements::new();
 
     elements.push(crate::ui::screen::build());

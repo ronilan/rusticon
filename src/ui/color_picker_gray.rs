@@ -5,7 +5,7 @@ use little_tui::*;
 static X: i16 = 16;
 static Y: i16 = 2;
 
-pub fn build<'a>() -> Element<AppState> {
+pub fn build() -> Element<AppState> {
     let mut color_picker_gray: Element<AppState> = Element::new(
         Pos::new(X, Y),
         Look::from(
@@ -21,20 +21,21 @@ pub fn build<'a>() -> Element<AppState> {
                 .collect::<Vec<Vec<String>>>(), // all rows
         ),
     );
-    color_picker_gray.listener.on_move = Some(Box::new(|el, state, event| {
+
+    color_picker_gray.listener.on_mouse = Some(Box::new(|el, state, event| {
         let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as u8;
         let col = event.coords.x.get().saturating_sub(el.pos.x.get()) as u8;
-        let code = (row * 2 + col + 232) as u8;
-        state.candidate = Some(code);
+        let ansi_code = row * 2 + col + 232;
+        state.candidate = Some(ansi_code);
         state.picker_mode = true;
-    }));
-    color_picker_gray.listener.on_click = Some(Box::new(|el, state, event| {
-        let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as u8;
-        let col = event.coords.x.get().saturating_sub(el.pos.x.get()) as u8;
-        let code = (row * 2 + col + 232) as u8;
-        state.paintbrush = Some(code);
-        state.candidate = Some(code);
-        set_palette_in_state(state, state.candidate);
+
+        if event.kind == "move" {
+            state.picker_mode = true;
+        }
+        if event.kind == "click" {
+            state.paintbrush = Some(ansi_code);
+            set_palette_in_state(state, state.candidate);
+        }
     }));
     color_picker_gray.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);

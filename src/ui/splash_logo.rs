@@ -33,7 +33,7 @@ fn art_row(n: u8, s: &str) -> String {
     )
 }
 
-pub fn build<'a>() -> Element<SplashState> {
+pub fn build() -> Element<SplashState> {
     let mut splash_logo = Element::new(Pos::new(0, 0), Look::new());
 
     splash_logo.listener.on_loop = Some(Box::new(|el, state: &mut SplashState, event| {

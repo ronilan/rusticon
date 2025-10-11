@@ -9,7 +9,7 @@ fn make_grid(width: u16, height: u16) -> Vec<Vec<&'static str>> {
 // ---------------- Screen ---------------- //
 // utility element with no visible look.
 // clears screen on resize, "mouse out" of pickers.
-pub fn build<'a>() -> Element<AppState> {
+pub fn build() -> Element<AppState> {
     let mut screen: Element<AppState> =
         Element::new(Pos::new(0, 0), Look::from(make_grid(columns(), rows())));
 
@@ -25,8 +25,10 @@ pub fn build<'a>() -> Element<AppState> {
             state.app_y = y;
         }
     }));
-    screen.listener.on_move = Some(Box::new(|_el, state, _event| {
-        state.picker_mode = false;
+    screen.listener.on_mouse = Some(Box::new(|_el, state, event| {
+        if event.kind == "move" {
+            state.picker_mode = false;
+        }
     }));
 
     screen

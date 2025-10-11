@@ -4,7 +4,7 @@ use little_tui::*;
 static X: i16 = 61;
 static Y: i16 = 11;
 
-pub fn build<'a>() -> Element<AppState> {
+pub fn build() -> Element<AppState> {
     let mut color_candidate: Element<AppState> = Element::new(
         Pos::new(X, Y),
         Look::from(vec![vec![" ".to_string(); 15]; 2]),

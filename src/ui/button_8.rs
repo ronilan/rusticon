@@ -4,25 +4,27 @@ use little_tui::*;
 static X: i16 = 67;
 static Y: i16 = 2;
 
-pub fn build<'a>() -> Element<AppState> {
+pub fn build() -> Element<AppState> {
     let mut button_8: Element<AppState> = Element::new(
         Pos::new(X, Y),
         terminal_style::format::underline(Look::from("8x8")),
     );
 
-    button_8.listener.on_click = Some(Box::new(|_el, state, _event| {
-        state.size = 8;
-        state.canvas8_data = vec![None; 64];
+    button_8.listener.on_mouse = Some(Box::new(|_el, state, event| {
+        if event.kind == "click" {
+            state.size = 8;
+            state.canvas8_data = vec![None; 64];
 
-        // erase the 16x16 area
-        // canvas 16 position
-        static EX: i16 = 23;
-        static EY: i16 = 3;
-        let eraser: Element<AppState> = Element::new(
-            Pos::new(EX, EY),
-            Look::from(vec![vec![" ".to_string(); 32]; 16]),
-        );
-        crate::ui::draw_relative(&eraser, EX, EY, state);
+            // erase the 16x16 area
+            // canvas 16 position
+            static EX: i16 = 23;
+            static EY: i16 = 3;
+            let eraser: Element<AppState> = Element::new(
+                Pos::new(EX, EY),
+                Look::from(vec![vec![" ".to_string(); 32]; 16]),
+            );
+            crate::ui::draw_relative(&eraser, EX, EY, state);
+        }
     }));
     button_8.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);

@@ -5,7 +5,7 @@ use little_tui::*;
 static X: i16 = 16;
 static Y: i16 = 18;
 
-pub fn build<'a>() -> Element<AppState> {
+pub fn build() -> Element<AppState> {
     let mut color_picker_empty: Element<AppState> = Element::new(
         Pos::new(X, Y),
         Look::from(vec![
@@ -14,14 +14,16 @@ pub fn build<'a>() -> Element<AppState> {
         ]),
     );
 
-    color_picker_empty.listener.on_move = Some(Box::new(|_el, state, _event| {
+    color_picker_empty.listener.on_mouse = Some(Box::new(|_el, state, event| {
         state.candidate = None;
-        state.picker_mode = true;
-    }));
-    color_picker_empty.listener.on_click = Some(Box::new(|_el, state, _event| {
-        state.paintbrush = None;
-        state.candidate = None;
-        set_palette_in_state(state, state.candidate);
+
+        if event.kind == "move" {
+            state.picker_mode = true;
+        }
+        if event.kind == "click" {
+            state.paintbrush = None;
+            set_palette_in_state(state, state.candidate);
+        }
     }));
     color_picker_empty.listener.on_state = Some(Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);
