@@ -14,7 +14,7 @@ use std::{
 
 use export::export_svg;
 use import::import_file;
-use little_tui::{set, Elements};
+use little_tui::{set, set_tick_rate, Elements};
 use message::draw_message;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -40,7 +40,6 @@ pub struct AppState {
 }
 
 const MIN_SPLASH_LOOPS: usize = 20;
-const SPLASH_DELAY_MS: u64 = 100; // ~10 FPS
 
 fn load_file_in_background(
     path: String,
@@ -119,11 +118,11 @@ fn main() {
     let splash_state = SplashState { loop_count: 0 };
     let splash_elements: Elements<SplashState> = splash_screen::build();
 
+    set_tick_rate(Duration::from_millis(100));
     // Run splash until result_holder contains Some(...)
     set(
         splash_state,
         splash_elements,
-        Some(Duration::from_millis(SPLASH_DELAY_MS)),
         // run accepts an optional exit condition: a closure that returns true when the UI should exit.
         // wrap the closure in Some because run expects an Option<&dyn Fn(&S) -> bool>.
         // the closure takes one argument, which is the current state.
@@ -160,9 +159,9 @@ fn main() {
             };
 
             // Run main UI
-            //let elements: Elements<'_, AppState> = uix::build_elements();
+            set_tick_rate(Duration::from_millis(33));
             let elements: Elements<AppState> = rusticon_screen::build();
-            let final_ui_state = set(ui_state, elements, None, Some(&exit_ui));
+            let final_ui_state = set(ui_state, elements, Some(&exit_ui));
 
             // Final save if needed
             handle_final_save(&final_ui_state);
