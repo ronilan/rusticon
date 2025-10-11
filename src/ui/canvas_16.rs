@@ -9,7 +9,7 @@ pub fn build() -> Element<AppState> {
     let mut canvas_16: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());
 
     canvas_16.listener.on_mouse = Some(Box::new(|el, state, event| {
-        if event.kind == "click" {
+        if event.kind == "down" || event.kind == "drag" {
             if state.size == 16 {
                 if event.modifiers.contains(&"ctrl".to_string()) {
                     // Handle ctrl-click for color picking
