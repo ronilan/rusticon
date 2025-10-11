@@ -31,11 +31,11 @@ pub fn build() -> Element<AppState> {
                         event.modifiers.contains(&"shift".to_string()),
                     );
                 }
+                
+                let look = canvas_look_from_data(8, &state.canvas8_data);
+                el.look.update(look);
+                crate::ui::draw_relative(el, X, Y, state);
             }
-
-            let look = canvas_look_from_data(8, &state.canvas8_data);
-            el.look.update(look);
-            crate::ui::draw_relative(el, X, Y, state);
         }
     }));
     canvas_8.listener.on_state = Some(Box::new(|el, state| {
