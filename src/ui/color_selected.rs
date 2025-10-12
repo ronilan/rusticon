@@ -5,13 +5,11 @@ static X: i16 = 61;
 static Y: i16 = 9;
 
 pub fn build() -> Element<AppState> {
-    let mut color_selected: Element<AppState> = Element::new(
-        Pos::new(X, Y),
-        Look::from(vec![vec![" ".to_string(); 15]; 2]),
-    );
+    let mut color_selected: Element<AppState> =
+        Element::new(Pos::new(X, Y), Look::from((15, 2, ' ')));
 
     color_selected.listener.on_state = Some(Box::new(|el, state| {
-        let look = Look::from(vec![vec![" ".to_string(); 15]; 2]);
+        let look = Look::from((15, 2, ' '));
 
         if let Some(pb) = state.paintbrush {
             let styled = terminal_style::format::background(pb, look).unwrap();

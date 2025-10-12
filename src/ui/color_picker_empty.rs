@@ -15,14 +15,16 @@ pub fn build() -> Element<AppState> {
     );
 
     color_picker_empty.listener.on_mouse = Some(Box::new(|_el, state, event| {
-        state.candidate = None;
+        if event.kind == "move" || event.kind == "click" {
+            state.candidate = None;
 
-        if event.kind == "move" {
-            state.picker_mode = true;
-        }
-        if event.kind == "click" {
-            state.paintbrush = None;
-            set_palette_in_state(state, state.candidate);
+            if event.kind == "move" {
+                state.picker_mode = true;
+            }
+            if event.kind == "click" {
+                state.paintbrush = None;
+                set_palette_in_state(state, state.candidate);
+            }
         }
     }));
     color_picker_empty.listener.on_state = Some(Box::new(|el, state| {

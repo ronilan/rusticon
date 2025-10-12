@@ -23,18 +23,21 @@ pub fn build() -> Element<AppState> {
     );
 
     color_picker_gray.listener.on_mouse = Some(Box::new(|el, state, event| {
-        let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as u8;
-        let col = event.coords.x.get().saturating_sub(el.pos.x.get()) as u8;
-        let ansi_code = row * 2 + col + 232;
-        state.candidate = Some(ansi_code);
-        state.picker_mode = true;
+        if event.kind == "move" || event.kind == "click" {
+            let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as u8;
+            let col = event.coords.x.get().saturating_sub(el.pos.x.get()) as u8;
 
-        if event.kind == "move" {
+            let ansi_code = row * 2 + col + 232;
+            state.candidate = Some(ansi_code);
             state.picker_mode = true;
-        }
-        if event.kind == "click" {
-            state.paintbrush = Some(ansi_code);
-            set_palette_in_state(state, state.candidate);
+
+            if event.kind == "move" {
+                state.picker_mode = true;
+            }
+            if event.kind == "click" {
+                state.paintbrush = Some(ansi_code);
+                set_palette_in_state(state, state.candidate);
+            }
         }
     }));
     color_picker_gray.listener.on_state = Some(Box::new(|el, state| {
