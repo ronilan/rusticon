@@ -14,7 +14,7 @@ use std::{
 
 use export::export_svg;
 use import::import_file;
-use little_tui::{set, set_tick_rate, Elements};
+use little_tui::{set, set_tick_rate, Internals};
 use message::draw_message;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -116,13 +116,13 @@ fn main() {
 
     // Splash screen state
     let splash_state = SplashState { loop_count: 0 };
-    let splash_elements: Elements<SplashState> = splash_screen::build();
+    let splash_internals: Internals<SplashState> = splash_screen::build();
 
     set_tick_rate(Duration::from_millis(100));
     // Run splash until result_holder contains Some(...)
     set(
         splash_state,
-        splash_elements,
+        splash_internals,
         // run accepts an optional exit condition: a closure that returns true when the UI should exit.
         // wrap the closure in Some because run expects an Option<&dyn Fn(&S) -> bool>.
         // the closure takes one argument, which is the current state.
@@ -160,8 +160,8 @@ fn main() {
 
             // Run main UI
             set_tick_rate(Duration::from_millis(33));
-            let elements: Elements<AppState> = rusticon_screen::build();
-            let final_ui_state = set(ui_state, elements, Some(&exit_ui));
+            let internals: Internals<AppState> = rusticon_screen::build();
+            let final_ui_state = set(ui_state, internals, Some(&exit_ui));
 
             // Final save if needed
             handle_final_save(&final_ui_state);
