@@ -18,8 +18,7 @@ pub fn build() -> Element<AppState> {
         let y = (rows().saturating_sub(APP_HEIGHT) / 2) as i16;
 
         if x != state.app_x || y != state.app_y {
-            go_to(0, 1);
-            clear_below();
+            clear_screen();
 
             state.app_x = x;
             state.app_y = y;
