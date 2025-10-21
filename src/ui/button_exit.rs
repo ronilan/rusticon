@@ -10,14 +10,9 @@ pub fn build() -> Element<AppState> {
         terminal_style::format::underline(Look::from("Exit")),
     );
 
-    button_exit.listener.on_key = Some(Box::new(|_el, state, event| {
-        if event.key == "c" && event.modifiers.contains(&"ctrl".to_string()) {
-            state.exit_flag = true;
-        }
-    }));
-    button_exit.listener.on_mouse = Some(Box::new(|_el, state, event| {
+    button_exit.listener.on_mouse = Some(Box::new(|_el, _state, event| {
         if event.kind == "click" {
-            state.exit_flag = true;
+            exit();
         }
     }));
     button_exit.listener.on_state = Some(Box::new(|el, state| {

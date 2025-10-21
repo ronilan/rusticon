@@ -13,7 +13,7 @@ pub fn build() -> Element<AppState> {
     button_save.listener.on_loop = Some(Box::new(|_el, state, _event| {
         if state.save_flag {
             // wait till next loop to exit
-            state.exit_flag = true;
+            exit();
         }
     }));
     button_save.listener.on_mouse = Some(Box::new(|_el, state, event| {

@@ -2,15 +2,11 @@ mod export;
 mod import;
 mod message;
 mod rusticon_screen;
+mod shared;
 mod splash_screen;
 mod ui;
 
-use std::{
-    env,
-    sync::{Arc, Mutex},
-    thread,
-    time::Duration,
-};
+use std::{env, thread, time::Duration};
 
 use export::export_svg;
 use import::import_file;
@@ -35,19 +31,15 @@ pub struct AppState {
     canvas8_data: Vec<Option<u8>>,
     size: u8,
     save_flag: bool,
-    exit_flag: bool,
     file_path: String,
 }
 
 const MIN_SPLASH_LOOPS: usize = 20;
 
-fn load_file_in_background(
-    path: String,
-) -> Arc<Mutex<Option<Result<(Vec<Option<u8>>, Vec<Option<u8>>, u8, String), String>>>> {
-    let result_holder = Arc::new(Mutex::new(None));
-    let result_holder_thread = result_holder.clone();
+fn load_file_in_background(path: String) {
+    // Use the global shared holder
+    let result_holder_thread = crate::shared::RESULT_HOLDER.clone();
 
-    // Spawn background thread to import file
     thread::spawn(move || {
         let result = std::panic::catch_unwind(|| import_file(&path))
             .map_err(|e| format!("Panic in import_file: {:?}", e))
@@ -56,26 +48,6 @@ fn load_file_in_background(
         let mut guard = result_holder_thread.lock().unwrap();
         *guard = Some(result);
     });
-
-    result_holder
-}
-
-fn exit_splash(
-    state: &SplashState,
-    result_holder: &Mutex<Option<Result<(Vec<Option<u8>>, Vec<Option<u8>>, u8, String), String>>>,
-) -> bool {
-    // lock the result holder to check if background thread is done
-    let guard = result_holder.lock().unwrap();
-    let thread_done = guard.is_some();
-    let min_time_reached = state.loop_count >= MIN_SPLASH_LOOPS;
-
-    // exit when background thread finished and minimum splash time reached
-    thread_done && min_time_reached
-}
-
-fn exit_ui(state: &AppState) -> bool {
-    // exit UI loop when exit_flag is true
-    state.exit_flag
 }
 
 fn handle_final_save(final_ui_state: &AppState) {
@@ -111,8 +83,12 @@ fn main() {
         .nth(1)
         .unwrap_or_else(|| "favicon.svg".to_string());
 
-    // Shared state for background result
-    let result_holder = load_file_in_background(file_path.clone());
+    // Clear global result holder and spawn background loader
+    {
+        let mut guard = shared::RESULT_HOLDER.lock().unwrap();
+        *guard = None;
+    }
+    load_file_in_background(file_path.clone());
 
     // Splash screen state
     let splash_state = SplashState { loop_count: 0 };
@@ -120,17 +96,10 @@ fn main() {
 
     set_tick_rate(Duration::from_millis(100));
     // Run splash until result_holder contains Some(...)
-    set(
-        splash_state,
-        splash_internals,
-        // run accepts an optional exit condition: a closure that returns true when the UI should exit.
-        // wrap the closure in Some because run expects an Option<&dyn Fn(&S) -> bool>.
-        // the closure takes one argument, which is the current state.
-        Some(&|state| exit_splash(state, &result_holder)),
-    );
+    set(splash_state, splash_internals);
 
     // Retrieve the final result
-    let final_result = result_holder.lock().unwrap().take();
+    let final_result = shared::RESULT_HOLDER.lock().unwrap().take();
     match final_result {
         Some(Ok((data, palette, icon_size, returned_path))) => {
             let paintbrush = palette[0];
@@ -154,14 +123,13 @@ fn main() {
                 canvas8_data,
                 size,
                 save_flag: false,
-                exit_flag: false,
                 file_path: returned_path,
             };
 
             // Run main UI
             set_tick_rate(Duration::from_millis(33));
             let internals: Internals<AppState> = rusticon_screen::build();
-            let final_ui_state = set(ui_state, internals, Some(&exit_ui));
+            let final_ui_state = set(ui_state, internals);
 
             // Final save if needed
             handle_final_save(&final_ui_state);

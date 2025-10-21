@@ -10,7 +10,7 @@ pub fn build() -> Element<AppState> {
         let y = (rows().saturating_sub(APP_HEIGHT) / 2) as i16;
 
         if x != state.app_x || y != state.app_y {
-          draw(el);
+            draw(el);
         }
     }));
 

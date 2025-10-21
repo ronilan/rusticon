@@ -1,10 +1,10 @@
-use crate::SplashState;
+use crate::{shared::RESULT_HOLDER, SplashState, MIN_SPLASH_LOOPS};
 use little_tui::*;
 
 pub fn build() -> Element<SplashState> {
     let mut splash_footer = Element::new(Pos::new(0, 0), Look::new());
 
-    splash_footer.listener.on_state = Some(Box::new(|el, _event| {
+    splash_footer.listener.on_state = Some(Box::new(|el: &Element<SplashState>, state| {
         let term_cols = columns() as i16;
         let term_rows = rows() as i16;
 
@@ -18,7 +18,15 @@ pub fn build() -> Element<SplashState> {
                 Look::from(text),
             )));
 
-        draw(el)
+        draw(el);
+
+        // --- check background thread completion ---
+        if let Ok(guard) = RESULT_HOLDER.try_lock() {
+            let done = guard.is_some();
+            if done && state.loop_count >= MIN_SPLASH_LOOPS {
+                exit();
+            }
+        }
     }));
 
     splash_footer
