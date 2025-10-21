@@ -26,13 +26,13 @@ pub fn build<'a>() -> Element<AppState> {
             state.palette_index
         };
 
-        if event.kind == "click" {
+        if event.mouse == Mouse::Click {
             if selected < state.palette_colors.len() {
                 state.paintbrush = state.palette_colors[selected];
                 state.palette_index = selected;
             }
         }
-        if event.kind == "move" {
+        if event.mouse == Mouse::Move {
             if selected < state.palette_colors.len() {
                 state.candidate = state.palette_colors[selected];
                 state.picker_mode = true;

@@ -15,13 +15,13 @@ pub fn build() -> Element<AppState> {
     );
 
     color_picker_empty.listener.on_mouse = Some(Box::new(|_el, state, event| {
-        if event.kind == "move" || event.kind == "click" {
+        if event.mouse == Mouse::Move || event.mouse == Mouse::Click {
             state.candidate = None;
 
-            if event.kind == "move" {
+            if event.mouse == Mouse::Move {
                 state.picker_mode = true;
             }
-            if event.kind == "click" {
+            if event.mouse == Mouse::Click {
                 state.paintbrush = None;
                 set_palette_in_state(state, state.candidate);
             }

@@ -9,16 +9,15 @@ pub fn build() -> Element<AppState> {
     let mut canvas_8: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());
 
     canvas_8.listener.on_mouse = Some(Box::new(|el, state, event| {
-        if event.kind == "down" || event.kind == "drag" {
+        if event.mouse == Mouse::Down || event.mouse == Mouse::Drag {
             if state.size == 8 {
-                if event.modifiers.contains(&"ctrl".to_string()) {
+                if event.modifiers.contains(&KeyMod::Ctrl) {
                     // Handle ctrl-click for color picking
                     let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as usize;
                     let col = event.coords.x.get().saturating_sub(el.pos.x.get()) as usize / 2;
                     if row < 8 && col < 8 {
                         state.paintbrush = state.canvas8_data[row * 8 + col];
-                        state.candidate = state.paintbrush;
-                        set_palette_in_state(state, state.candidate);
+                        set_palette_in_state(state, state.paintbrush);
                     }
                 } else {
                     canvas_data_from_click(
@@ -28,7 +27,7 @@ pub fn build() -> Element<AppState> {
                         state.paintbrush,
                         event.coords.x.get(),
                         event.coords.y.get(),
-                        event.modifiers.contains(&"shift".to_string()),
+                        event.modifiers.contains(&KeyMod::Shift),
                     );
                 }
 

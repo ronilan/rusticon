@@ -11,7 +11,7 @@ pub fn build() -> Element<AppState> {
     );
 
     button_16.listener.on_mouse = Some(Box::new(|_el, state, event| {
-        if event.kind == "click" {
+        if event.mouse == Mouse::Click {
             state.size = 16;
             state.canvas16_data = vec![None; 256];
         }

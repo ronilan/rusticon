@@ -25,16 +25,16 @@ pub fn build() -> Element<AppState> {
     );
 
     color_picker_16.listener.on_mouse = Some(Box::new(|el, state, event| {
-        if event.kind == "move" || event.kind == "click" {
+        if event.mouse == Mouse::Move || event.mouse == Mouse::Click {
             let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as u8;
             let ansi_code: u8 =
                 terminal_style::color::rgb_to_ansi8(terminal_style::color::ansi8_to_rgb(row));
             state.candidate = Some(ansi_code);
 
-            if event.kind == "move" {
+            if event.mouse == Mouse::Move {
                 state.picker_mode = true;
             }
-            if event.kind == "click" {
+            if event.mouse == Mouse::Click {
                 state.paintbrush = Some(ansi_code);
                 set_palette_in_state(state, state.candidate);
             }

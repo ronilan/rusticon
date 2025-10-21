@@ -17,7 +17,7 @@ pub fn build() -> Element<AppState> {
         }
     }));
     button_save.listener.on_mouse = Some(Box::new(|_el, state, event| {
-        if event.kind == "click" {
+        if event.mouse == Mouse::Click {
             state.save_flag = true;
         }
     }));

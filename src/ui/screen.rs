@@ -25,7 +25,7 @@ pub fn build() -> Element<AppState> {
         }
     }));
     screen.listener.on_mouse = Some(Box::new(|_el, state, event| {
-        if event.kind == "move" {
+        if event.mouse == Mouse::Move {
             state.picker_mode = false;
         }
     }));
