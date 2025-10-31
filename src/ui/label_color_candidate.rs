@@ -8,7 +8,7 @@ pub fn build() -> Element<AppState> {
     let mut label_color_candidate: Element<AppState> =
         Element::new(Pos::new(X, Y), Look::from(vec![vec!["".to_string()]]));
 
-    label_color_candidate.listener.on_state = Some(Box::new(|el, state| {
+    label_color_candidate.listener.on_state = Box::new(|el, state| {
         let text = if state.picker_mode {
             match state.candidate {
                 Some(c) => format!("{:<3}   {}", c, terminal_style::color::ansi8_to_hex(c)),
@@ -20,7 +20,7 @@ pub fn build() -> Element<AppState> {
 
         el.look.update(text);
         crate::ui::draw_relative(el, X, Y, state);
-    }));
+    });
 
     label_color_candidate
 }

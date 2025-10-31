@@ -8,7 +8,7 @@ pub fn build() -> Element<AppState> {
     let mut color_candidate: Element<AppState> =
         Element::new(Pos::new(X, Y), Look::from((15, 2, ' ')));
 
-    color_candidate.listener.on_state = Some(Box::new(|el, state| {
+    color_candidate.listener.on_state = Box::new(|el, state| {
         let look = Look::from((15, 2, ' '));
 
         let color_source = if state.picker_mode {
@@ -25,7 +25,7 @@ pub fn build() -> Element<AppState> {
         }
 
         crate::ui::draw_relative(el, X, Y, state);
-    }));
+    });
 
     color_candidate
 }

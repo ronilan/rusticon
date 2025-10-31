@@ -8,13 +8,13 @@ static Y: i16 = 3;
 pub fn build() -> Element<AppState> {
     let mut canvas_16: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());
 
-    canvas_16.listener.on_mouse = Some(Box::new(|el, state, event| {
+    canvas_16.listener.on_mouse = Box::new(|el, state, event| {
         if event.mouse == Mouse::Down || event.mouse == Mouse::Drag {
             if state.size == 16 {
                 if event.modifiers.contains(&KeyMod::Ctrl) {
                     // Handle ctrl-click for color picking
-                    let row = event.coords.y.get().saturating_sub(el.pos.y.get()) as usize;
-                    let col = event.coords.x.get().saturating_sub(el.pos.x.get()) as usize / 2;
+                    let row = event.y.saturating_sub(el.pos.y.get()) as usize;
+                    let col = event.x.saturating_sub(el.pos.x.get()) as usize / 2;
                     if row < 16 && col < 16 {
                         state.paintbrush = state.canvas16_data[row * 16 + col];
                         set_palette_in_state(state, state.paintbrush);
@@ -25,8 +25,8 @@ pub fn build() -> Element<AppState> {
                         16,
                         &mut state.canvas16_data,
                         state.paintbrush,
-                        event.coords.x.get(),
-                        event.coords.y.get(),
+                        event.x,
+                        event.y,
                         event.modifiers.contains(&KeyMod::Shift),
                     );
                 }
@@ -35,15 +35,15 @@ pub fn build() -> Element<AppState> {
                 crate::ui::draw_relative(el, X, Y, state);
             }
         }
-    }));
-    canvas_16.listener.on_state = Some(Box::new(|el, state| {
+    });
+    canvas_16.listener.on_state = Box::new(|el, state| {
         if state.size == 16 {
             let look = canvas_look_from_data(16, &state.canvas16_data);
             el.look.update(look);
 
             crate::ui::draw_relative(el, X, Y, state);
         }
-    }));
+    });
 
     canvas_16
 }

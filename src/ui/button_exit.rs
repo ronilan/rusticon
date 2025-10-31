@@ -10,14 +10,14 @@ pub fn build() -> Element<AppState> {
         terminal_style::format::underline(Look::from("Exit")),
     );
 
-    button_exit.listener.on_mouse = Some(Box::new(|_el, _state, event| {
+    button_exit.listener.on_mouse = Box::new(|_el, _state, event| {
         if event.mouse == Mouse::Click {
             exit();
         }
-    }));
-    button_exit.listener.on_state = Some(Box::new(|el, state| {
+    });
+    button_exit.listener.on_state = Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);
-    }));
+    });
 
     button_exit
 }

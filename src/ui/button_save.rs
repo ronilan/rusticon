@@ -10,20 +10,20 @@ pub fn build() -> Element<AppState> {
         terminal_style::format::underline(Look::from("Save")),
     );
 
-    button_save.listener.on_loop = Some(Box::new(|_el, state, _event| {
+    button_save.listener.on_loop = Box::new(|_el, state, _event| {
         if state.save_flag {
             // wait till next loop to exit
             exit();
         }
-    }));
-    button_save.listener.on_mouse = Some(Box::new(|_el, state, event| {
+    });
+    button_save.listener.on_mouse = Box::new(|_el, state, event| {
         if event.mouse == Mouse::Click {
             state.save_flag = true;
         }
-    }));
-    button_save.listener.on_state = Some(Box::new(|el, state| {
+    });
+    button_save.listener.on_state = Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);
-    }));
+    });
 
     button_save
 }

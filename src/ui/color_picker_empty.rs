@@ -14,7 +14,7 @@ pub fn build() -> Element<AppState> {
         ]),
     );
 
-    color_picker_empty.listener.on_mouse = Some(Box::new(|_el, state, event| {
+    color_picker_empty.listener.on_mouse = Box::new(|_el, state, event| {
         if event.mouse == Mouse::Move || event.mouse == Mouse::Click {
             state.candidate = None;
 
@@ -26,10 +26,10 @@ pub fn build() -> Element<AppState> {
                 set_palette_in_state(state, state.candidate);
             }
         }
-    }));
-    color_picker_empty.listener.on_state = Some(Box::new(|el, state| {
+    });
+    color_picker_empty.listener.on_state = Box::new(|el, state| {
         crate::ui::draw_relative(el, X, Y, state);
-    }));
+    });
 
     color_picker_empty
 }

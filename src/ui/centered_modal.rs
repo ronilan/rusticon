@@ -5,7 +5,7 @@ use little_tui::*;
 pub fn build() -> Element<AppState> {
     let mut centered_modal: Element<AppState> = Element::new(Pos::new(0, 0), Look::new());
 
-    centered_modal.listener.on_state = Some(Box::new(|el, _state| {
+    centered_modal.listener.on_state = Box::new(|el, _state| {
         let terminal_too_small = columns() < APP_WIDTH || rows() < APP_HEIGHT;
         let mut look_rows = Vec::new();
 
@@ -38,7 +38,7 @@ pub fn build() -> Element<AppState> {
             el.look.update("");
             draw(el);
         }
-    }));
+    });
 
     centered_modal
 }

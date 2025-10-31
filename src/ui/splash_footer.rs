@@ -4,7 +4,7 @@ use little_tui::*;
 pub fn build() -> Element<SplashState> {
     let mut splash_footer = Element::new(Pos::new(0, 0), Look::new());
 
-    splash_footer.listener.on_state = Some(Box::new(|el: &Element<SplashState>, state| {
+    splash_footer.listener.on_state = Box::new(|el: &Element<SplashState>, state| {
         let term_cols = columns() as i16;
         let term_rows = rows() as i16;
 
@@ -27,7 +27,7 @@ pub fn build() -> Element<SplashState> {
                 exit();
             }
         }
-    }));
+    });
 
     splash_footer
 }
