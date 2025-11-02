@@ -13,7 +13,7 @@ pub fn build() -> Element<AppState> {
     let mut screen: Element<AppState> =
         Element::new(Pos::new(0, 0), Look::from(make_grid(columns(), rows())));
 
-    screen.listener.on_loop = Box::new(|_el, state, _event| {
+    screen.listener.on_loop = |_el, state, _event| {
         let x = (columns().saturating_sub(APP_WIDTH) / 2) as i16;
         let y = (rows().saturating_sub(APP_HEIGHT) / 2) as i16;
 
@@ -23,12 +23,12 @@ pub fn build() -> Element<AppState> {
             state.app_x = x;
             state.app_y = y;
         }
-    });
-    screen.listener.on_mouse = Box::new(|_el, state, event| {
+    };
+    screen.listener.on_mouse = |_el, state, event| {
         if event.mouse == Mouse::Move {
             state.picker_mode = false;
         }
-    });
+    };
 
     screen
 }

@@ -18,7 +18,7 @@ pub fn build<'a>() -> Element<AppState> {
         Look::from(vec![row])
     });
 
-    color_picker_palette.listener.on_mouse = Box::new(|el, state, event| {
+    color_picker_palette.listener.on_mouse = |el, state, event| {
         let col_rel = event.x.saturating_sub(el.pos.x.get()) as usize;
         let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
             col_rel / 4
@@ -38,8 +38,8 @@ pub fn build<'a>() -> Element<AppState> {
                 state.picker_mode = true;
             }
         }
-    });
-    color_picker_palette.listener.on_state = Box::new(|el, state| {
+    };
+    color_picker_palette.listener.on_state = |el, state| {
         let pl = state.palette_index;
         let pll = &state.palette_colors;
 
@@ -71,7 +71,7 @@ pub fn build<'a>() -> Element<AppState> {
         el.look.update(look);
 
         crate::ui::draw_relative(el, X, Y, state);
-    });
+    };
 
     color_picker_palette
 }

@@ -10,7 +10,7 @@ pub fn build() -> Element<AppState> {
         terminal_style::format::underline(Look::from("8x8")),
     );
 
-    button_8.listener.on_mouse = Box::new(|_el, state, event| {
+    button_8.listener.on_mouse = |_el, state, event| {
         if event.mouse == Mouse::Click {
             state.size = 8;
             state.canvas8_data = vec![None; 64];
@@ -25,10 +25,10 @@ pub fn build() -> Element<AppState> {
             );
             crate::ui::draw_relative(&eraser, EX, EY, state);
         }
-    });
-    button_8.listener.on_state = Box::new(|el, state| {
+    };
+    button_8.listener.on_state = |el, state| {
         crate::ui::draw_relative(el, X, Y, state);
-    });
+    };
 
     button_8
 }

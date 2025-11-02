@@ -8,7 +8,7 @@ static Y: i16 = 7;
 pub fn build() -> Element<AppState> {
     let mut canvas_8: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());
 
-    canvas_8.listener.on_mouse = Box::new(|el, state, event| {
+    canvas_8.listener.on_mouse = |el, state, event| {
         if event.mouse == Mouse::Down || event.mouse == Mouse::Drag {
             if state.size == 8 {
                 if event.modifiers.contains(&KeyMod::Ctrl) {
@@ -36,15 +36,15 @@ pub fn build() -> Element<AppState> {
                 crate::ui::draw_relative(el, X, Y, state);
             }
         }
-    });
-    canvas_8.listener.on_state = Box::new(|el, state| {
+    };
+    canvas_8.listener.on_state = |el, state| {
         if state.size == 8 {
             let look = canvas_look_from_data(8, &state.canvas8_data);
             el.look.update(look);
 
             crate::ui::draw_relative(el, X, Y, state);
         }
-    });
+    };
 
     canvas_8
 }
