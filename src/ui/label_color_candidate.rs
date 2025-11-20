@@ -18,7 +18,7 @@ pub fn build() -> Element<AppState> {
             "             ".to_string()
         };
 
-        el.look.update(text);
+        el.look.set(text);
         crate::ui::draw_relative(el, X, Y, state);
     };
 

@@ -148,9 +148,9 @@ pub fn build<'a>() -> Element<'a, AppState> {
 
         if let Some(pb) = state.paintbrush {
             let styled = terminal_style::format::background(pb, look).unwrap();
-            el.look.update(styled);
+            el.look.set(styled);
         } else {
-            el.look.update(look);
+            el.look.set(look);
         }
 
         crate::elements::draw_relative(el, X, Y, state);

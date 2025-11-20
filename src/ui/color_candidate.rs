@@ -19,9 +19,9 @@ pub fn build() -> Element<AppState> {
 
         if let Some(cs) = color_source {
             let styled = terminal_style::format::background(cs, look).unwrap();
-            el.look.update(styled);
+            el.look.set(styled);
         } else {
-            el.look.update(look);
+            el.look.set(look);
         }
 
         crate::ui::draw_relative(el, X, Y, state);

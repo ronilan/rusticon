@@ -68,7 +68,7 @@ pub fn build<'a>() -> Element<AppState> {
             }
         }
 
-        el.look.update(look);
+        el.look.set(look);
 
         crate::ui::draw_relative(el, X, Y, state);
     };

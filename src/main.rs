@@ -10,7 +10,7 @@ use std::{env, thread, time::Duration};
 
 use export::export_svg;
 use import::import_file;
-use little_tui::{set, set_tick_rate, Internals};
+use little_tui::{run, set_tick_rate};
 use message::draw_message;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -92,11 +92,11 @@ fn main() {
 
     // Splash screen state
     let splash_state = SplashState { loop_count: 0 };
-    let splash_internals: Internals<SplashState> = splash_screen::build();
+    let splash_root = splash_screen::build();
 
     set_tick_rate(Duration::from_millis(100));
     // Run splash until result_holder contains Some(...)
-    set(splash_state, splash_internals);
+    run(splash_root, splash_state);
 
     // Retrieve the final result
     let final_result = shared::RESULT_HOLDER.lock().unwrap().take();
@@ -128,8 +128,8 @@ fn main() {
 
             // Run main UI
             set_tick_rate(Duration::from_millis(33));
-            let internals: Internals<AppState> = rusticon_screen::build();
-            let final_ui_state = set(ui_state, internals);
+            let root = rusticon_screen::build();
+            let final_ui_state = run(root, ui_state);
 
             // Final save if needed
             handle_final_save(&final_ui_state);

@@ -14,7 +14,7 @@ pub fn build() -> Element<SplashState> {
             .set((term_cols.saturating_sub(text.len() as i16)) / 2);
         el.pos.y.set(term_rows.saturating_sub(1));
         el.look
-            .update(terminal_style::format::bold(terminal_style::format::faint(
+            .set(terminal_style::format::bold(terminal_style::format::faint(
                 Look::from(text),
             )));
 

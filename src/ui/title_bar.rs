@@ -25,7 +25,7 @@ pub fn build() -> Element<AppState> {
         line.replace_range(0..text.len().min(cols), &text);
 
         el.look
-            .update(vec![vec![terminal_style::format::inverse(&line)]]);
+            .set(vec![vec![terminal_style::format::inverse(&line)]]);
         draw(el);
     };
 

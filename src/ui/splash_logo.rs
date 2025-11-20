@@ -58,7 +58,7 @@ pub fn build() -> Element<SplashState> {
             vec![bouncing_text(n as usize).to_string()],
         ];
 
-        el.look.update(Look::from(art));
+        el.look.set(Look::from(art));
         el.pos.x.set(x);
         el.pos.y.set(y);
 

@@ -1,11 +1,11 @@
 use crate::SplashState;
-use little_tui::Internals;
+use little_tui::Element;
 
-pub fn build() -> Internals<SplashState> {
-    let internals: Internals<SplashState> = Internals::new();
+pub fn build() -> Element<SplashState> {
+    let wrapper = Element::default();
 
-    internals.push(crate::ui::splash_logo::build());
-    internals.push(crate::ui::splash_footer::build());
+    wrapper.internals.push(crate::ui::splash_logo::build());
+    wrapper.internals.push(crate::ui::splash_footer::build());
 
-    internals
+    wrapper
 }

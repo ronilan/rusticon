@@ -13,7 +13,7 @@ pub fn build() -> Element<AppState> {
             None => format!("{:<13}", ":transparent:"),
         };
 
-        el.look.update(text);
+        el.look.set(text);
         crate::ui::draw_relative(el, X, Y, state);
     };
 

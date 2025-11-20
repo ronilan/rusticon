@@ -31,7 +31,7 @@ pub fn build() -> Element<AppState> {
                     );
                 }
                 let look = canvas_look_from_data(16, &state.canvas16_data);
-                el.look.update(look);
+                el.look.set(look);
                 crate::ui::draw_relative(el, X, Y, state);
             }
         }
@@ -39,7 +39,7 @@ pub fn build() -> Element<AppState> {
     canvas_16.listener.on_state = |el, state| {
         if state.size == 16 {
             let look = canvas_look_from_data(16, &state.canvas16_data);
-            el.look.update(look);
+            el.look.set(look);
 
             crate::ui::draw_relative(el, X, Y, state);
         }

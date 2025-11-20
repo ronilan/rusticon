@@ -32,10 +32,10 @@ pub fn build() -> Element<AppState> {
                 look_rows.push(row);
             }
 
-            el.look.update(look_rows);
+            el.look.set(look_rows);
             draw(el);
         } else {
-            el.look.update("");
+            el.look.set("");
             draw(el);
         }
     };
