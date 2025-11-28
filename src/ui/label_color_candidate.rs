@@ -5,8 +5,11 @@ static X: i16 = 62;
 static Y: i16 = 13;
 
 pub fn build() -> Element<AppState> {
-    let mut label_color_candidate: Element<AppState> =
-        Element::new(Pos::new(X, Y), Look::from(vec![vec!["".to_string()]]));
+    let mut label_color_candidate: Element<AppState> = Element::new();
+    label_color_candidate
+        .x(X)
+        .y(Y)
+        .look(Look::from(vec![vec!["".to_string()]]));
 
     label_color_candidate.listener.on_state = |el, state| {
         let text = if state.picker_mode {
@@ -18,7 +21,7 @@ pub fn build() -> Element<AppState> {
             "             ".to_string()
         };
 
-        el.look.set(text);
+        el.look(Look::from(text));
         crate::ui::draw_relative(el, X, Y, state);
     };
 

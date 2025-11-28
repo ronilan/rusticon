@@ -1,6 +1,6 @@
 use terminal_style::format::{bold, color};
 
-use little_tui::{columns, draw, rows, Element, Look, Pos};
+use little_tui::*;
 
 /// Draws a full-screen message centered in the terminal
 pub fn draw_message(msg: &str, color_code: u8) {
@@ -29,6 +29,7 @@ pub fn draw_message(msg: &str, color_code: u8) {
     let look = bold(color(color_code, Look::from(screen)).unwrap());
 
     // Draw element
-    let el: Element<()> = Element::new(Pos::new(0, 0), look);
+    let el: Element<()> = Element::new();
+    el.look(look);
     draw(&el);
 }

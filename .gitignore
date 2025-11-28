@@ -20,3 +20,6 @@ Icon
 
 # Rust
 /target
+
+# the default image created
+favicon.svg

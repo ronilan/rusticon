@@ -86,8 +86,8 @@ pub(crate) fn canvas_data_from_click(
     mouse_y: i16,
     fill: bool,
 ) {
-    let row = mouse_y.saturating_sub(el.pos.y.get()) as usize;
-    let col = mouse_x.saturating_sub(el.pos.x.get()) as usize / 2;
+    let row = mouse_y.saturating_sub(el.visual.y.get()) as usize;
+    let col = mouse_x.saturating_sub(el.visual.x.get()) as usize / 2;
     if row < size && col < size {
         if fill {
             // Flood fill starting at (row, col)

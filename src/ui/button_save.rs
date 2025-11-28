@@ -5,10 +5,11 @@ static X: i16 = 75;
 static Y: i16 = 19;
 
 pub fn build() -> Element<AppState> {
-    let mut button_save: Element<AppState> = Element::new(
-        Pos::new(X, Y),
-        terminal_style::format::underline(Look::from("Save")),
-    );
+    let mut button_save: Element<AppState> = Element::new();
+    button_save
+        .x(X)
+        .y(Y)
+        .look(terminal_style::format::underline(Look::from("Save")));
 
     button_save.listener.on_loop = |_el, state, _event| {
         if state.save_flag {

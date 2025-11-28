@@ -34,7 +34,7 @@ fn art_row(n: u8, s: &str) -> String {
 }
 
 pub fn build() -> Element<SplashState> {
-    let mut splash_logo = Element::new(Pos::new(0, 0), Look::new());
+    let mut splash_logo = Element::new();
 
     splash_logo.listener.on_loop = |el, state: &mut SplashState, event| {
         let n = event.loop_count as u16;
@@ -58,9 +58,9 @@ pub fn build() -> Element<SplashState> {
             vec![bouncing_text(n as usize).to_string()],
         ];
 
-        el.look.set(Look::from(art));
-        el.pos.x.set(x);
-        el.pos.y.set(y);
+        el.look(Look::from(art));
+        el.x(x);
+        el.y(y);
 
         draw(el);
 

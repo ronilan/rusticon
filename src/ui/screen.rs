@@ -2,16 +2,12 @@ use crate::ui::{APP_HEIGHT, APP_WIDTH};
 use crate::AppState;
 use little_tui::*;
 
-fn make_grid(width: u16, height: u16) -> Vec<Vec<&'static str>> {
-    vec![vec![" "; width as usize]; height as usize]
-}
-
 // ---------------- Screen ---------------- //
 // utility element with no visible look.
 // clears screen on resize, "mouse out" of pickers.
 pub fn build() -> Element<AppState> {
-    let mut screen: Element<AppState> =
-        Element::new(Pos::new(0, 0), Look::from(make_grid(columns(), rows())));
+    let mut screen: Element<AppState> = Element::new();
+    screen.look(Look::from((columns(), rows(), ' ')));
 
     screen.listener.on_loop = |_el, state, _event| {
         let x = (columns().saturating_sub(APP_WIDTH) / 2) as i16;

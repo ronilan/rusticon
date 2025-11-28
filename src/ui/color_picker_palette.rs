@@ -5,7 +5,8 @@ static X: i16 = 23;
 static Y: i16 = 21;
 
 pub fn build<'a>() -> Element<AppState> {
-    let mut color_picker_palette: Element<AppState> = Element::new(Pos::new(X, Y), {
+    let mut color_picker_palette: Element<AppState> = Element::new();
+    color_picker_palette.x(X).y(Y).look({
         let row: Vec<String> = (0..32)
             .map(|index| {
                 if index % 4 == 1 || index % 4 == 2 {
@@ -19,7 +20,7 @@ pub fn build<'a>() -> Element<AppState> {
     });
 
     color_picker_palette.listener.on_mouse = |el, state, event| {
-        let col_rel = event.x.saturating_sub(el.pos.x.get()) as usize;
+        let col_rel = event.x.saturating_sub(el.visual.x.get()) as usize;
         let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
             col_rel / 4
         } else {
@@ -43,7 +44,7 @@ pub fn build<'a>() -> Element<AppState> {
         let pl = state.palette_index;
         let pll = &state.palette_colors;
 
-        let mut look = el.look.cells().to_vec();
+        let mut look = el.visual.look.cells().to_vec();
 
         for row in look.iter_mut() {
             for (col_i, col) in row.iter_mut().enumerate() {
@@ -68,7 +69,7 @@ pub fn build<'a>() -> Element<AppState> {
             }
         }
 
-        el.look.set(look);
+        el.look(Look::from(look));
 
         crate::ui::draw_relative(el, X, Y, state);
     };

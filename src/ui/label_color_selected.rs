@@ -5,7 +5,8 @@ static X: i16 = 62;
 static Y: i16 = 8;
 
 pub fn build() -> Element<AppState> {
-    let mut label_color_selected: Element<AppState> = Element::new(Pos::new(X, Y), Look::new());
+    let mut label_color_selected: Element<AppState> = Element::new();
+    label_color_selected.x(X).y(Y);
 
     label_color_selected.listener.on_state = |el, state| {
         let text = match state.paintbrush {
@@ -13,7 +14,7 @@ pub fn build() -> Element<AppState> {
             None => format!("{:<13}", ":transparent:"),
         };
 
-        el.look.set(text);
+        el.look(Look::from(text));
         crate::ui::draw_relative(el, X, Y, state);
     };
 

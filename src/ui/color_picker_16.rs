@@ -6,27 +6,25 @@ static X: i16 = 1;
 static Y: i16 = 2;
 
 pub fn build() -> Element<AppState> {
-    let mut color_picker_16: Element<AppState> = Element::new(
-        Pos::new(X, Y),
-        Look::from(
-            (0..16)
-                .map(|row| {
-                    (0..1)
-                        .map(|_col| {
-                            let ansi_code: u8 = terminal_style::color::rgb_to_ansi8(
-                                terminal_style::color::ansi8_to_rgb(row),
-                            );
-                            terminal_style::format::background(ansi_code, " ").unwrap()
-                        })
-                        .collect::<Vec<String>>()
-                })
-                .collect::<Vec<Vec<String>>>(),
-        ),
-    );
+    let mut color_picker_16: Element<AppState> = Element::new();
+    color_picker_16.x(X).y(Y).look(Look::from(
+        (0..16)
+            .map(|row| {
+                (0..1)
+                    .map(|_col| {
+                        let ansi_code: u8 = terminal_style::color::rgb_to_ansi8(
+                            terminal_style::color::ansi8_to_rgb(row),
+                        );
+                        terminal_style::format::background(ansi_code, " ").unwrap()
+                    })
+                    .collect::<Vec<String>>()
+            })
+            .collect::<Vec<Vec<String>>>(),
+    ));
 
     color_picker_16.listener.on_mouse = |el, state, event| {
         if event.mouse == Mouse::Move || event.mouse == Mouse::Click {
-            let row = event.y.saturating_sub(el.pos.y.get()) as u8;
+            let row = event.y.saturating_sub(el.visual.y.get()) as u8;
             let ansi_code: u8 =
                 terminal_style::color::rgb_to_ansi8(terminal_style::color::ansi8_to_rgb(row));
             state.candidate = Some(ansi_code);

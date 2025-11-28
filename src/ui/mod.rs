@@ -39,8 +39,8 @@ pub(crate) static APP_HEIGHT: u16 = 24; // Height of the game window
 
 pub(crate) fn draw_relative<S>(el: &Element<S>, x: i16, y: i16, state: &AppState) {
     if columns() >= APP_WIDTH && rows() >= APP_HEIGHT {
-        el.pos.x.set(state.app_x + x);
-        el.pos.y.set(state.app_y + y);
+        el.x(state.app_x + x);
+        el.y(state.app_y + y);
         draw(el);
     }
 }

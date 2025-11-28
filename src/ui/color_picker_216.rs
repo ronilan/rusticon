@@ -6,27 +6,25 @@ static X: i16 = 3;
 static Y: i16 = 2;
 
 pub fn build() -> Element<AppState> {
-    let mut color_picker_216: Element<AppState> = Element::new(
-        Pos::new(X, Y),
-        Look::from(
-            (0..18)
-                .map(|row| {
-                    (0..12)
-                        .map(|col| {
-                            // original crumb formula: (row * 12) + (col * 16)
-                            let code = (row * 12 + col + 16).min(231) as u8;
-                            terminal_style::format::background(code, " ").unwrap()
-                        })
-                        .collect::<Vec<String>>()
-                })
-                .collect::<Vec<Vec<String>>>(),
-        ),
-    );
+    let mut color_picker_216: Element<AppState> = Element::new();
+    color_picker_216.x(X).y(Y).look(Look::from(
+        (0..18)
+            .map(|row| {
+                (0..12)
+                    .map(|col| {
+                        // original crumb formula: (row * 12) + (col * 16)
+                        let code = (row * 12 + col + 16).min(231) as u8;
+                        terminal_style::format::background(code, " ").unwrap()
+                    })
+                    .collect::<Vec<String>>()
+            })
+            .collect::<Vec<Vec<String>>>(),
+    ));
 
     color_picker_216.listener.on_mouse = |el, state, event| {
         if event.mouse == Mouse::Move || event.mouse == Mouse::Click {
-            let row = event.y.saturating_sub(el.pos.y.get()) as u8;
-            let col = event.x.saturating_sub(el.pos.x.get()) as u8;
+            let row = event.y.saturating_sub(el.visual.y.get()) as u8;
+            let col = event.x.saturating_sub(el.visual.x.get()) as u8;
             let ansi_code = row * 12 + col + 16;
             state.candidate = Some(ansi_code);
 

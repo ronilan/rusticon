@@ -2,7 +2,7 @@ use crate::AppState;
 use little_tui::Element;
 
 pub fn build() -> Element<AppState> {
-    let wrapper = Element::default();
+    let wrapper = Element::new();
 
     wrapper.internals.push(crate::ui::screen::build());
     wrapper.internals.push(crate::ui::centered_modal::build());

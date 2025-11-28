@@ -3,7 +3,7 @@ use crate::AppState;
 use little_tui::*;
 
 pub fn build() -> Element<AppState> {
-    let mut centered_modal: Element<AppState> = Element::new(Pos::new(0, 0), Look::new());
+    let mut centered_modal: Element<AppState> = Element::new();
 
     centered_modal.listener.on_state = |el, _state| {
         let terminal_too_small = columns() < APP_WIDTH || rows() < APP_HEIGHT;
@@ -32,10 +32,10 @@ pub fn build() -> Element<AppState> {
                 look_rows.push(row);
             }
 
-            el.look.set(look_rows);
+            el.look(Look::from(look_rows));
             draw(el);
         } else {
-            el.look.set("");
+            el.look(Look::new());
             draw(el);
         }
     };
