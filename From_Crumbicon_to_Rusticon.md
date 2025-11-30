@@ -17,7 +17,7 @@ The two programming languages, Crumb and Rust, are not very much alike.
 
 One distinction stands out: Crumb is **dynamically scoped**, a rarity among programming languages. It is also purely functional and forbids side effects (other than I/O). These two attributes make writing Crumb programs “different from normal.” While Crumb is a very simple language, working with it requires carefully crafting the code. Writing the original Crumbicon application in Crumb was therefore quite a laboring task.
 
-The idea behind this porting project was to take something hand-crafted for one very specific, somewhat obscure world, and see if it could be adapted to a completely new one—while maintaining an identical look-and-feel and keeping the internals as similar as possible.
+The idea behind this porting project was to take something hand-crafted for one very specific, somewhat obscure world, and see if it could be adapted to a completely new one—while maintaining an identical look-and-feel and keeping the elements as similar as possible.
 
 ## Architecture
 

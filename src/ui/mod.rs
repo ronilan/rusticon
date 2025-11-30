@@ -1,6 +1,6 @@
 pub(crate) mod utils;
 
-// --- Single and Vectors of Internals
+// --- Single and Vectors of Elements
 pub(crate) mod splash_footer;
 pub(crate) mod splash_logo;
 
