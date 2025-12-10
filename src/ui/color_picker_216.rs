@@ -13,12 +13,13 @@ pub fn build() -> Element<AppState> {
                 (0..12)
                     .map(|col| {
                         // original crumb formula: (row * 12) + (col * 16)
-                        let code = (row * 12 + col + 16).min(231) as u8;
-                        terminal_style::format::background(code, " ").unwrap()
+                        let ansi_code = (row * 12 + col + 16).min(231) as u8;
+                        let decor = Decor::new(false, false, false, false, None, Some(ansi_code));
+                        Block::new(' ', decor)
                     })
-                    .collect::<Vec<String>>()
+                    .collect::<Vec<Block>>()
             })
-            .collect::<Vec<Vec<String>>>(),
+            .collect::<Vec<Vec<Block>>>(),
     ));
 
     color_picker_216.listener.on_mouse = |el, state, event| {

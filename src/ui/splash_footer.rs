@@ -9,11 +9,11 @@ pub fn build() -> Element<SplashState> {
         let term_rows = rows() as i16;
 
         let text = "Made with Rust";
-        el.x((term_cols.saturating_sub(text.len() as i16)) / 2);
-        el.y(term_rows.saturating_sub(1));
-        el.look(terminal_style::format::bold(terminal_style::format::faint(
-            Look::from(text),
-        )));
+        el.x((term_cols.saturating_sub(text.len() as i16)) / 2)
+            .y(term_rows.saturating_sub(1))
+            .look(Look::from(text))
+            .faint(true)
+            .bold(true);
 
         draw(el);
 

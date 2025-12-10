@@ -23,14 +23,18 @@ pub(crate) fn set_palette_in_state(state: &mut AppState, value: Option<u8>) {
 
 /// Canvas helpers
 pub(crate) fn canvas_look_from_data(size: usize, data: &[Option<u8>]) -> Look {
-    let rows: Vec<Vec<String>> = (0..size)
+    let rows: Vec<Vec<Block>> = (0..size)
         .map(|row| {
             (0..(size * 2))
                 .map(|col| {
                     let half_col = col / 2;
                     match data[row * size + half_col] {
-                        Some(color) => terminal_style::format::background(color, " ").unwrap(),
-                        None => ":".to_string(),
+                        Some(ansi_code) => {
+                            let decor =
+                                Decor::new(false, false, false, false, None, Some(ansi_code));
+                            Block::new(' ', decor)
+                        }
+                        None => Block::new(':', Decor::default()),
                     }
                 })
                 .collect()

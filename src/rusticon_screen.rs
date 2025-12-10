@@ -13,9 +13,7 @@ pub fn build() -> Element<AppState> {
 
     wrapper.elements.push(crate::ui::color_picker_16::build());
     wrapper.elements.push(crate::ui::color_picker_216::build());
-    wrapper
-        .elements
-        .push(crate::ui::color_picker_gray::build());
+    wrapper.elements.push(crate::ui::color_picker_gray::build());
     wrapper
         .elements
         .push(crate::ui::color_picker_empty::build());

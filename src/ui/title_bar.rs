@@ -24,7 +24,8 @@ pub fn build() -> Element<AppState> {
         );
         line.replace_range(0..text.len().min(cols), &text);
 
-        el.look(Look::from(terminal_style::format::inverse(&line)));
+        el.look(Look::from(line)).inverse(true);
+        decorate(el);
         draw(el);
     };
 

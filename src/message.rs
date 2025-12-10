@@ -1,5 +1,3 @@
-use terminal_style::format::{bold, color};
-
 use little_tui::*;
 
 /// Draws a full-screen message centered in the terminal
@@ -12,7 +10,7 @@ pub fn draw_message(msg: &str, color_code: u8) {
     let msg_height = message_lines.len();
 
     // Full-screen 2D vector of spaces
-    let mut screen: Vec<Vec<String>> = vec![vec![" ".to_string(); term_cols]; term_rows];
+    let mut screen: Vec<Vec<char>> = vec![vec![' '; term_cols]; term_rows];
 
     let start_y = term_rows.saturating_sub(msg_height) / 2;
 
@@ -20,16 +18,16 @@ pub fn draw_message(msg: &str, color_code: u8) {
         let start_x = term_cols.saturating_sub(line.len()) / 2;
         for (j, ch) in line.chars().enumerate() {
             if start_x + j < term_cols {
-                screen[start_y + i][start_x + j] = ch.to_string();
+                screen[start_y + i][start_x + j] = ch;
             }
         }
     }
 
-    // Create Look from screen and wrap in color
-    let look = bold(color(color_code, Look::from(screen)).unwrap());
+    let look = Look::from(screen);
 
     // Draw element
     let el: Element<()> = Element::new();
-    el.look(look);
+    el.look(look).bold(true).color(Some(color_code));
+    decorate(&el);
     draw(&el);
 }

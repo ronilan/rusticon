@@ -14,7 +14,7 @@ pub fn build() -> Element<AppState> {
             let columns = columns() as usize;
 
             for row_idx in 0..rows {
-                let mut row = vec![" ".to_string(); columns];
+                let mut row = vec![' '; columns];
 
                 if row_idx == rows / 2 {
                     let mut point = columns / 2;
@@ -24,7 +24,7 @@ pub fn build() -> Element<AppState> {
                     let msg = "Enlarge Terminal Window";
                     for (i, ch) in msg.chars().enumerate() {
                         if point + i < row.len() {
-                            row[point + i] = ch.to_string();
+                            row[point + i] = ch;
                         }
                     }
                 }

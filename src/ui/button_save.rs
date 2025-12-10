@@ -9,7 +9,8 @@ pub fn build() -> Element<AppState> {
     button_save
         .x(X)
         .y(Y)
-        .look(terminal_style::format::underline(Look::from("Save")));
+        .look(Look::from("Save"))
+        .underline(true);
 
     button_save.listener.on_loop = |_el, state, _event| {
         if state.save_flag {
@@ -23,6 +24,7 @@ pub fn build() -> Element<AppState> {
         }
     };
     button_save.listener.on_state = |el, state| {
+        decorate(el);
         crate::ui::draw_relative(el, X, Y, state);
     };
 

@@ -9,15 +9,8 @@ pub fn build() -> Element<AppState> {
     color_selected.x(X).y(Y).look(Look::from((15, 2, ' ')));
 
     color_selected.listener.on_state = |el, state| {
-        let look = Look::from((15, 2, ' '));
-
-        if let Some(pb) = state.paintbrush {
-            let styled = terminal_style::format::background(pb, look).unwrap();
-            el.look(Look::from(styled));
-        } else {
-            el.look(look);
-        }
-
+        el.background(state.paintbrush);
+        decorate(el);
         crate::ui::draw_relative(el, X, Y, state);
     };
 

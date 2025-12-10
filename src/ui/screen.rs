@@ -20,9 +20,11 @@ pub fn build() -> Element<AppState> {
             state.app_y = y;
         }
     };
-    screen.listener.on_mouse = |_el, state, event| {
+    screen.listener.on_mouse = |el, state, event| {
         if event.mouse == Mouse::Move {
-            state.picker_mode = false;
+            if el.status.hovered.get() {
+                state.picker_mode = false;
+            }
         }
     };
 

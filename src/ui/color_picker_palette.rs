@@ -7,12 +7,12 @@ static Y: i16 = 21;
 pub fn build<'a>() -> Element<AppState> {
     let mut color_picker_palette: Element<AppState> = Element::new();
     color_picker_palette.x(X).y(Y).look({
-        let row: Vec<String> = (0..32)
+        let row: Vec<char> = (0..32)
             .map(|index| {
                 if index % 4 == 1 || index % 4 == 2 {
-                    ":".to_string()
+                    ':'
                 } else {
-                    " ".to_string()
+                    ' '
                 }
             })
             .collect();
@@ -44,7 +44,7 @@ pub fn build<'a>() -> Element<AppState> {
         let pl = state.palette_index;
         let pll = &state.palette_colors;
 
-        let mut look = el.visual.look.cells().to_vec();
+        let mut look = el.visual.look.blocks().to_vec();
 
         for row in look.iter_mut() {
             for (col_i, col) in row.iter_mut().enumerate() {
@@ -53,18 +53,20 @@ pub fn build<'a>() -> Element<AppState> {
                     let coloring = pll[palette_idx];
                     let active = col_i == pl * 4 + 1 || col_i == pl * 4 + 2;
 
-                    *col = if let Some(c) = coloring {
-                        terminal_style::format::background(c, if active { "+" } else { " " })
-                            .unwrap()
+                    let decor = Decor::new(false, false, false, false, None, coloring);
+                    let content = if active {
+                        '+'
                     } else {
-                        if active {
-                            "+".to_string()
+                        if coloring.is_none() {
+                            ':'
                         } else {
-                            ":".to_string()
+                            ' '
                         }
                     };
+
+                    *col = Block::new(content, decor);
                 } else {
-                    *col = " ".to_string();
+                    *col = Block::new(' ', Decor::default());
                 }
             }
         }

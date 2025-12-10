@@ -12,12 +12,13 @@ pub fn build() -> Element<AppState> {
             .map(|row| {
                 (0..2)
                     .map(|col| {
-                        let code: u8 = (row * 2 + col + 232).try_into().unwrap();
-                        terminal_style::format::background(code, " ").unwrap()
+                        let ansi_code: u8 = (row * 2 + col + 232).try_into().unwrap();
+                        let decor = Decor::new(false, false, false, false, None, Some(ansi_code));
+                        Block::new(' ', decor)
                     })
-                    .collect::<Vec<String>>() // a single row
+                    .collect::<Vec<Block>>()
             })
-            .collect::<Vec<Vec<String>>>(), // all rows
+            .collect::<Vec<Vec<Block>>>(),
     ));
 
     color_picker_gray.listener.on_mouse = |el, state, event| {

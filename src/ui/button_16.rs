@@ -9,7 +9,8 @@ pub fn build() -> Element<AppState> {
     button_16
         .x(X)
         .y(Y)
-        .look(terminal_style::format::underline(Look::from("16x16")));
+        .look(Look::from("16x16"))
+        .underline(true);
 
     button_16.listener.on_mouse = |_el, state, event: &EventMouse| {
         if event.mouse == Mouse::Click {
@@ -18,6 +19,7 @@ pub fn build() -> Element<AppState> {
         }
     };
     button_16.listener.on_state = |el, state| {
+        decorate(el);
         crate::ui::draw_relative(el, X, Y, state);
     };
 

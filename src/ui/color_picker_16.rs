@@ -15,11 +15,12 @@ pub fn build() -> Element<AppState> {
                         let ansi_code: u8 = terminal_style::color::rgb_to_ansi8(
                             terminal_style::color::ansi8_to_rgb(row),
                         );
-                        terminal_style::format::background(ansi_code, " ").unwrap()
+                        let decor = Decor::new(false, false, false, false, None, Some(ansi_code));
+                        Block::new(' ', decor)
                     })
-                    .collect::<Vec<String>>()
+                    .collect::<Vec<Block>>()
             })
-            .collect::<Vec<Vec<String>>>(),
+            .collect::<Vec<Vec<Block>>>(),
     ));
 
     color_picker_16.listener.on_mouse = |el, state, event| {

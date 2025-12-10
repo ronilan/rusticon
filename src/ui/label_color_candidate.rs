@@ -6,10 +6,7 @@ static Y: i16 = 13;
 
 pub fn build() -> Element<AppState> {
     let mut label_color_candidate: Element<AppState> = Element::new();
-    label_color_candidate
-        .x(X)
-        .y(Y)
-        .look(Look::from(vec![vec!["".to_string()]]));
+    label_color_candidate.x(X).y(Y).look(Look::new());
 
     label_color_candidate.listener.on_state = |el, state| {
         let text = if state.picker_mode {
