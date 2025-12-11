@@ -8,9 +8,10 @@ mod ui;
 
 use std::{env, thread, time::Duration};
 
+use little_tui::{run, Globals};
+
 use export::export_svg;
 use import::import_file;
-use little_tui::{run, set_tick_rate};
 use message::draw_message;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -94,7 +95,7 @@ fn main() {
     let splash_state = SplashState { loop_count: 0 };
     let splash_root = splash_screen::build();
 
-    set_tick_rate(Duration::from_millis(100));
+    Globals::set_tick_rate(Duration::from_millis(100));
     // Run splash until result_holder contains Some(...)
     run(splash_root, splash_state);
 
@@ -127,7 +128,7 @@ fn main() {
             };
 
             // Run main UI
-            set_tick_rate(Duration::from_millis(33));
+            Globals::set_tick_rate(Duration::from_millis(33));
             let root = rusticon_screen::build();
             let final_ui_state = run(root, ui_state);
 
