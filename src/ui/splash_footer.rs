@@ -5,8 +5,8 @@ pub fn build() -> Element<SplashState> {
     let mut splash_footer = Element::new();
 
     splash_footer.listener.on_state = |el: &Element<SplashState>, state| {
-        let term_cols = columns() as i16;
-        let term_rows = rows() as i16;
+        let term_cols = Terminal::columns() as i16;
+        let term_rows = Terminal::rows() as i16;
 
         let text = "Made with Rust";
         el.x((term_cols.saturating_sub(text.len() as i16)) / 2)

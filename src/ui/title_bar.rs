@@ -6,8 +6,8 @@ pub fn build() -> Element<AppState> {
     let mut title_bar: Element<AppState> = Element::new();
 
     title_bar.listener.on_loop = |el, state, _event| {
-        let x = (columns().saturating_sub(APP_WIDTH) / 2) as i16;
-        let y = (rows().saturating_sub(APP_HEIGHT) / 2) as i16;
+        let x = (Terminal::columns().saturating_sub(APP_WIDTH) / 2) as i16;
+        let y = (Terminal::rows().saturating_sub(APP_HEIGHT) / 2) as i16;
 
         if x != state.app_x || y != state.app_y {
             draw(el);
@@ -15,7 +15,7 @@ pub fn build() -> Element<AppState> {
     };
 
     title_bar.listener.on_state = |el, state| {
-        let cols = columns() as usize;
+        let cols = Terminal::columns() as usize;
 
         let mut line = " ".repeat(cols);
         let text = format!(

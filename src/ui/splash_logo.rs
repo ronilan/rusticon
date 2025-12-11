@@ -46,8 +46,8 @@ pub fn build() -> Element<SplashState> {
     splash_logo.listener.on_loop = |el, state: &mut SplashState, event| {
         let n = event.loop_count as u16;
 
-        let term_cols = columns();
-        let term_rows = rows();
+        let term_cols = Terminal::columns();
+        let term_rows = Terminal::rows();
         let art_width = 39;
         let art_height = 7; // finishing with bounce text makes 7
 
