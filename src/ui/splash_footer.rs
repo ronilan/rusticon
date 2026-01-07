@@ -5,7 +5,6 @@ pub fn build() -> Element<SplashState> {
     let splash_footer = Element::new();
 
     splash_footer
-        .listener
         .on_state(|el: &Element<SplashState>, state| {
             let term_cols = Terminal::columns() as i16;
             let term_rows = Terminal::rows() as i16;
@@ -17,7 +16,7 @@ pub fn build() -> Element<SplashState> {
                 .faint(true)
                 .bold(true);
 
-            draw(el);
+            el.draw();
 
             // --- check background thread completion ---
             if let Ok(guard) = RESULT_HOLDER.try_lock() {

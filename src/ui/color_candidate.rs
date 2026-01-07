@@ -18,7 +18,7 @@ pub fn build() -> Element<AppState> {
             };
 
             el.background(color_source);
-            decorate(el);
+            el.decorate();
             crate::ui::draw_relative(el, X, Y, state);
         });
 

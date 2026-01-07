@@ -18,7 +18,7 @@ pub fn build() -> Element<AppState> {
             }
         })
         .on_state(|el, state| {
-            decorate(el);
+            el.decorate();
             crate::ui::draw_relative(el, X, Y, state);
         });
 

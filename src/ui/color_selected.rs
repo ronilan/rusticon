@@ -12,7 +12,7 @@ pub fn build() -> Element<AppState> {
         .look(Look::from((15, 2, ' ')))
         .on_state(|el, state| {
             el.background(state.paintbrush);
-            decorate(el);
+            el.decorate();
             crate::ui::draw_relative(el, X, Y, state);
         });
 

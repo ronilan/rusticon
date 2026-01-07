@@ -11,7 +11,7 @@ pub fn build() -> Element<AppState> {
             let y = (Terminal::rows().saturating_sub(APP_HEIGHT) / 2) as i16;
 
             if x != state.app_x || y != state.app_y {
-                draw(el);
+                el.draw();
             }
         })
         .on_state(|el, state| {
@@ -25,8 +25,8 @@ pub fn build() -> Element<AppState> {
             line.replace_range(0..text.len().min(cols), &text);
 
             el.look(Look::from(line)).inverse(true);
-            decorate(el);
-            draw(el);
+            el.decorate();
+            el.draw();
         });
 
     title_bar

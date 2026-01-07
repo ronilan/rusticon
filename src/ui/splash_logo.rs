@@ -44,7 +44,6 @@ pub fn build() -> Element<SplashState> {
     let splash_logo = Element::new();
 
     splash_logo
-        .listener
         .on_loop(|el, state: &mut SplashState, event| {
             let n = event.loop_count as u16;
 
@@ -71,7 +70,7 @@ pub fn build() -> Element<SplashState> {
             el.x(x);
             el.y(y);
 
-            draw(el);
+            el.draw();
 
             state.loop_count = event.loop_count
         });

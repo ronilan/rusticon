@@ -10,15 +10,12 @@ pub fn build() -> Element<AppState> {
         .x(X)
         .y(Y)
         .look(Look::from("Exit"))
-        .underline(true);
-
-    button_exit.listener.on_mouse(|_el, _state, event| {
+        .underline(true).on_mouse(|_el, _state, event| {
         if event.mouse == Mouse::Click {
             exit();
         }
-    });
-    button_exit.listener.on_state(|el, state| {
-        decorate(el);
+    }).on_state(|el, state| {
+        el.decorate();
         crate::ui::draw_relative(el, X, Y, state);
     });
 

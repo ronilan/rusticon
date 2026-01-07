@@ -41,6 +41,6 @@ pub(crate) fn draw_relative<S>(el: &Element<S>, x: i16, y: i16, state: &AppState
     if Terminal::columns() >= APP_WIDTH && Terminal::rows() >= APP_HEIGHT {
         el.x(state.app_x + x);
         el.y(state.app_y + y);
-        draw(el);
+        el.draw();
     }
 }
