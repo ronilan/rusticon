@@ -6,45 +6,46 @@ static X: i16 = 23;
 static Y: i16 = 3;
 
 pub fn build() -> Element<AppState> {
-    let mut canvas_16: Element<AppState> = Element::new();
-    canvas_16.x(X).y(Y);
-
-    canvas_16.listener.on_mouse = |el, state, event| {
-        if event.mouse == Mouse::Down || event.mouse == Mouse::Drag {
-            if state.size == 16 {
-                if event.modifiers.contains(&KeyMod::Ctrl) {
-                    // Handle ctrl-click for color picking
-                    let row = event.y.saturating_sub(el.visual.y.get()) as usize;
-                    let col = event.x.saturating_sub(el.visual.x.get()) as usize / 2;
-                    if row < 16 && col < 16 {
-                        state.paintbrush = state.canvas16_data[row * 16 + col];
-                        set_palette_in_state(state, state.paintbrush);
+    let canvas_16: Element<AppState> = Element::new();
+    canvas_16
+        .x(X)
+        .y(Y)
+        .on_mouse(|el, state, event| {
+            if event.mouse == Mouse::Down || event.mouse == Mouse::Drag {
+                if state.size == 16 {
+                    if event.modifiers.contains(&KeyMod::Ctrl) {
+                        // Handle ctrl-click for color picking
+                        let row = event.y.saturating_sub(el.visual.y.get()) as usize;
+                        let col = event.x.saturating_sub(el.visual.x.get()) as usize / 2;
+                        if row < 16 && col < 16 {
+                            state.paintbrush = state.canvas16_data[row * 16 + col];
+                            set_palette_in_state(state, state.paintbrush);
+                        }
+                    } else {
+                        canvas_data_from_click(
+                            el,
+                            16,
+                            &mut state.canvas16_data,
+                            state.paintbrush,
+                            event.x,
+                            event.y,
+                            event.modifiers.contains(&KeyMod::Shift),
+                        );
                     }
-                } else {
-                    canvas_data_from_click(
-                        el,
-                        16,
-                        &mut state.canvas16_data,
-                        state.paintbrush,
-                        event.x,
-                        event.y,
-                        event.modifiers.contains(&KeyMod::Shift),
-                    );
+                    let look = canvas_look_from_data(16, &state.canvas16_data);
+                    el.look(look);
+                    crate::ui::draw_relative(el, X, Y, state);
                 }
+            }
+        })
+        .on_state(|el, state| {
+            if state.size == 16 {
                 let look = canvas_look_from_data(16, &state.canvas16_data);
                 el.look(look);
+
                 crate::ui::draw_relative(el, X, Y, state);
             }
-        }
-    };
-    canvas_16.listener.on_state = |el, state| {
-        if state.size == 16 {
-            let look = canvas_look_from_data(16, &state.canvas16_data);
-            el.look(look);
-
-            crate::ui::draw_relative(el, X, Y, state);
-        }
-    };
+        });
 
     canvas_16
 }

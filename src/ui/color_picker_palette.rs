@@ -5,76 +5,78 @@ static X: i16 = 23;
 static Y: i16 = 21;
 
 pub fn build<'a>() -> Element<AppState> {
-    let mut color_picker_palette: Element<AppState> = Element::new();
-    color_picker_palette.x(X).y(Y).look({
-        let row: Vec<char> = (0..32)
-            .map(|index| {
-                if index % 4 == 1 || index % 4 == 2 {
-                    ':'
-                } else {
-                    ' '
-                }
-            })
-            .collect();
-        Look::from(vec![row])
-    });
-
-    color_picker_palette.listener.on_mouse = |el, state, event| {
-        let col_rel = event.x.saturating_sub(el.visual.x.get()) as usize;
-        let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
-            col_rel / 4
-        } else {
-            state.palette_index
-        };
-
-        if event.mouse == Mouse::Click {
-            if selected < state.palette_colors.len() {
-                state.paintbrush = state.palette_colors[selected];
-                state.palette_index = selected;
-            }
-        }
-        if event.mouse == Mouse::Move {
-            if selected < state.palette_colors.len() {
-                state.candidate = state.palette_colors[selected];
-                state.picker_mode = true;
-            }
-        }
-    };
-    color_picker_palette.listener.on_state = |el, state| {
-        let pl = state.palette_index;
-        let pll = &state.palette_colors;
-
-        let mut look = el.visual.look.blocks().to_vec();
-
-        for row in look.iter_mut() {
-            for (col_i, col) in row.iter_mut().enumerate() {
-                if col_i % 4 == 1 || col_i % 4 == 2 {
-                    let palette_idx = (col_i / 4).min(pll.len().saturating_sub(1));
-                    let coloring = pll[palette_idx];
-                    let active = col_i == pl * 4 + 1 || col_i == pl * 4 + 2;
-
-                    let decor = Decor::new(false, false, false, false, None, coloring);
-                    let content = if active {
-                        '+'
+    let color_picker_palette: Element<AppState> = Element::new();
+    color_picker_palette
+        .x(X)
+        .y(Y)
+        .look({
+            let row: Vec<char> = (0..32)
+                .map(|index| {
+                    if index % 4 == 1 || index % 4 == 2 {
+                        ':'
                     } else {
-                        if coloring.is_none() {
-                            ':'
-                        } else {
-                            ' '
-                        }
-                    };
+                        ' '
+                    }
+                })
+                .collect();
+            Look::from(vec![row])
+        })
+        .on_mouse(|el, state, event| {
+            let col_rel = event.x.saturating_sub(el.visual.x.get()) as usize;
+            let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
+                col_rel / 4
+            } else {
+                state.palette_index
+            };
 
-                    *col = Block::new(content, decor);
-                } else {
-                    *col = Block::new(' ', Decor::default());
+            if event.mouse == Mouse::Click {
+                if selected < state.palette_colors.len() {
+                    state.paintbrush = state.palette_colors[selected];
+                    state.palette_index = selected;
                 }
             }
-        }
+            if event.mouse == Mouse::Move {
+                if selected < state.palette_colors.len() {
+                    state.candidate = state.palette_colors[selected];
+                    state.picker_mode = true;
+                }
+            }
+        })
+        .on_state(|el, state| {
+            let pl = state.palette_index;
+            let pll = &state.palette_colors;
 
-        el.look(Look::from(look));
+            let mut look = el.visual.look.blocks().to_vec();
 
-        crate::ui::draw_relative(el, X, Y, state);
-    };
+            for row in look.iter_mut() {
+                for (col_i, col) in row.iter_mut().enumerate() {
+                    if col_i % 4 == 1 || col_i % 4 == 2 {
+                        let palette_idx = (col_i / 4).min(pll.len().saturating_sub(1));
+                        let coloring = pll[palette_idx];
+                        let active = col_i == pl * 4 + 1 || col_i == pl * 4 + 2;
+
+                        let decor = Decor::new(false, false, false, false, None, coloring);
+                        let content = if active {
+                            '+'
+                        } else {
+                            if coloring.is_none() {
+                                ':'
+                            } else {
+                                ' '
+                            }
+                        };
+
+                        *col = Block::new(content, decor);
+                    } else {
+                        *col = Block::new(' ', Decor::default());
+                    }
+                }
+            }
+
+            el.look(Look::from(look));
+
+            crate::ui::draw_relative(el, X, Y, state);
+        });
 
     color_picker_palette
 }

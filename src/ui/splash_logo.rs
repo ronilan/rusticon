@@ -41,20 +41,22 @@ fn art_line(n: u16, s: &str) -> Vec<Block> {
 }
 
 pub fn build() -> Element<SplashState> {
-    let mut splash_logo = Element::new();
+    let splash_logo = Element::new();
 
-    splash_logo.listener.on_loop = |el, state: &mut SplashState, event| {
-        let n = event.loop_count as u16;
+    splash_logo
+        .listener
+        .on_loop(|el, state: &mut SplashState, event| {
+            let n = event.loop_count as u16;
 
-        let term_cols = Terminal::columns();
-        let term_rows = Terminal::rows();
-        let art_width = 39;
-        let art_height = 7; // finishing with bounce text makes 7
+            let term_cols = Terminal::columns();
+            let term_rows = Terminal::rows();
+            let art_width = 39;
+            let art_height = 7; // finishing with bounce text makes 7
 
-        let x = ((term_cols.saturating_sub(art_width)) / 2) as i16;
-        let y = ((term_rows.saturating_sub(art_height)) / 2) as i16;
+            let x = ((term_cols.saturating_sub(art_width)) / 2) as i16;
+            let y = ((term_rows.saturating_sub(art_height)) / 2) as i16;
 
-        #[rustfmt::skip]
+            #[rustfmt::skip]
         let art_cells: Vec<Vec<Block>> = vec![
             art_line(n + 2, " ____            _   _                 "),
             art_line(n + 3, "|  _ \\ _   _ ___| |_(_) ___ ___  _ __  "),
@@ -65,14 +67,14 @@ pub fn build() -> Element<SplashState> {
             bouncing_text(n as usize),
         ];
 
-        el.look(Look::from(art_cells));
-        el.x(x);
-        el.y(y);
+            el.look(Look::from(art_cells));
+            el.x(x);
+            el.y(y);
 
-        draw(el);
+            draw(el);
 
-        state.loop_count = event.loop_count
-    };
+            state.loop_count = event.loop_count
+        });
 
     splash_logo
 }
