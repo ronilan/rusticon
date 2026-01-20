@@ -19,7 +19,7 @@ futures = "0.3.31"
 futures-timer = "3.0.3"
 image = "0.25.6"
 terminal_style = "0.4.0"
-little_tui = { path = "../little_tui_workspace/little_tui" }
+little_tui = { path = "../little_tui/packages/little_tui" }
 
 [[bin]]
 name = "rusticon"

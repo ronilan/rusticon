@@ -6,7 +6,7 @@ mod shared;
 mod splash_screen;
 mod ui;
 
-use std::{env, thread, time::Duration};
+use std::{env, thread};
 
 use little_tui::{run, Globals};
 
@@ -95,7 +95,7 @@ fn main() {
     let splash_state = SplashState { loop_count: 0 };
     let splash_root = splash_screen::build();
 
-    Globals::set_tick_rate(Duration::from_millis(100));
+    Globals::set_tick_rate(10.0);
     // Run splash until result_holder contains Some(...)
     run(splash_root, splash_state);
 
@@ -128,7 +128,7 @@ fn main() {
             };
 
             // Run main UI
-            Globals::set_tick_rate(Duration::from_millis(33));
+            Globals::set_tick_rate(33.0);
             let root = rusticon_screen::build();
             let final_ui_state = run(root, ui_state);
 
