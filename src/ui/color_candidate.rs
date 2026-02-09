@@ -1,4 +1,4 @@
-use crate::AppState;
+use crate::{ui::reposition, AppState};
 use little_tui::*;
 
 static X: isize = 61;
@@ -18,8 +18,10 @@ pub fn build() -> Element<AppState> {
             };
 
             el.background(color_source);
+
+            reposition(el, X, Y, state);
             el.decorate();
-            crate::ui::draw_relative(el, X, Y, state);
+            el.draw();
         });
 
     color_candidate

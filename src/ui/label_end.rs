@@ -1,4 +1,4 @@
-use crate::AppState;
+use crate::{ui::reposition, AppState};
 use little_tui::*;
 
 static X: isize = 59;
@@ -9,7 +9,8 @@ pub fn build() -> Element<AppState> {
     label_end.x(X).y(Y).look(Look::from("End:"));
 
     label_end.on_state(|el, state| {
-        crate::ui::draw_relative(el, X, Y, state);
+        reposition(el, X, Y, state);
+        el.draw();
     });
 
     label_end

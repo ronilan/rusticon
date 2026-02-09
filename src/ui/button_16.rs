@@ -1,4 +1,4 @@
-use crate::AppState;
+use crate::{ui::reposition, AppState};
 use little_tui::*;
 
 static X: isize = 74;
@@ -18,8 +18,9 @@ pub fn build() -> Element<AppState> {
             }
         })
         .on_state(|el, state| {
+            reposition(el, X, Y, state);
             el.decorate();
-            crate::ui::draw_relative(el, X, Y, state);
+            el.draw();
         });
 
     button_16

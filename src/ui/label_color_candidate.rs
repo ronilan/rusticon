@@ -1,4 +1,4 @@
-use crate::AppState;
+use crate::{ui::reposition, AppState};
 use little_tui::*;
 
 static X: isize = 62;
@@ -21,7 +21,9 @@ pub fn build() -> Element<AppState> {
             };
 
             el.look(Look::from(text));
-            crate::ui::draw_relative(el, X, Y, state);
+
+            reposition(el, X, Y, state);
+            el.draw();
         });
 
     label_color_candidate

@@ -1,5 +1,5 @@
 use crate::ui::utils::*;
-use crate::AppState;
+use crate::{ui::reposition, AppState};
 use little_tui::*;
 
 static X: isize = 23;
@@ -34,7 +34,7 @@ pub fn build() -> Element<AppState> {
                     }
                     let look = canvas_look_from_data(16, &state.canvas16_data);
                     el.look(look);
-                    crate::ui::draw_relative(el, X, Y, state);
+                    reposition(el, X, Y, state);
                 }
             }
         })
@@ -43,7 +43,8 @@ pub fn build() -> Element<AppState> {
                 let look = canvas_look_from_data(16, &state.canvas16_data);
                 el.look(look);
 
-                crate::ui::draw_relative(el, X, Y, state);
+                reposition(el, X, Y, state);
+                el.draw();
             }
         });
 

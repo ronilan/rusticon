@@ -1,4 +1,4 @@
-use crate::AppState;
+use crate::{ui::reposition, AppState};
 use little_tui::*;
 
 static X: isize = 67;
@@ -22,12 +22,14 @@ pub fn build() -> Element<AppState> {
                 static EY: isize = 3;
                 let eraser: Element<AppState> = Element::new();
                 eraser.x(EX).y(EY).look(Look::from((32, 16, ' ')));
-                crate::ui::draw_relative(&eraser, EX, EY, state);
+                reposition(&eraser, EX, EY, state);
+                eraser.draw();
             }
         })
         .on_state(|el, state| {
+            reposition(el, X, Y, state);
             el.decorate();
-            crate::ui::draw_relative(el, X, Y, state);
+            el.draw();
         });
 
     button_8
