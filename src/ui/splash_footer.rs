@@ -5,11 +5,11 @@ pub fn build() -> Element<SplashState> {
     let splash_footer = Element::new();
 
     splash_footer.on_state(|el: &Element<SplashState>, state| {
-        let term_cols = Terminal::columns() as i16;
-        let term_rows = Terminal::rows() as i16;
+        let term_cols = Terminal::columns() as isize;
+        let term_rows = Terminal::rows() as isize;
 
         let text = "Made with Rust";
-        el.x((term_cols.saturating_sub(text.len() as i16)) / 2)
+        el.x((term_cols.saturating_sub(text.len() as isize)) / 2)
             .y(term_rows.saturating_sub(1))
             .look(Look::from(text))
             .faint(true)

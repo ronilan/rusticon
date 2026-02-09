@@ -1,8 +1,8 @@
 use crate::AppState;
 use little_tui::*;
 
-static X: i16 = 59;
-static Y: i16 = 2;
+static X: isize = 59;
+static Y: isize = 2;
 
 pub fn build() -> Element<AppState> {
     let label_new: Element<AppState> = Element::new();

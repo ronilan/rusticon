@@ -1,8 +1,8 @@
 use crate::AppState;
 use little_tui::*;
 
-static X: i16 = 61;
-static Y: i16 = 11;
+static X: isize = 61;
+static Y: isize = 11;
 
 pub fn build() -> Element<AppState> {
     let color_candidate: Element<AppState> = Element::new();

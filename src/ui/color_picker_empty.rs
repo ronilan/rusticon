@@ -2,8 +2,8 @@ use crate::ui::utils::*;
 use crate::AppState;
 use little_tui::*;
 
-static X: i16 = 16;
-static Y: i16 = 18;
+static X: isize = 16;
+static Y: isize = 18;
 
 pub fn build() -> Element<AppState> {
     let color_picker_empty: Element<AppState> = Element::new();

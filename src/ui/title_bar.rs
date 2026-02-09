@@ -7,8 +7,8 @@ pub fn build() -> Element<AppState> {
 
     title_bar
         .on_loop(|el, state, _event| {
-            let x = (Terminal::columns().saturating_sub(APP_WIDTH) / 2) as i16;
-            let y = (Terminal::rows().saturating_sub(APP_HEIGHT) / 2) as i16;
+            let x = (Terminal::columns().saturating_sub(APP_WIDTH) / 2) as isize;
+            let y = (Terminal::rows().saturating_sub(APP_HEIGHT) / 2) as isize;
 
             if x != state.app_x || y != state.app_y {
                 el.draw();

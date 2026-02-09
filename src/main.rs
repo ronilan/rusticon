@@ -21,8 +21,8 @@ pub struct SplashState {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct AppState {
-    app_x: i16,
-    app_y: i16,
+    app_x: isize,
+    app_y: isize,
     candidate: Option<u8>,
     paintbrush: Option<u8>,
     palette_index: usize,

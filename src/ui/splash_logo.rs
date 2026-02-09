@@ -28,7 +28,7 @@ fn bouncing_text(n: usize) -> Vec<Block> {
     s.chars().map(|c| Block::new(c, Decor::default())).collect()
 }
 
-fn art_line(n: u16, s: &str) -> Vec<Block> {
+fn art_line(n: usize, s: &str) -> Vec<Block> {
     let color = (n % 5) as u8; // same color logic you used
 
     s.chars()
@@ -44,15 +44,15 @@ pub fn build() -> Element<SplashState> {
     let splash_logo = Element::new();
 
     splash_logo.on_loop(|el, state: &mut SplashState, event| {
-        let n = event.loop_count as u16;
+        let n = event.loop_count as usize;
 
         let term_cols = Terminal::columns();
         let term_rows = Terminal::rows();
         let art_width = 39;
         let art_height = 7; // finishing with bounce text makes 7
 
-        let x = ((term_cols.saturating_sub(art_width)) / 2) as i16;
-        let y = ((term_rows.saturating_sub(art_height)) / 2) as i16;
+        let x = ((term_cols.saturating_sub(art_width)) / 2) as isize;
+        let y = ((term_rows.saturating_sub(art_height)) / 2) as isize;
 
         #[rustfmt::skip]
         let art_cells: Vec<Vec<Block>> = vec![

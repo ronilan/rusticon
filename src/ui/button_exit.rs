@@ -1,8 +1,8 @@
 use crate::AppState;
 use little_tui::*;
 
-static X: i16 = 67;
-static Y: i16 = 19;
+static X: isize = 67;
+static Y: isize = 19;
 
 pub fn build() -> Element<AppState> {
     let button_exit: Element<AppState> = Element::new();
