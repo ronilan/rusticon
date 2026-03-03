@@ -1,7 +1,7 @@
-use crate::AppState;
+use crate::State;
 use little_tui::Element;
 
-pub fn build() -> Element<AppState> {
+pub fn build() -> Element<State> {
     let wrapper = Element::new();
 
     wrapper.elements.push(crate::ui::screen::build());

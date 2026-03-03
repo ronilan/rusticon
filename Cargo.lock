@@ -631,10 +631,34 @@ checksum = "11d3d7f243d5c5a8b9bb5d6dd2b1602c0cb0b9db1621bafc7ed66e35ff9fe092"
 name = "little_tui"
 version = "0.1.0"
 dependencies = [
- "crossterm",
  "futures",
  "futures-timer",
  "unicode-width",
+]
+
+[[package]]
+name = "little_tui_event_loop"
+version = "0.1.0"
+dependencies = [
+ "futures",
+ "futures-timer",
+ "little_tui",
+]
+
+[[package]]
+name = "little_tui_input_crossterm"
+version = "0.1.0"
+dependencies = [
+ "crossterm",
+ "futures",
+ "little_tui",
+]
+
+[[package]]
+name = "little_tui_output_terminal"
+version = "0.1.0"
+dependencies = [
+ "little_tui",
 ]
 
 [[package]]
@@ -1054,6 +1078,9 @@ dependencies = [
  "futures-timer",
  "image",
  "little_tui",
+ "little_tui_event_loop",
+ "little_tui_input_crossterm",
+ "little_tui_output_terminal",
  "terminal_style",
 ]
 

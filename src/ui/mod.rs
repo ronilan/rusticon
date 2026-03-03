@@ -31,13 +31,13 @@ pub(crate) mod button_save;
 pub(crate) mod label_end;
 
 // --- Utility
-use crate::AppState;
+use crate::State;
 use little_tui::*;
 
 pub(crate) static APP_WIDTH: usize = 80; // Width of the game window
 pub(crate) static APP_HEIGHT: usize = 24; // Height of the game window
 
-pub(crate) fn reposition<S>(el: &Element<S>, x: isize, y: isize, state: &AppState) {
+pub(crate) fn reposition<S>(el: &Element<S>, x: isize, y: isize, state: &State) {
     if Terminal::columns() >= APP_WIDTH && Terminal::rows() >= APP_HEIGHT {
         el.x(state.app_x + x);
         el.y(state.app_y + y);

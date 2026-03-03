@@ -1,9 +1,9 @@
 use crate::ui::{APP_HEIGHT, APP_WIDTH};
-use crate::AppState;
+use crate::State;
 use little_tui::*;
 
-pub fn build() -> Element<AppState> {
-    let centered_modal: Element<AppState> = Element::new();
+pub fn build() -> Element<State> {
+    let centered_modal: Element<State> = Element::new();
 
     centered_modal.on_state(|el, _state| {
         let terminal_too_small = Terminal::columns() < APP_WIDTH || Terminal::rows() < APP_HEIGHT;

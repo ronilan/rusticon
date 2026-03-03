@@ -134,13 +134,13 @@ Same box displaying the selected color as implemented in Rust:
 
 ```rust
 use crate::tui_engine::*;
-use crate::AppState;
+use crate::State;
 
 static X: u16 = 61;
 static Y: u16 = 9;
 
-pub fn build<'a>() -> Element<'a, AppState> {
-    let mut color_selected: Element<AppState> =
+pub fn build<'a>() -> Element<'a, State> {
+    let mut color_selected: Element<State> =
         Element::new(X, Y, Look::from(vec![vec![" ".to_string(); 15]; 2]));
 
     color_selected.on_state = Some(Box::new(|el, state| {

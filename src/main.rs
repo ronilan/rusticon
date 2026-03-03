@@ -8,7 +8,10 @@ mod ui;
 
 use std::{env, thread};
 
-use little_tui::{run, Globals};
+use little_tui::{run, setup, Globals, Providers};
+use little_tui_event_loop::run_event_loop;
+use little_tui_input_crossterm::CrosstermInput;
+use little_tui_output_terminal::AnsiOutput;
 
 use export::export_svg;
 use import::import_file;
@@ -20,7 +23,7 @@ pub struct SplashState {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct AppState {
+pub struct State {
     app_x: isize,
     app_y: isize,
     candidate: Option<u8>,
@@ -51,7 +54,7 @@ fn load_file_in_background(path: String) {
     });
 }
 
-fn handle_final_save(final_ui_state: &AppState) {
+fn handle_final_save(final_ui_state: &State) {
     // Final save on exit if requested
     if final_ui_state.save_flag {
         let (data, size) = if final_ui_state.size == 16 {
@@ -95,8 +98,13 @@ fn main() {
     let splash_state = SplashState { loop_count: 0 };
     let splash_root = splash_screen::build();
 
-    Globals::set_tick_rate(10.0);
     // Run splash until result_holder contains Some(...)
+    Globals::set_tick_rate(10.0);
+    setup(Providers {
+        input: Box::new(CrosstermInput::new()),
+        output: Box::new(AnsiOutput::new(Box::new(CrosstermInput::new()))),
+        looper: run_event_loop::<SplashState>,
+    });
     run(splash_root, splash_state);
 
     // Retrieve the final result
@@ -112,7 +120,7 @@ fn main() {
             }
 
             // Build initial app state
-            let ui_state = AppState {
+            let ui_state = State {
                 app_x: 0,
                 app_y: 0,
                 candidate: None,
@@ -126,10 +134,15 @@ fn main() {
                 save_flag: false,
                 file_path: returned_path,
             };
+            let root = rusticon_screen::build();
 
             // Run main UI
             Globals::set_tick_rate(33.0);
-            let root = rusticon_screen::build();
+            setup(Providers {
+                input: Box::new(CrosstermInput::new()),
+                output: Box::new(AnsiOutput::new(Box::new(CrosstermInput::new()))),
+                looper: run_event_loop::<State>,
+            });
             let final_ui_state = run(root, ui_state);
 
             // Final save if needed

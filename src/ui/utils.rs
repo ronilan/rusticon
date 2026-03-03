@@ -1,4 +1,4 @@
-use crate::AppState;
+use crate::State;
 use little_tui::*;
 
 // Palette helpers
@@ -9,7 +9,7 @@ pub(crate) fn ideal_palette_index(curr: usize, palette: &Vec<Option<u8>>) -> usi
     }
 }
 
-pub(crate) fn set_palette_in_state(state: &mut AppState, value: Option<u8>) {
+pub(crate) fn set_palette_in_state(state: &mut State, value: Option<u8>) {
     let curr = state.palette_index;
 
     // Update the palette slot at `curr`
@@ -82,7 +82,7 @@ pub(crate) fn flood_fill(
 }
 
 pub(crate) fn canvas_data_from_click(
-    el: &Element<AppState>,
+    el: &Element<State>,
     size: usize,
     data: &mut Vec<Option<u8>>,
     paintbrush: Option<u8>,

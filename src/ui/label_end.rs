@@ -1,11 +1,11 @@
-use crate::{ui::reposition, AppState};
+use crate::{ui::reposition, State};
 use little_tui::*;
 
 static X: isize = 59;
 static Y: isize = 19;
 
-pub fn build() -> Element<AppState> {
-    let label_end: Element<AppState> = Element::new();
+pub fn build() -> Element<State> {
+    let label_end: Element<State> = Element::new();
     label_end.x(X).y(Y).look(Look::from("End:"));
 
     label_end.on_state(|el, state| {

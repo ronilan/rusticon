@@ -1,9 +1,9 @@
 use crate::ui::{APP_HEIGHT, APP_WIDTH};
-use crate::AppState;
+use crate::State;
 use little_tui::*;
 
-pub fn build() -> Element<AppState> {
-    let title_bar: Element<AppState> = Element::new();
+pub fn build() -> Element<State> {
+    let title_bar: Element<State> = Element::new();
 
     title_bar
         .on_loop(|el, state, _event| {

@@ -1,12 +1,12 @@
 use crate::ui::{APP_HEIGHT, APP_WIDTH};
-use crate::AppState;
+use crate::State;
 use little_tui::*;
 
 // ---------------- Screen ---------------- //
 // utility element with no visible look.
 // clears screen on resize, "mouse out" of pickers.
-pub fn build() -> Element<AppState> {
-    let screen: Element<AppState> = Element::new();
+pub fn build() -> Element<State> {
+    let screen: Element<State> = Element::new();
     screen.look(Look::from((Terminal::columns(), Terminal::rows(), ' ')));
 
     screen

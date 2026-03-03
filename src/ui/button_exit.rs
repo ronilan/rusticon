@@ -1,11 +1,11 @@
-use crate::{ui::reposition, AppState};
+use crate::{ui::reposition, State};
 use little_tui::*;
 
 static X: isize = 67;
 static Y: isize = 19;
 
-pub fn build() -> Element<AppState> {
-    let button_exit: Element<AppState> = Element::new();
+pub fn build() -> Element<State> {
+    let button_exit: Element<State> = Element::new();
     button_exit
         .x(X)
         .y(Y)

@@ -1,11 +1,11 @@
-use crate::{ui::reposition, AppState};
+use crate::{ui::reposition, State};
 use little_tui::*;
 
 static X: isize = 23;
 static Y: isize = 21;
 
-pub fn build<'a>() -> Element<AppState> {
-    let color_picker_palette: Element<AppState> = Element::new();
+pub fn build<'a>() -> Element<State> {
+    let color_picker_palette: Element<State> = Element::new();
     color_picker_palette
         .x(X)
         .y(Y)

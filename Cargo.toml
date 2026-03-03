@@ -20,6 +20,9 @@ futures-timer = "3.0.3"
 image = "0.25.6"
 terminal_style = "0.4.0"
 little_tui = { path = "../little_tui/packages/little_tui" }
+little_tui_event_loop = { path = "../little_tui/packages/little_tui_event_loop" }
+little_tui_output_terminal = { path = "../little_tui/packages/little_tui_output_terminal" }
+little_tui_input_crossterm = { path = "../little_tui/packages/little_tui_input_crossterm" }
 
 [[bin]]
 name = "rusticon"
