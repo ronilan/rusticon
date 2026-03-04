@@ -25,7 +25,8 @@ pub fn run_splash_phase(
 
     Globals::set_tick_rate(10.0);
     setup_terminal::<SplashState>();
-    tui_run(splash_root, splash_state);
+    let splash_handle = tui_run(splash_root, splash_state, |_| {});
+    let _ = splash_handle.wait_final_state();
 
     io.take_import_result()
 }
@@ -66,7 +67,9 @@ pub fn run_main_phase(ui_state: State) -> State {
 
     Globals::set_tick_rate(33.0);
     setup_terminal::<State>();
-    tui_run(root, ui_state)
+
+    let main_handle = tui_run(root, ui_state, |_| {});
+    main_handle.wait_final_state()
 }
 
 pub fn run_flow(io: &impl RusticonIo, on_final_state: impl FnOnce(&State)) {
