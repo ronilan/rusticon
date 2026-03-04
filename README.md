@@ -38,6 +38,45 @@ git clone https://github.com/ronilan/rusticon.git
 cargo run --release
 ```
 
+# WASM (experimental)
+
+Rusticon also has an experimental browser build. This is not publicly available yet.
+
+## Setup
+
+From this repository root:
+```sh
+pnpm install
+```
+
+## Run (dev)
+
+```sh
+pnpm run dev
+```
+
+This builds the wasm package and starts Vite (served from `web/`).
+
+## URL params
+
+Browser mode supports hash params:
+- `#name=icon.svg` sets the export file name (default `favicon.svg`)
+- `#size=8` or `#size=16` sets initial canvas size (default `8`)
+
+Example:
+- `http://localhost:3000/#name=my_icon.svg&size=16`
+
+## Save behavior in browser
+
+- Native app: Save writes to filesystem.
+- WASM app: Save triggers a browser download of the generated SVG.
+
+## Current limitations
+
+- WASM currently bootstraps with an empty canvas (no local file import pipeline yet).
+- The web build is experimental and may change.
+- Dependencies are not publicly available for build.
+
 # Use
 
 ## Drawing

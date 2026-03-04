@@ -1,0 +1,19 @@
+{
+  "name": "rusticon",
+  "version": "0.2.3",
+  "private": true,
+  "scripts": {
+    "build:wasm": "wasm-pack build --target web --mode no-install",
+    "build:ts": "tsc",
+    "build": "pnpm run build:wasm && pnpm run build:ts",
+    "dev": "pnpm run build:wasm && vite",
+    "dev:watch": "cargo watch -s 'pnpm run build:wasm' & vite",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "vite-plugin-wasm": "^3.3.0",
+    "vite-plugin-top-level-await": "^1.4.0"
+  }
+}

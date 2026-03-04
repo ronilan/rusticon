@@ -1,4 +1,4 @@
-use crate::{shared::RESULT_HOLDER, SplashState, MIN_SPLASH_LOOPS};
+use crate::{core::shared::RESULT_HOLDER, SplashState, MIN_SPLASH_LOOPS};
 use little_tui::*;
 
 pub fn build() -> Element<SplashState> {

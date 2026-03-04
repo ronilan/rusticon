@@ -1,4 +1,6 @@
+#[cfg(not(target_arch = "wasm32"))]
 use std::fs;
+#[cfg(not(target_arch = "wasm32"))]
 use std::path::Path;
 
 use terminal_style::color::ansi8_to_hex;
@@ -14,15 +16,13 @@ fn to_colon_list(values: &[Option<u8>]) -> String {
         .join(":")
 }
 
-/// Export a Crumbicon SVG
-pub fn export_svg<P: AsRef<Path>>(
+pub fn build_svg(
     data: &[Option<u8>],
     palette: &[Option<u8>],
     rows: usize,
     cols: usize,
     px: usize,
-    target: P,
-) -> Result<(), String> {
+) -> String {
     let width = cols * px;
     let height = rows * px;
 
@@ -56,7 +56,20 @@ pub fn export_svg<P: AsRef<Path>>(
         data_str, palette_str
     ));
 
-    fs::write(target, out).map_err(|e| format!("Failed to write SVG: {}", e))?;
+    out
+}
 
+/// Export a Crumbicon SVG to a file (native target only).
+#[cfg(not(target_arch = "wasm32"))]
+pub fn export_svg<P: AsRef<Path>>(
+    data: &[Option<u8>],
+    palette: &[Option<u8>],
+    rows: usize,
+    cols: usize,
+    px: usize,
+    target: P,
+) -> Result<(), String> {
+    let out = build_svg(data, palette, rows, cols, px);
+    fs::write(target, out).map_err(|e| format!("Failed to write SVG: {}", e))?;
     Ok(())
 }

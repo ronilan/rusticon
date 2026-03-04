@@ -183,6 +183,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d7b894f5411737b7867f4827955924d7c254fc9f4d91a6aad6b097804b1018b"
 
 [[package]]
+name = "console_error_panic_hook"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a06aeb73f470f66dcdbf7223caeebb85984942f22f1adb2a088cf9668146bbbc"
+dependencies = [
+ "cfg-if",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "convert_case"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -594,6 +604,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "js-sys"
+version = "0.3.85"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8c942ebf8e95485ca0d52d97da7c5a2c387d0e7f0ba4c35e93bfcaee045955b3"
+dependencies = [
+ "once_cell",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "lebe"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -646,12 +666,40 @@ dependencies = [
 ]
 
 [[package]]
+name = "little_tui_event_loop_browser"
+version = "0.1.0"
+dependencies = [
+ "js-sys",
+ "little_tui",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
+name = "little_tui_input_browser"
+version = "0.1.0"
+dependencies = [
+ "little_tui",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
 name = "little_tui_input_crossterm"
 version = "0.1.0"
 dependencies = [
  "crossterm",
  "futures",
  "little_tui",
+]
+
+[[package]]
+name = "little_tui_output_browser"
+version = "0.1.0"
+dependencies = [
+ "little_tui",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
@@ -1073,15 +1121,22 @@ dependencies = [
 name = "rusticon"
 version = "0.2.3"
 dependencies = [
+ "console_error_panic_hook",
  "crossterm",
  "futures",
  "futures-timer",
  "image",
+ "js-sys",
  "little_tui",
  "little_tui_event_loop",
+ "little_tui_event_loop_browser",
+ "little_tui_input_browser",
  "little_tui_input_crossterm",
+ "little_tui_output_browser",
  "little_tui_output_terminal",
  "terminal_style",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
@@ -1323,6 +1378,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f01b580c9ac74c8d8f0c0e4afb04eeef2acf145458e52c03845ee9cd23e3d12"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "web-sys"
+version = "0.3.85"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "312e32e551d92129218ea9a2452120f4aabc03529ef03e4d0d82fb2780608598"
+dependencies = [
+ "js-sys",
+ "wasm-bindgen",
 ]
 
 [[package]]

@@ -1,50 +1,19 @@
 use std::{env, thread};
 
 use crate::{
-    export::export_svg,
-    import::import_file,
-    message::draw_message,
-    shared::{ImportOutcome, RESULT_HOLDER},
+    core::{
+        io::RusticonIo,
+        shared::{ImportOutcome, RESULT_HOLDER},
+    },
+    features::{export::export_svg, import::import_file, message::draw_message},
     State,
 };
-
-pub trait RusticonIo {
-    fn initial_file_path(&self) -> String;
-    fn reset_import_result(&self);
-    fn load_file_in_background(&self, path: String);
-    fn take_import_result(&self) -> Option<ImportOutcome>;
-    fn report_message(&self, msg: &str, color_code: u8);
-}
 
 pub struct NativeIo;
 
 impl NativeIo {
     pub fn new() -> Self {
         Self
-    }
-
-    pub fn handle_final_save(&self, final_ui_state: &State) {
-        if !final_ui_state.save_flag {
-            return;
-        }
-
-        let (data, size) = if final_ui_state.size == 16 {
-            (final_ui_state.canvas16_data.clone(), 16)
-        } else {
-            (final_ui_state.canvas8_data.clone(), 8)
-        };
-
-        match export_svg(
-            &data,
-            &final_ui_state.palette_colors,
-            size,
-            size,
-            32,
-            &final_ui_state.file_path,
-        ) {
-            Ok(_) => self.report_message("Export succeeded!", 10),
-            Err(err_msg) => self.report_message(&err_msg, 196),
-        }
     }
 }
 
@@ -85,5 +54,34 @@ impl RusticonIo for NativeIo {
 
     fn report_message(&self, msg: &str, color_code: u8) {
         draw_message(msg, color_code);
+    }
+
+    fn handle_final_save(&self, final_ui_state: &State) {
+        if !final_ui_state.save_flag {
+            return;
+        }
+
+        let (data, size) = if final_ui_state.size == 16 {
+            (final_ui_state.canvas16_data.clone(), 16)
+        } else {
+            (final_ui_state.canvas8_data.clone(), 8)
+        };
+
+        match export_svg(
+            &data,
+            &final_ui_state.palette_colors,
+            size,
+            size,
+            32,
+            &final_ui_state.file_path,
+        ) {
+            Ok(_) => self.report_message("Export succeeded!", 10),
+            Err(err_msg) => self.report_message(&err_msg, 196),
+        }
+    }
+
+    fn finish_with_error(&self, msg: &str, color_code: u8) {
+        self.report_message(msg, color_code);
+        std::process::exit(1);
     }
 }

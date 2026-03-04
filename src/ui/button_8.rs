@@ -23,7 +23,10 @@ pub fn build() -> Element<State> {
                 let eraser: Element<State> = Element::new();
                 eraser.x(EX).y(EY).look(Look::from((32, 16, ' ')));
                 reposition(&eraser, EX, EY, state);
-                eraser.draw();
+                // The eraser is "disposable" and not part of the app ui "tree".
+                // As such it's depth is set to None and it will not be drawn unless force.
+                // Force it.
+                draw_forced(&eraser);
             }
         })
         .on_state(|el, state| {

@@ -13,16 +13,39 @@ keywords = ["favicon", "icon", "svg", "terminal", "image"]
 categories = ["command-line-utilities", "graphics", "web-programming"]
 exclude = ["examples", "media"]
 
+[lib]
+crate-type = ["cdylib"]
+
 [dependencies]
+terminal_style = "0.4.0"
+little_tui = { path = "../little_tui/packages/little_tui" }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 crossterm = { version = "0.29", features = ["event-stream"] }
 futures = "0.3.31"
 futures-timer = "3.0.3"
 image = "0.25.6"
-terminal_style = "0.4.0"
-little_tui = { path = "../little_tui/packages/little_tui" }
 little_tui_event_loop = { path = "../little_tui/packages/little_tui_event_loop" }
 little_tui_output_terminal = { path = "../little_tui/packages/little_tui_output_terminal" }
 little_tui_input_crossterm = { path = "../little_tui/packages/little_tui_input_crossterm" }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+little_tui_event_loop_browser = { path = "../little_tui/packages/little_tui_event_loop_browser" }
+little_tui_output_browser = { path = "../little_tui/packages/little_tui_output_browser" }
+little_tui_input_browser = { path = "../little_tui/packages/little_tui_input_browser" }
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+console_error_panic_hook = "0.1"
+web-sys = { version = "0.3", features = [
+    "Window",
+    "Document",
+    "HtmlElement",
+    "HtmlAnchorElement",
+    "Location",
+    "Url",
+    "UrlSearchParams",
+    "Blob",
+] }
 
 [[bin]]
 name = "rusticon"
