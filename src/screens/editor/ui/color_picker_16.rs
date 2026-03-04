@@ -1,22 +1,23 @@
-use crate::ui::utils::*;
-use crate::{ui::reposition, State};
+use super::utils::*;
+use crate::State;
 use little_tui::*;
 
-static X: isize = 3;
+static X: isize = 1;
 static Y: isize = 2;
 
 pub fn build() -> Element<State> {
-    let color_picker_216: Element<State> = Element::new();
-    color_picker_216
+    let color_picker_16: Element<State> = Element::new();
+    color_picker_16
         .x(X)
         .y(Y)
         .look(Look::from(
-            (0..18)
+            (0..16)
                 .map(|row| {
-                    (0..12)
-                        .map(|col| {
-                            // original crumb formula: (row * 12) + (col * 16)
-                            let ansi_code = (row * 12 + col + 16).min(231) as u8;
+                    (0..1)
+                        .map(|_col| {
+                            let ansi_code: u8 = terminal_style::color::rgb_to_ansi8(
+                                terminal_style::color::ansi8_to_rgb(row),
+                            );
                             let decor =
                                 Decor::new(false, false, false, false, None, Some(ansi_code));
                             Block::new(' ', decor)
@@ -28,8 +29,8 @@ pub fn build() -> Element<State> {
         .on_mouse(|el, state, event| {
             if event.mouse == Mouse::Move || event.mouse == Mouse::Click {
                 let row = event.y.saturating_sub(el.visual.y.get()) as u8;
-                let col = event.x.saturating_sub(el.visual.x.get()) as u8;
-                let ansi_code = row * 12 + col + 16;
+                let ansi_code: u8 =
+                    terminal_style::color::rgb_to_ansi8(terminal_style::color::ansi8_to_rgb(row));
                 state.candidate = Some(ansi_code);
 
                 if event.mouse == Mouse::Move {
@@ -41,10 +42,9 @@ pub fn build() -> Element<State> {
                 }
             }
         })
-        .on_state(|el, state| {
-            reposition(el, X, Y, state);
+        .on_state(|el, _state| {
             el.draw();
         });
 
-    color_picker_216
+    color_picker_16
 }

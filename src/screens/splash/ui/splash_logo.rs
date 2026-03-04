@@ -1,4 +1,8 @@
-use crate::SplashState;
+use crate::{
+    core::model::AppPhase,
+    ui::{APP_HEIGHT, APP_WIDTH},
+    State,
+};
 use little_tui::*;
 
 fn bouncing_text(n: usize) -> Vec<Block> {
@@ -29,7 +33,7 @@ fn bouncing_text(n: usize) -> Vec<Block> {
 }
 
 fn art_line(n: usize, s: &str) -> Vec<Block> {
-    let color = (n % 5) as u8; // same color logic you used
+    let color = (n % 5) as u8;
 
     s.chars()
         .map(|c| {
@@ -40,19 +44,20 @@ fn art_line(n: usize, s: &str) -> Vec<Block> {
         .collect()
 }
 
-pub fn build() -> Element<SplashState> {
+pub fn build() -> Element<State> {
     let splash_logo = Element::new();
+    let art_width = 39;
+    let art_height = 7;
+    let x = ((APP_WIDTH.saturating_sub(art_width)) / 2) as isize;
+    let y = ((APP_HEIGHT.saturating_sub(art_height)) / 2) as isize;
+    splash_logo.x(x).y(y);
 
-    splash_logo.on_loop(|el, state: &mut SplashState, event| {
-        let n = event.loop_count as usize;
+    splash_logo.on_loop(|el, state: &mut State, event| {
+        if state.phase != AppPhase::Splash {
+            return;
+        }
 
-        let term_cols = Terminal::columns();
-        let term_rows = Terminal::rows();
-        let art_width = 39;
-        let art_height = 7; // finishing with bounce text makes 7
-
-        let x = ((term_cols.saturating_sub(art_width)) / 2) as isize;
-        let y = ((term_rows.saturating_sub(art_height)) / 2) as isize;
+        let n = event.loop_count;
 
         #[rustfmt::skip]
         let art_cells: Vec<Vec<Block>> = vec![
@@ -61,17 +66,12 @@ pub fn build() -> Element<SplashState> {
             art_line(n + 4, "| |_) | | | / __| __| |/ __/ _ \\| '_ \\ "),
             art_line(n + 5, "|  _ <| |_| \\__ \\ |_| | (_| (_) | | | |"),
             art_line(n + 2, "|_| \\_\\___,_|___/\\__|_|\\___\\___/|_| |_| "),
-            vec![],                                // empty spacer row
-            bouncing_text(n as usize),
+            vec![],
+            bouncing_text(n),
         ];
 
         el.look(Look::from(art_cells));
-        el.x(x);
-        el.y(y);
-
         el.draw();
-
-        state.loop_count = event.loop_count
     });
 
     splash_logo

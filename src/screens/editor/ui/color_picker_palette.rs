@@ -1,4 +1,4 @@
-use crate::{ui::reposition, State};
+use crate::State;
 use little_tui::*;
 
 static X: isize = 23;
@@ -74,8 +74,6 @@ pub fn build<'a>() -> Element<State> {
             }
 
             el.look(Look::from(look));
-
-            reposition(el, X, Y, state);
             el.draw();
         });
 

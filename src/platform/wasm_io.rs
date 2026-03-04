@@ -132,7 +132,4 @@ impl RusticonIo for WasmIo {
         }
     }
 
-    fn finish_with_error(&self, msg: &str, color_code: u8) {
-        self.report_message(msg, color_code);
-    }
 }

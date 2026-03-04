@@ -5,14 +5,12 @@ mod features;
 #[cfg(target_arch = "wasm32")]
 mod platform;
 #[cfg(target_arch = "wasm32")]
-mod rusticon_screen;
-#[cfg(target_arch = "wasm32")]
-mod splash_screen;
+mod screens;
 #[cfg(target_arch = "wasm32")]
 mod ui;
 
 #[cfg(target_arch = "wasm32")]
-pub use core::model::{SplashState, State, MIN_SPLASH_LOOPS};
+pub use core::model::{AppPhase, State, MIN_SPLASH_LOOPS};
 
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen::prelude::wasm_bindgen]

@@ -1,5 +1,5 @@
-use crate::ui::utils::*;
-use crate::{ui::reposition, State};
+use super::utils::*;
+use crate::State;
 use little_tui::*;
 
 static X: isize = 16;
@@ -24,8 +24,7 @@ pub fn build() -> Element<State> {
                 }
             }
         })
-        .on_state(|el, state| {
-            reposition(el, X, Y, state);
+        .on_state(|el, _state| {
             el.draw();
         });
 

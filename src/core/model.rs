@@ -1,12 +1,27 @@
 #[derive(Clone, Debug, PartialEq)]
-pub struct SplashState {
-    pub loop_count: usize,
+pub enum AppPhase {
+    Splash,
+    Main,
+    Message,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum ExitFlow {
+    None,
+    SaveThenExit {
+        save_done: bool,
+        started_ms: Option<f64>,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct State {
-    pub app_x: isize,
-    pub app_y: isize,
+    pub phase: AppPhase,
+    pub splash_loop_count: usize,
+    pub splash_started_ms: Option<f64>,
+    pub message_text: Option<String>,
+    pub message_color: u8,
+    pub exit_flow: ExitFlow,
     pub candidate: Option<u8>,
     pub paintbrush: Option<u8>,
     pub palette_index: usize,
@@ -20,3 +35,4 @@ pub struct State {
 }
 
 pub const MIN_SPLASH_LOOPS: usize = 20;
+pub const MIN_SPLASH_MS: f64 = 2000.0;

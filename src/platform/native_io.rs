@@ -9,17 +9,12 @@ use crate::{
     State,
 };
 
+#[derive(Clone, Default)]
 pub struct NativeIo;
 
 impl NativeIo {
     pub fn new() -> Self {
         Self
-    }
-}
-
-impl Default for NativeIo {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -80,8 +75,4 @@ impl RusticonIo for NativeIo {
         }
     }
 
-    fn finish_with_error(&self, msg: &str, color_code: u8) {
-        self.report_message(msg, color_code);
-        std::process::exit(1);
-    }
 }
