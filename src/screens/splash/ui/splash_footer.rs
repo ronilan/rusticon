@@ -20,6 +20,9 @@ pub fn build() -> Text<State> {
         if state.phase != AppPhase::Splash {
             return;
         }
+        if state.viewport_too_small {
+            return;
+        }
 
         el.text(&text);
     });

@@ -7,7 +7,11 @@ pub fn build() -> Rectangle<State> {
     guard.x(0).y(0).fused(true).showed(false).fill(Some(' '));
     guard.width(Terminal::columns()).height(Terminal::rows());
     guard.on_state(|el, state| {
-        el.showed(state.viewport_too_small);
+        let should_show = state.viewport_too_small;
+        if el.get_showed() != should_show {
+            el.showed(should_show);
+            el.draw();
+        }
     });
 
     let text: Text<State> = Text::default();

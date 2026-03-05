@@ -19,8 +19,8 @@ fn build_app(io: impl RusticonIo + Clone + 'static) -> App<State> {
         draw_on_window_resize: false,
         ..Default::default()
     });
-
     let splash_layer = screens::splash::splash::build();
+    splash_layer.showed(false);
     let main_layer = screens::editor::screen::build();
     main_layer.showed(false);
     let message_layer = screens::message::screen::build();
@@ -47,7 +47,11 @@ fn build_app(io: impl RusticonIo + Clone + 'static) -> App<State> {
     app.add(viewport_guard_layer);
     app.elements_to_center();
 
-    app.on_loop(move |el, state, _event| {
+    app.on_loop(move |el, state, event| {
+        if event.loop_count == 0 {
+            el.draw();
+        }
+
         let phase_before = state.phase.clone();
 
         if state.viewport_too_small {
@@ -151,10 +155,9 @@ pub fn app_flow(io: impl RusticonIo + Clone + 'static) -> RunHandle<State> {
     io.load_file_in_background(file_path);
 
     let app = build_app(io.clone());
-    let initial_too_small = terminal_too_small();
     let initial_state = State {
         phase: AppPhase::Splash,
-        viewport_too_small: initial_too_small,
+        viewport_too_small: false,
         splash_loop_count: 0,
         splash_started_ms: None,
         message_text: None,
