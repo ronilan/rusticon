@@ -18,5 +18,5 @@ pub fn main() {
     console_error_panic_hook::set_once();
 
     let io = platform::wasm_io::WasmIo::new();
-    core::application_flow::run_flow(io);
+    core::app::app_flow(io);
 }

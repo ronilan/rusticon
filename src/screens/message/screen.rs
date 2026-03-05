@@ -1,8 +1,9 @@
 use crate::{
+    core::model::AppPhase,
     ui::{APP_HEIGHT, APP_WIDTH},
     State,
 };
-use little_tui::{Mutators, Setters};
+use little_tui::*;
 use little_tui_collection::Rectangle;
 
 pub fn build() -> Rectangle<State> {
@@ -13,6 +14,9 @@ pub fn build() -> Rectangle<State> {
         .width(APP_WIDTH)
         .height(APP_HEIGHT.saturating_sub(1))
         .fill(Some(' '));
+    wrapper.on_state(|el, state| {
+        el.showed(!state.viewport_too_small && state.phase == AppPhase::Message);
+    });
 
     wrapper.add(super::ui::message::build());
 

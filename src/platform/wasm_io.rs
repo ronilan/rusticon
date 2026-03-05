@@ -131,5 +131,4 @@ impl RusticonIo for WasmIo {
             Err(err_msg) => self.report_message(&err_msg, 196),
         }
     }
-
 }

@@ -17,6 +17,7 @@ pub enum ExitFlow {
 #[derive(Clone, Debug, PartialEq)]
 pub struct State {
     pub phase: AppPhase,
+    pub viewport_too_small: bool,
     pub splash_loop_count: usize,
     pub splash_started_ms: Option<f64>,
     pub message_text: Option<String>,

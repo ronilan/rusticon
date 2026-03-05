@@ -7,10 +7,7 @@ static Y: isize = 2;
 
 pub fn build() -> Text<State> {
     let label_new: Text<State> = Text::default();
-    label_new
-        .x(X)
-        .y(Y)
-        .text("New:");
+    label_new.x(X).y(Y).text("New:");
 
     label_new
 }

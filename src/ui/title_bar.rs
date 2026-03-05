@@ -1,11 +1,14 @@
-use crate::State;
+use crate::{core::model::AppPhase, State};
 use little_tui::*;
 use little_tui_collection::Text;
 
 fn render_title(el: &Text<State>, state: &State) {
     let cols = Terminal::columns();
     let mut line = " ".repeat(cols);
-    let text = format!("Rusticon: {} {}x{}", state.file_path, state.size, state.size);
+    let text = format!(
+        "Rusticon: {} {}x{}",
+        state.file_path, state.size, state.size
+    );
     line.replace_range(0..text.len().min(cols), &text);
     el.text(&line);
 }
@@ -13,9 +16,15 @@ fn render_title(el: &Text<State>, state: &State) {
 pub fn build() -> Text<State> {
     let title_bar: Text<State> = Text::default();
     title_bar.x(0).y(0);
-    title_bar.inverse(true);
+    title_bar.inverse(true).fused(true);
 
-    title_bar.on_state(|el, state| render_title(el, state));
+    title_bar.on_state(|el, state| {
+        let visible = !state.viewport_too_small && state.phase == AppPhase::Main;
+        el.showed(visible);
+        if visible {
+            render_title(el, state);
+        }
+    });
     title_bar.on_window(|el, state, event| {
         if event.window == Window::Resize {
             render_title(el, state);

@@ -1,4 +1,5 @@
 use crate::{
+    core::model::AppPhase,
     ui::{APP_HEIGHT, APP_WIDTH},
     State,
 };
@@ -13,6 +14,9 @@ pub fn build() -> Rectangle<State> {
         .width(APP_WIDTH)
         .height(APP_HEIGHT.saturating_sub(1))
         .fill(Some(' '));
+    wrapper.on_state(|el, state| {
+        el.showed(!state.viewport_too_small && state.phase == AppPhase::Main);
+    });
     wrapper.on_mouse(|el, state, event| {
         if event.mouse == Mouse::Move && el.status().hovered.get() {
             state.picker_mode = false;

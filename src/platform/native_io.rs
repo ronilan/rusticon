@@ -74,5 +74,4 @@ impl RusticonIo for NativeIo {
             Err(err_msg) => self.report_message(&err_msg, 196),
         }
     }
-
 }

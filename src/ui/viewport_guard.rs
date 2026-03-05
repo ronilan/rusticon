@@ -6,6 +6,9 @@ pub fn build() -> Rectangle<State> {
     let guard: Rectangle<State> = Rectangle::new();
     guard.x(0).y(0).fused(true).showed(false).fill(Some(' '));
     guard.width(Terminal::columns()).height(Terminal::rows());
+    guard.on_state(|el, state| {
+        el.showed(state.viewport_too_small);
+    });
 
     let text: Text<State> = Text::default();
     text.text("Enlarge Terminal Window");
