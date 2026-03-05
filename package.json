@@ -5,7 +5,8 @@
   "scripts": {
     "build:wasm": "wasm-pack build --target web --mode no-install",
     "build:ts": "tsc",
-    "build": "pnpm run build:wasm && pnpm run build:ts",
+    "build:site": "vite build",
+    "build": "pnpm run build:wasm && pnpm run build:site",
     "dev": "pnpm run build:wasm && vite",
     "dev:watch": "cargo watch -s 'pnpm run build:wasm' & vite",
     "preview": "vite preview"

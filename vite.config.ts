@@ -4,6 +4,7 @@ import topLevelAwait from "vite-plugin-top-level-await";
 
 export default defineConfig({
   root: "web",
+  base: "./",
   plugins: [wasm(), topLevelAwait()],
   server: {
     host: "0.0.0.0",
@@ -14,7 +15,7 @@ export default defineConfig({
   },
   build: {
     target: "esnext",
-    outDir: "../dist",
+    outDir: "../docs",
     emptyOutDir: true,
   },
 });
