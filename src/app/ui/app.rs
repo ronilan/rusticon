@@ -1,53 +1,33 @@
 use little_tui::*;
 use little_tui_collection::{App, AppOptions};
 
-use crate::{
+use super::super::{
     core::{
         io::RusticonIo,
         model::{AppPhase, ExitFlow, State, MIN_SPLASH_LOOPS, MIN_SPLASH_MS},
     },
-    screens, ui,
+    screens,
 };
+use super::{APP_HEIGHT, APP_WIDTH};
 
-fn terminal_too_small() -> bool {
-    Terminal::columns() < ui::APP_WIDTH || Terminal::rows() < ui::APP_HEIGHT
-}
+pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
+    let io_for_loop = io.clone();
 
-fn build_app(io: impl RusticonIo + Clone + 'static) -> App<State> {
     let app = App::new(AppOptions {
         height: None,
         draw_on_window_resize: false,
         ..Default::default()
     });
-    let splash_layer = screens::splash::splash::build();
-    splash_layer.showed(false);
-    let main_layer = screens::editor::screen::build();
-    main_layer.showed(false);
-    let message_layer = screens::message::screen::build();
-    message_layer.showed(false);
-    let title_bar = ui::title_bar::build();
-    title_bar.showed(false);
-    let viewport_guard_layer = ui::viewport_guard::build();
-    viewport_guard_layer.showed(false);
 
     app.on_window(|el: &App<State>, state: &mut State, event: &EventWindow| {
         if event.window == Window::Resize {
             el.elements_to_center();
-            state.viewport_too_small = terminal_too_small();
+            state.viewport_too_small =
+                Terminal::columns() < APP_WIDTH || Terminal::rows() < APP_HEIGHT;
             el.draw();
         }
-    });
-
-    let io_for_loop = io.clone();
-
-    app.add(splash_layer);
-    app.add(main_layer);
-    app.add(message_layer);
-    app.add(title_bar);
-    app.add(viewport_guard_layer);
-    app.elements_to_center();
-
-    app.on_loop(move |el, state, event| {
+    })
+    .on_loop(move |el, state, event| {
         if event.loop_count == 0 {
             el.draw();
         }
@@ -144,36 +124,12 @@ fn build_app(io: impl RusticonIo + Clone + 'static) -> App<State> {
         }
     });
 
+    app.add(screens::splash::screen::build());
+    app.add(screens::editor::screen::build());
+    app.add(screens::message::screen::build());
+    app.add(super::title_bar::build());
+    app.add(super::viewport_guard::build());
+    app.elements_to_center();
+
     app
-}
-
-pub fn app_flow(io: impl RusticonIo + Clone + 'static) -> RunHandle<State> {
-    Globals::set_tick_rate(10.0);
-    let file_path = io.initial_file_path();
-
-    io.reset_import_result();
-    io.load_file_in_background(file_path);
-
-    let app = build_app(io.clone());
-    let initial_state = State {
-        phase: AppPhase::Splash,
-        viewport_too_small: false,
-        splash_loop_count: 0,
-        splash_started_ms: None,
-        message_text: None,
-        message_color: 196,
-        exit_flow: ExitFlow::None,
-        candidate: None,
-        paintbrush: None,
-        palette_index: 0,
-        palette_colors: vec![None; 8],
-        picker_mode: false,
-        canvas16_data: vec![None; 16 * 16],
-        canvas8_data: vec![None; 8 * 8],
-        size: 8,
-        save_flag: false,
-        file_path: "favicon.svg".to_string(),
-    };
-
-    app.run(initial_state)
 }

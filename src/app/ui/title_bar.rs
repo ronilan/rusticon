@@ -15,7 +15,7 @@ fn render_title(el: &Text<State>, state: &State) {
 
 pub fn build() -> Text<State> {
     let title_bar: Text<State> = Text::default();
-    title_bar.x(0).y(0);
+    title_bar.x(0).y(0).showed(false);
     title_bar.inverse(true).fused(true);
 
     title_bar.on_state(|el, state| {
