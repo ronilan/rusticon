@@ -24,14 +24,12 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
             el.elements_to_center();
             state.flow.viewport_too_small =
                 Terminal::columns() < APP_WIDTH || Terminal::rows() < APP_HEIGHT;
-            el.draw();
+            if event.loop_count > 0 {
+                el.draw();
+            }
         }
     })
-    .on_loop(move |el, state, event| {
-        if event.loop_count == 0 {
-            el.draw();
-        }
-
+    .on_loop(move |el, state, _event| {
         let phase_before = state.flow.phase.clone();
 
         if state.flow.viewport_too_small {
