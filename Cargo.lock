@@ -662,8 +662,8 @@ version = "0.1.0"
 dependencies = [
  "little_tui",
  "little_tui_decl_macros",
- "little_tui_event_loop",
  "little_tui_event_loop_browser",
+ "little_tui_event_loop_terminal",
  "little_tui_input_browser",
  "little_tui_input_crossterm",
  "little_tui_output_browser",
@@ -679,15 +679,6 @@ name = "little_tui_decl_macros"
 version = "0.1.0"
 
 [[package]]
-name = "little_tui_event_loop"
-version = "0.1.0"
-dependencies = [
- "futures",
- "futures-timer",
- "little_tui",
-]
-
-[[package]]
 name = "little_tui_event_loop_browser"
 version = "0.1.0"
 dependencies = [
@@ -695,6 +686,15 @@ dependencies = [
  "little_tui",
  "wasm-bindgen",
  "web-sys",
+]
+
+[[package]]
+name = "little_tui_event_loop_terminal"
+version = "0.1.0"
+dependencies = [
+ "futures",
+ "futures-timer",
+ "little_tui",
 ]
 
 [[package]]
@@ -1160,8 +1160,8 @@ dependencies = [
  "js-sys",
  "little_tui",
  "little_tui_collection",
- "little_tui_event_loop",
  "little_tui_event_loop_browser",
+ "little_tui_event_loop_terminal",
  "little_tui_input_browser",
  "little_tui_input_crossterm",
  "little_tui_output_browser",
