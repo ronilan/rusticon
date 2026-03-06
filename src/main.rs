@@ -1,15 +1,8 @@
 #[cfg(not(target_arch = "wasm32"))]
-mod core;
+mod app;
+
 #[cfg(not(target_arch = "wasm32"))]
-mod features;
-#[cfg(not(target_arch = "wasm32"))]
-mod platform;
-#[cfg(not(target_arch = "wasm32"))]
-mod rusticon_screen;
-#[cfg(not(target_arch = "wasm32"))]
-mod splash_screen;
-#[cfg(not(target_arch = "wasm32"))]
-mod ui;
+pub use app::{core, features, platform, rusticon_screen, screens, splash_screen, ui};
 
 #[cfg(not(target_arch = "wasm32"))]
 pub use core::model::{SplashState, State, MIN_SPLASH_LOOPS};
