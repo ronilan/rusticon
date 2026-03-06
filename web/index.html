@@ -3,11 +3,132 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>rusticon wasm</title>
+    <title>Rusticon WASM</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div id="terminal"><pre id="surface"></pre></div>
+    <!-- Probes: outside #surface so set_inner_html never wipes them.
+         #probes mirrors the theme class of #surface so CSS scoping still works. -->
+    <div id="probes">
+      <span id="char-probe"></span>
+      <span class="ansi-probe ansi-0"></span>
+      <span class="ansi-probe ansi-1"></span>
+      <span class="ansi-probe ansi-2"></span>
+      <span class="ansi-probe ansi-3"></span>
+      <span class="ansi-probe ansi-4"></span>
+      <span class="ansi-probe ansi-5"></span>
+      <span class="ansi-probe ansi-6"></span>
+      <span class="ansi-probe ansi-7"></span>
+      <span class="ansi-probe ansi-8"></span>
+      <span class="ansi-probe ansi-9"></span>
+      <span class="ansi-probe ansi-10"></span>
+      <span class="ansi-probe ansi-11"></span>
+      <span class="ansi-probe ansi-12"></span>
+      <span class="ansi-probe ansi-13"></span>
+      <span class="ansi-probe ansi-14"></span>
+      <span class="ansi-probe ansi-15"></span>
+    </div>
+    <div id="terminal">
+      <pre id="surface"></pre>
+    </div>
+
+    <!-- Theme picker — outside #terminal so fixed positioning works correctly -->
+    <button id="theme-btn" title="Choose theme" aria-label="Choose theme">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="8" cy="8" r="2.5"/>
+        <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15"/>
+        <path d="M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"/>
+      </svg>
+    </button>
+
+    <div id="theme-menu" role="menu">
+      <button class="theme-option active" data-theme="" role="menuitem">
+        <span class="theme-swatch" style="background:#eeeeee;"></span>
+        Basic
+      </button>
+      <button class="theme-option" data-theme="solarized-light" role="menuitem">
+        <span class="theme-swatch" style="background:#fdf6e3;"></span>
+        Solarized Light
+      </button>
+      <button class="theme-option" data-theme="solarized-dark" role="menuitem">
+        <span class="theme-swatch" style="background:#268bd2;"></span>
+        Solarized Dark
+      </button>
+      <button class="theme-option" data-theme="dracula" role="menuitem">
+        <span class="theme-swatch" style="background:#bd93f9;"></span>
+        Dracula
+      </button>
+      <button class="theme-option" data-theme="nord" role="menuitem">
+        <span class="theme-swatch" style="background:#81a1c1;"></span>
+        Nord
+      </button>
+      <button class="theme-option" data-theme="gruvbox-dark" role="menuitem">
+        <span class="theme-swatch" style="background:#d79921;"></span>
+        Gruvbox Dark
+      </button>
+      <button class="theme-option" data-theme="tokyo-night" role="menuitem">
+        <span class="theme-swatch" style="background:#7aa2f7;"></span>
+        Tokyo Night
+      </button>
+    </div>
+
+    <script>
+      const btn = document.getElementById('theme-btn');
+      const menu = document.getElementById('theme-menu');
+      const surface = document.getElementById('surface');
+      const probes = document.getElementById('probes');
+      const options = menu.querySelectorAll('.theme-option');
+      const STORAGE_KEY = 'terminal-theme';
+
+      const themes = ['dracula', 'nord', 'solarized-dark', 'solarized-light', 'gruvbox-dark', 'tokyo-night'];
+
+      function applyTheme(name) {
+        // Apply theme class to both #surface and #probes so CSS scoping works
+        // while keeping probes outside #surface (safe from set_inner_html).
+        surface.classList.remove(...themes);
+        probes.classList.remove(...themes);
+        document.body.classList.remove(...themes);
+        if (name) {
+          surface.classList.add(name);
+          probes.classList.add(name);
+          document.body.classList.add(name);
+        }
+
+        // Update active state in menu
+        options.forEach(opt => {
+          opt.classList.toggle('active', opt.dataset.theme === name);
+        });
+
+        // Persist
+        localStorage.setItem(STORAGE_KEY, name);
+
+        // Notify WASM terminal to re-read CSS palette and repaint
+        window.dispatchEvent(new CustomEvent('terminal', { detail: { type: 'theme' } }));
+      }
+
+      // Toggle menu
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('open');
+      });
+
+      // Pick theme
+      options.forEach(opt => {
+        opt.addEventListener('click', () => {
+          applyTheme(opt.dataset.theme);
+          menu.classList.remove('open');
+        });
+      });
+
+      // Close on outside click
+      document.addEventListener('click', () => menu.classList.remove('open'));
+      menu.addEventListener('click', e => e.stopPropagation());
+
+      // Restore persisted theme before WASM loads so there is no flash
+      const saved = localStorage.getItem(STORAGE_KEY) || '';
+      if (saved) applyTheme(saved);
+    </script>
+
     <script type="module" src="./main.ts"></script>
   </body>
 </html>
