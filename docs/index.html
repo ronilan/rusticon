@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rusticon WASM</title>
-    <script type="module" crossorigin src="./assets/index-b9l6AUGw.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DLtCdpX6.css">
+    <script type="module" crossorigin src="./assets/index-CElpsXtG.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BPfGt0X-.css">
   </head>
   <body>
     <!-- Probes: outside #surface so set_inner_html never wipes them.
@@ -44,8 +44,16 @@
 
     <div id="theme-menu" role="menu">
       <button class="theme-option active" data-theme="" role="menuitem">
-        <span class="theme-swatch" style="background:#eeeeee; outline: 1px solid rgba(255,255,255,0.2);"></span>
-        Default
+        <span class="theme-swatch" style="background:#eeeeee;"></span>
+        Basic
+      </button>
+      <button class="theme-option" data-theme="solarized-light" role="menuitem">
+        <span class="theme-swatch" style="background:#fdf6e3;"></span>
+        Solarized Light
+      </button>
+      <button class="theme-option" data-theme="solarized-dark" role="menuitem">
+        <span class="theme-swatch" style="background:#268bd2;"></span>
+        Solarized Dark
       </button>
       <button class="theme-option" data-theme="dracula" role="menuitem">
         <span class="theme-swatch" style="background:#bd93f9;"></span>
@@ -55,17 +63,9 @@
         <span class="theme-swatch" style="background:#81a1c1;"></span>
         Nord
       </button>
-      <button class="theme-option" data-theme="solarized-dark" role="menuitem">
-        <span class="theme-swatch" style="background:#268bd2;"></span>
-        Solarized Dark
-      </button>
       <button class="theme-option" data-theme="gruvbox-dark" role="menuitem">
         <span class="theme-swatch" style="background:#d79921;"></span>
         Gruvbox Dark
-      </button>
-      <button class="theme-option" data-theme="solarized-light" role="menuitem">
-        <span class="theme-swatch" style="background:#268bd2; outline: 1px solid rgba(0,0,0,0.15);"></span>
-        Solarized Light
       </button>
       <button class="theme-option" data-theme="tokyo-night" role="menuitem">
         <span class="theme-swatch" style="background:#7aa2f7;"></span>
@@ -88,9 +88,11 @@
         // while keeping probes outside #surface (safe from set_inner_html).
         surface.classList.remove(...themes);
         probes.classList.remove(...themes);
+        document.body.classList.remove(...themes);
         if (name) {
           surface.classList.add(name);
           probes.classList.add(name);
+          document.body.classList.add(name);
         }
 
         // Update active state in menu
