@@ -52,23 +52,23 @@ impl RusticonIo for NativeIo {
     }
 
     fn handle_final_save(&self, final_ui_state: &State) {
-        if !final_ui_state.save_flag {
+        if !final_ui_state.editor.save_flag {
             return;
         }
 
-        let (data, size) = if final_ui_state.size == 16 {
-            (final_ui_state.canvas16_data.clone(), 16)
+        let (data, size) = if final_ui_state.editor.size == 16 {
+            (final_ui_state.editor.canvas16_data.clone(), 16)
         } else {
-            (final_ui_state.canvas8_data.clone(), 8)
+            (final_ui_state.editor.canvas8_data.clone(), 8)
         };
 
         match export_svg(
             &data,
-            &final_ui_state.palette_colors,
+            &final_ui_state.editor.palette_colors,
             size,
             size,
             32,
-            &final_ui_state.file_path,
+            &final_ui_state.editor.file_path,
         ) {
             Ok(_) => self.report_message("Export succeeded!", 10),
             Err(err_msg) => self.report_message(&err_msg, 196),

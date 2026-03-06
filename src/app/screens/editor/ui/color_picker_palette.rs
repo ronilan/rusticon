@@ -26,25 +26,25 @@ pub fn build<'a>() -> Element<State> {
             let selected = if col_rel % 4 == 1 || col_rel % 4 == 2 {
                 col_rel / 4
             } else {
-                state.palette_index
+                state.editor.palette_index
             };
 
             if event.mouse == Mouse::Click {
-                if selected < state.palette_colors.len() {
-                    state.paintbrush = state.palette_colors[selected];
-                    state.palette_index = selected;
+                if selected < state.editor.palette_colors.len() {
+                    state.editor.paintbrush = state.editor.palette_colors[selected];
+                    state.editor.palette_index = selected;
                 }
             }
             if event.mouse == Mouse::Move {
-                if selected < state.palette_colors.len() {
-                    state.candidate = state.palette_colors[selected];
-                    state.picker_mode = true;
+                if selected < state.editor.palette_colors.len() {
+                    state.editor.candidate = state.editor.palette_colors[selected];
+                    state.editor.picker_mode = true;
                 }
             }
         })
         .on_state(|el, state| {
-            let pl = state.palette_index;
-            let pll = &state.palette_colors;
+            let pl = state.editor.palette_index;
+            let pll = &state.editor.palette_colors;
 
             let mut look = el.visual.look.blocks().to_vec();
 

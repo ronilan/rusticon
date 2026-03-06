@@ -15,7 +15,7 @@ pub enum ExitFlow {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct State {
+pub struct FlowState {
     pub phase: AppPhase,
     pub viewport_too_small: bool,
     pub splash_loop_count: usize,
@@ -23,6 +23,10 @@ pub struct State {
     pub message_text: Option<String>,
     pub message_color: u8,
     pub exit_flow: ExitFlow,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct EditorState {
     pub candidate: Option<u8>,
     pub paintbrush: Option<u8>,
     pub palette_index: usize,
@@ -33,6 +37,12 @@ pub struct State {
     pub size: u8,
     pub save_flag: bool,
     pub file_path: String,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct State {
+    pub flow: FlowState,
+    pub editor: EditorState,
 }
 
 pub const MIN_SPLASH_LOOPS: usize = 20;

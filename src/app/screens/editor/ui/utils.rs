@@ -10,15 +10,15 @@ pub(crate) fn ideal_palette_index(curr: usize, palette: &Vec<Option<u8>>) -> usi
 }
 
 pub(crate) fn set_palette_in_state(state: &mut State, value: Option<u8>) {
-    let curr = state.palette_index;
+    let curr = state.editor.palette_index;
 
     // Update the palette slot at `curr`
-    if curr < state.palette_colors.len() {
-        state.palette_colors[curr] = value;
+    if curr < state.editor.palette_colors.len() {
+        state.editor.palette_colors[curr] = value;
     }
 
     // Move to the next ideal index
-    state.palette_index = ideal_palette_index(curr, &state.palette_colors);
+    state.editor.palette_index = ideal_palette_index(curr, &state.editor.palette_colors);
 }
 
 /// Canvas helpers

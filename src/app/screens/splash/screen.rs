@@ -11,7 +11,7 @@ pub fn build() -> Rectangle<State> {
     wrapper.showed(false);
     wrapper.width(APP_WIDTH).height(APP_HEIGHT).fill(Some(' '));
     wrapper.on_state(|el, state| {
-        el.showed(!state.viewport_too_small && state.phase == AppPhase::Splash);
+        el.showed(!state.flow.viewport_too_small && state.flow.phase == AppPhase::Splash);
     });
 
     wrapper.add(super::ui::splash_logo::build());

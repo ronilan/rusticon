@@ -13,14 +13,14 @@ pub fn build() -> Element<State> {
         .look(Look::from("::\n::\n"))
         .on_mouse(|_el, state, event| {
             if event.mouse == Mouse::Move || event.mouse == Mouse::Click {
-                state.candidate = None;
+                state.editor.candidate = None;
 
                 if event.mouse == Mouse::Move {
-                    state.picker_mode = true;
+                    state.editor.picker_mode = true;
                 }
                 if event.mouse == Mouse::Click {
-                    state.paintbrush = None;
-                    set_palette_in_state(state, state.candidate);
+                    state.editor.paintbrush = None;
+                    set_palette_in_state(state, state.editor.candidate);
                 }
             }
         })

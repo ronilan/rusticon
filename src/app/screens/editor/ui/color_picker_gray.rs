@@ -30,15 +30,15 @@ pub fn build() -> Element<State> {
                 let col = event.x.saturating_sub(el.visual.x.get()) as u8;
 
                 let ansi_code = row * 2 + col + 232;
-                state.candidate = Some(ansi_code);
-                state.picker_mode = true;
+                state.editor.candidate = Some(ansi_code);
+                state.editor.picker_mode = true;
 
                 if event.mouse == Mouse::Move {
-                    state.picker_mode = true;
+                    state.editor.picker_mode = true;
                 }
                 if event.mouse == Mouse::Click {
-                    state.paintbrush = Some(ansi_code);
-                    set_palette_in_state(state, state.candidate);
+                    state.editor.paintbrush = Some(ansi_code);
+                    set_palette_in_state(state, state.editor.candidate);
                 }
             }
         })

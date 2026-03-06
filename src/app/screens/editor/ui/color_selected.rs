@@ -14,7 +14,7 @@ pub fn build() -> Rectangle<State> {
         .height(2)
         .fill(Some(' '))
         .on_state(|el, state| {
-            el.background(state.paintbrush);
+            el.background(state.editor.paintbrush);
             el.draw();
         });
 

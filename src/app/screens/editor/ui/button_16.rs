@@ -14,8 +14,8 @@ pub fn build() -> TextButton<State> {
         .underline(true)
         .on_mouse(|_el, state, event| {
             if event.mouse == Mouse::Click {
-                state.size = 16;
-                state.canvas16_data = vec![None; 256];
+                state.editor.size = 16;
+                state.editor.canvas16_data = vec![None; 256];
             }
         });
 

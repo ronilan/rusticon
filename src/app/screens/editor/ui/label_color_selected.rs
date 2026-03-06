@@ -8,7 +8,7 @@ static Y: isize = 8;
 pub fn build() -> Text<State> {
     let label_color_selected: Text<State> = Text::default();
     label_color_selected.x(X).y(Y).on_state(|el, state| {
-        let text = match state.paintbrush {
+        let text = match state.editor.paintbrush {
             Some(c) => format!("{:<3}   {}", c, terminal_style::color::ansi8_to_hex(c)),
             None => format!("{:<13}", ":transparent:"),
         };

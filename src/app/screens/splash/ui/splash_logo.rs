@@ -53,7 +53,7 @@ pub fn build() -> Element<State> {
     splash_logo.x(x).y(y);
 
     splash_logo.on_loop(|el, state: &mut State, event| {
-        if state.phase != AppPhase::Splash {
+        if state.flow.phase != AppPhase::Splash {
             return;
         }
 

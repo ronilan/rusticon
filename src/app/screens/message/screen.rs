@@ -16,7 +16,7 @@ pub fn build() -> Rectangle<State> {
         .height(APP_HEIGHT.saturating_sub(1))
         .fill(Some(' '));
     wrapper.on_state(|el, state| {
-        el.showed(!state.viewport_too_small && state.phase == AppPhase::Message);
+        el.showed(!state.flow.viewport_too_small && state.flow.phase == AppPhase::Message);
     });
 
     wrapper.add(super::ui::message::build());

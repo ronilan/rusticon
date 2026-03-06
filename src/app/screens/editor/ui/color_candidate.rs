@@ -14,10 +14,10 @@ pub fn build() -> Rectangle<State> {
         .height(2)
         .fill(Some(' '))
         .on_state(|el, state| {
-            let color_source = if state.picker_mode {
-                state.candidate
+            let color_source = if state.editor.picker_mode {
+                state.editor.candidate
             } else {
-                state.paintbrush
+                state.editor.paintbrush
             };
 
             el.background(color_source);

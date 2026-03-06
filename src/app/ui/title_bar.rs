@@ -7,7 +7,7 @@ fn render_title(el: &Text<State>, state: &State) {
     let mut line = " ".repeat(cols);
     let text = format!(
         "Rusticon: {} {}x{}",
-        state.file_path, state.size, state.size
+        state.editor.file_path, state.editor.size, state.editor.size
     );
     line.replace_range(0..text.len().min(cols), &text);
     el.text(&line);
@@ -19,7 +19,7 @@ pub fn build() -> Text<State> {
     title_bar.inverse(true).fused(true);
 
     title_bar.on_state(|el, state| {
-        let visible = !state.viewport_too_small && state.phase == AppPhase::Main;
+        let visible = !state.flow.viewport_too_small && state.flow.phase == AppPhase::Main;
         el.showed(visible);
         if visible {
             render_title(el, state);

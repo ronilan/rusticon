@@ -17,11 +17,11 @@ pub fn build() -> TextButton<State> {
         .underline(true)
         .on_mouse(|_el, state, event| {
             if event.mouse == Mouse::Click {
-                state.save_flag = true;
-                state.phase = AppPhase::Message;
-                state.message_text = Some("Saving...".to_string());
-                state.message_color = 10;
-                state.exit_flow = ExitFlow::SaveThenExit {
+                state.editor.save_flag = true;
+                state.flow.phase = AppPhase::Message;
+                state.flow.message_text = Some("Saving...".to_string());
+                state.flow.message_color = 10;
+                state.flow.exit_flow = ExitFlow::SaveThenExit {
                     save_done: false,
                     started_ms: None,
                 };

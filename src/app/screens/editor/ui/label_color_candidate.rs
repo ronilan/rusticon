@@ -12,8 +12,8 @@ pub fn build() -> Text<State> {
         .y(Y)
         .text("")
         .on_state(|el, state| {
-            let text = if state.picker_mode {
-                match state.candidate {
+            let text = if state.editor.picker_mode {
+                match state.editor.candidate {
                     Some(c) => format!("{:<3}   {}", c, terminal_style::color::ansi8_to_hex(c)),
                     None => format!("{:<13}", ":transparent:"),
                 }

@@ -19,11 +19,12 @@ pub fn build() -> Rectangle<State> {
     message.elements_to_center();
 
     message.on_state(|el, state| {
-        if state.phase != AppPhase::Message {
+        if state.flow.phase != AppPhase::Message {
             return;
         }
 
         let text_value = state
+            .flow
             .message_text
             .clone()
             .unwrap_or_else(|| "App Terminated".to_string());
@@ -32,7 +33,7 @@ pub fn build() -> Rectangle<State> {
             text_el
                 .text(&text_value)
                 .bold(true)
-                .color(Some(state.message_color));
+                .color(Some(state.flow.message_color));
         }
 
         el.elements_to_center();
