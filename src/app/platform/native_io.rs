@@ -25,12 +25,12 @@ impl RusticonIo for NativeIo {
             .unwrap_or_else(|| "favicon.svg".to_string())
     }
 
-    fn reset_import_result(&self) {
-        let mut guard = RESULT_HOLDER.lock().unwrap();
-        *guard = None;
-    }
+    fn start_import(&self, path: String) {
+        {
+            let mut guard = RESULT_HOLDER.lock().unwrap();
+            *guard = None;
+        }
 
-    fn load_file_in_background(&self, path: String) {
         let result_holder_thread = RESULT_HOLDER.clone();
 
         thread::spawn(move || {

@@ -1,0 +1,31 @@
+use crate::{
+    core::model::AppPhase,
+    ui::{APP_HEIGHT, APP_WIDTH},
+    State,
+};
+use little_tui::*;
+use little_tui_collection::Rectangle;
+
+pub fn build() -> Rectangle<State> {
+    let wrapper: Rectangle<State> = Rectangle::new();
+    wrapper.showed(false);
+    wrapper.width(APP_WIDTH).height(APP_HEIGHT).fill(Some(' '));
+    wrapper.on_state(|el, state| {
+        let show = !state.flow.viewport_too_small && state.flow.phase == AppPhase::Launch;
+        if el.get_showed() != show {
+            el.showed(show);
+            el.draw();
+        }
+    });
+
+    wrapper.add(super::ui::launch_hint::build());
+    wrapper.add(super::ui::start_new::build());
+
+    wrapper.elements_snap_center_x();
+
+    // Reuse splash logo animation so launch and splash look consistent.
+    wrapper.add(crate::screens::splash::ui::splash_logo::build());
+    wrapper.add(crate::screens::splash::ui::splash_footer::build());
+
+    wrapper
+}

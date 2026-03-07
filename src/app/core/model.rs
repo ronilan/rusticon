@@ -1,5 +1,6 @@
 #[derive(Clone, Debug, PartialEq)]
 pub enum AppPhase {
+    Launch,
     Splash,
     Main,
     Message,
@@ -18,7 +19,9 @@ pub enum ExitFlow {
 pub struct FlowState {
     pub phase: AppPhase,
     pub viewport_too_small: bool,
-    pub splash_loop_count: usize,
+    pub launch_start_new: bool,
+    pub launch_import_started: bool,
+    pub launch_started_ms: Option<f64>,
     pub splash_started_ms: Option<f64>,
     pub message_text: Option<String>,
     pub message_color: u8,
@@ -45,5 +48,4 @@ pub struct State {
     pub editor: EditorState,
 }
 
-pub const MIN_SPLASH_LOOPS: usize = 20;
 pub const MIN_SPLASH_MS: f64 = 2000.0;

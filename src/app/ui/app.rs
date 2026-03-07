@@ -4,7 +4,7 @@ use little_tui_collection::{App, AppOptions};
 use super::super::{
     core::{
         io::RusticonIo,
-        model::{AppPhase, ExitFlow, State, MIN_SPLASH_LOOPS, MIN_SPLASH_MS},
+        model::{AppPhase, ExitFlow, State, MIN_SPLASH_MS},
     },
     screens,
 };
@@ -33,6 +33,53 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
         let phase_before = state.flow.phase.clone();
 
         if state.flow.viewport_too_small {
+            return;
+        }
+
+        if state.flow.phase == AppPhase::Launch {
+            if !(state.flow.launch_start_new || io_for_loop.launch_drop_ready()) {
+                return;
+            }
+
+            if !state.flow.launch_import_started {
+                state.flow.launch_start_new = false;
+                state.flow.launch_import_started = true;
+                io_for_loop.start_import(state.editor.file_path.clone());
+            }
+
+            if let Some(import_result) = io_for_loop.take_import_result() {
+                state.flow.launch_import_started = false;
+                match import_result {
+                    Ok((data, palette, icon_size, returned_path)) => {
+                        Globals::set_tick_rate(33.0);
+                        state.flow.phase = AppPhase::Main;
+                        state.editor.file_path = returned_path;
+                        state.editor.size = icon_size;
+                        state.editor.paintbrush = palette[0];
+                        state.editor.palette_index = 0;
+                        state.editor.palette_colors = palette;
+                        state.editor.picker_mode = false;
+                        state.editor.candidate = None;
+
+                        if icon_size == 16 {
+                            state.editor.canvas16_data = data;
+                            state.editor.canvas8_data = vec![None; 8 * 8];
+                        } else {
+                            state.editor.canvas8_data = data;
+                            state.editor.canvas16_data = vec![None; 16 * 16];
+                        }
+                    }
+                    Err(err_msg) => {
+                        state.flow.phase = AppPhase::Message;
+                        state.flow.message_text = Some(err_msg);
+                        state.flow.message_color = 196;
+                    }
+                }
+            }
+
+            if state.flow.phase != phase_before {
+                el.draw();
+            }
             return;
         }
 
@@ -74,7 +121,6 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
             return;
         }
 
-        state.flow.splash_loop_count += 1;
         if state.flow.splash_started_ms.is_none() {
             state.flow.splash_started_ms = Some(Globals::now());
         }
@@ -85,7 +131,7 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
             .map(|start| Globals::now() - start)
             .unwrap_or(0.0);
 
-        if state.flow.splash_loop_count < MIN_SPLASH_LOOPS || splash_elapsed < MIN_SPLASH_MS {
+        if splash_elapsed < MIN_SPLASH_MS {
             return;
         }
 
@@ -123,6 +169,7 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
         }
     });
 
+    app.add(screens::launch::screen::build());
     app.add(screens::splash::screen::build());
     app.add(screens::editor::screen::build());
     app.add(screens::message::screen::build());

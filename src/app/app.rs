@@ -9,11 +9,15 @@ use super::{
 };
 
 pub fn app(io: impl RusticonIo + Clone + 'static) -> RunHandle<State> {
+    let initial_phase = io.initial_phase();
+
     let initial_state = State {
         flow: FlowState {
-            phase: AppPhase::Splash,
+            phase: initial_phase.clone(),
             viewport_too_small: false,
-            splash_loop_count: 0,
+            launch_start_new: false,
+            launch_import_started: false,
+            launch_started_ms: None,
             splash_started_ms: None,
             message_text: None,
             message_color: 196,
@@ -32,16 +36,14 @@ pub fn app(io: impl RusticonIo + Clone + 'static) -> RunHandle<State> {
             file_path: "favicon.svg".to_string(),
         },
     };
-    
+
     Globals::set_tick_rate(10.0);
     let file_path = io.initial_file_path();
-
-    io.reset_import_result();
-    io.load_file_in_background(file_path);
+    if initial_phase != AppPhase::Launch {
+        io.start_import(file_path);
+    }
 
     let app = ui::app::build(io.clone());
-
-
 
     app.run(initial_state)
 }

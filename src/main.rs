@@ -5,7 +5,7 @@ mod app;
 pub use app::{core, features, platform, screens, ui};
 
 #[cfg(not(target_arch = "wasm32"))]
-pub use core::model::{AppPhase, State, MIN_SPLASH_LOOPS};
+pub use core::model::{AppPhase, State, MIN_SPLASH_MS};
 
 #[cfg(not(target_arch = "wasm32"))]
 use platform::native_io::NativeIo;

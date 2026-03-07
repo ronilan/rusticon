@@ -17,7 +17,7 @@ pub fn build() -> Text<State> {
         .bold(true);
 
     splash_footer.on_state(move |el, state| {
-        if state.flow.phase != AppPhase::Splash {
+        if state.flow.phase != AppPhase::Splash && state.flow.phase != AppPhase::Launch {
             return;
         }
         if state.flow.viewport_too_small {

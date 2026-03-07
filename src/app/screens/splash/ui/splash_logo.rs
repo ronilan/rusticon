@@ -53,11 +53,27 @@ pub fn build() -> Element<State> {
     splash_logo.x(x).y(y);
 
     splash_logo.on_loop(|el, state: &mut State, event| {
-        if state.flow.phase != AppPhase::Splash {
+        if state.flow.phase != AppPhase::Splash && state.flow.phase != AppPhase::Launch {
             return;
         }
 
-        let n = event.loop_count;
+        let n = if state.flow.phase == AppPhase::Launch {
+            if state.flow.launch_started_ms.is_none() {
+                state.flow.launch_started_ms = Some(Globals::now());
+            }
+            let elapsed = state
+                .flow
+                .launch_started_ms
+                .map(|start| Globals::now() - start)
+                .unwrap_or(0.0);
+            if elapsed >= 2000.0 {
+                0
+            } else {
+                event.loop_count
+            }
+        } else {
+            event.loop_count
+        };
 
         #[rustfmt::skip]
         let art_cells: Vec<Vec<Block>> = vec![

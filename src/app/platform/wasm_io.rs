@@ -1,35 +1,35 @@
+use std::sync::{Arc, LazyLock, Mutex, Once};
+
 use crate::{
     core::{
         io::RusticonIo,
+        model::AppPhase,
         shared::{ImportOutcome, RESULT_HOLDER},
     },
-    features::{export::build_svg, message::draw_message},
+    features::{export::build_svg, import_payload::import_payload_svg, message::draw_message},
     State,
 };
-use wasm_bindgen::{JsCast, JsValue};
+use wasm_bindgen::{closure::Closure, JsCast, JsValue};
+use wasm_bindgen_futures::{spawn_local, JsFuture};
+use web_sys::DragEvent;
 
 #[derive(Clone, Default)]
 pub struct WasmIo;
 
+#[derive(Default)]
+struct LaunchState {
+    drop_ready: bool,
+    pending_outcome: Option<ImportOutcome>,
+}
+
+static LAUNCH_STATE: LazyLock<Arc<Mutex<LaunchState>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(LaunchState::default())));
+static LISTENERS_ONCE: Once = Once::new();
+
 impl WasmIo {
     pub fn new() -> Self {
+        LISTENERS_ONCE.call_once(setup_drop_listeners);
         Self
-    }
-
-    fn query_param(&self, name: &str) -> Option<String> {
-        let window = web_sys::window()?;
-        let location = window.location();
-        let hash = location.hash().ok()?;
-        let hash = hash.strip_prefix("#").unwrap_or(&hash);
-        let params = web_sys::UrlSearchParams::new_with_str(hash).ok()?;
-        params.get(name)
-    }
-
-    fn initial_size(&self) -> usize {
-        self.query_param("size")
-            .and_then(|raw| raw.parse::<usize>().ok())
-            .filter(|n| *n == 8 || *n == 16)
-            .unwrap_or(8)
     }
 
     fn normalize_svg_name(&self, file_name: &str) -> String {
@@ -75,33 +75,92 @@ impl WasmIo {
     }
 }
 
+fn setup_drop_listeners() {
+    let Some(window) = web_sys::window() else {
+        return;
+    };
+    let Some(document) = window.document() else {
+        return;
+    };
+    let Some(surface) = document.get_element_by_id("surface") else {
+        return;
+    };
+
+    let prevent_default = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
+        event.prevent_default();
+    });
+    let _ = surface
+        .add_event_listener_with_callback("dragover", prevent_default.as_ref().unchecked_ref());
+    prevent_default.forget();
+
+    let on_drop = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
+        event.prevent_default();
+
+        let Some(data_transfer) = event.data_transfer() else {
+            return;
+        };
+        let Some(files) = data_transfer.files() else {
+            return;
+        };
+        let Some(file) = files.get(0) else {
+            return;
+        };
+
+        let file_name = file.name();
+        let promise = file.text();
+
+        spawn_local(async move {
+            let outcome = match JsFuture::from(promise).await {
+                Ok(js_value) => {
+                    if let Some(text) = js_value.as_string() {
+                        import_payload_svg(&file_name, &text)
+                    } else {
+                        Err("Failed to read dropped file text.".to_string())
+                    }
+                }
+                Err(_) => Err("Failed to read dropped file.".to_string()),
+            };
+
+            let mut launch = LAUNCH_STATE.lock().unwrap();
+            launch.pending_outcome = Some(outcome);
+            launch.drop_ready = true;
+        });
+    });
+
+    let _ = surface.add_event_listener_with_callback("drop", on_drop.as_ref().unchecked_ref());
+    on_drop.forget();
+}
+
 impl RusticonIo for WasmIo {
     fn initial_file_path(&self) -> String {
-        self.query_param("name")
-            .filter(|v| !v.trim().is_empty())
-            .unwrap_or_else(|| "favicon.svg".to_string())
+        "favicon.svg".to_string()
     }
 
-    fn reset_import_result(&self) {
+    fn initial_phase(&self) -> AppPhase {
+        AppPhase::Launch
+    }
+
+    fn start_import(&self, path: String) {
         let mut guard = RESULT_HOLDER.lock().unwrap();
-        *guard = None;
-    }
+        let mut launch = LAUNCH_STATE.lock().unwrap();
 
-    fn load_file_in_background(&self, path: String) {
-        // Browser mode starts from an empty canvas by default.
-        // Hash params control bootstrap metadata:
-        // - #name=icon.svg sets the export file name (default favicon.svg)
-        // - #size=8 or #size=16 (default 8)
-        let size = self.initial_size();
+        if launch.drop_ready {
+            *guard = launch.pending_outcome.take();
+            launch.drop_ready = false;
+            return;
+        }
+
         let outcome: ImportOutcome = Ok((
-            vec![None; size * size],
+            vec![None; 8 * 8],
             vec![None; 8],
-            size as u8,
+            8,
             self.normalize_svg_name(&path),
         ));
-
-        let mut guard = RESULT_HOLDER.lock().unwrap();
         *guard = Some(outcome);
+    }
+
+    fn launch_drop_ready(&self) -> bool {
+        LAUNCH_STATE.lock().unwrap().drop_ready
     }
 
     fn take_import_result(&self) -> Option<ImportOutcome> {
