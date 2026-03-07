@@ -6,7 +6,7 @@ use crate::{
         model::AppPhase,
         shared::{ImportOutcome, RESULT_HOLDER},
     },
-    features::{export::build_svg, import_payload::import_payload_svg, message::draw_message},
+    features::{export::build_svg, import::import_bytes, message::draw_message},
     State,
 };
 use wasm_bindgen::{closure::Closure, JsCast, JsValue};
@@ -107,16 +107,13 @@ fn setup_drop_listeners() {
         };
 
         let file_name = file.name();
-        let promise = file.text();
+        let promise = file.array_buffer();
 
         spawn_local(async move {
             let outcome = match JsFuture::from(promise).await {
                 Ok(js_value) => {
-                    if let Some(text) = js_value.as_string() {
-                        import_payload_svg(&file_name, &text)
-                    } else {
-                        Err("Failed to read dropped file text.".to_string())
-                    }
+                    let bytes = js_sys::Uint8Array::new(&js_value).to_vec();
+                    import_bytes(&file_name, &bytes)
                 }
                 Err(_) => Err("Failed to read dropped file.".to_string()),
             };

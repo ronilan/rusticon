@@ -1,10 +1,9 @@
-use image::{imageops::FilterType, DynamicImage, GenericImageView, ImageFormat};
-use std::fs;
+use image::{imageops::FilterType, DynamicImage, GenericImageView};
 use std::path::Path;
 use terminal_style::color::rgb_to_ansi8;
 
-use std::fs::File;
-use std::io::BufReader;
+#[cfg(not(target_arch = "wasm32"))]
+use std::fs;
 
 /// Extracts data between `start_needle` and `end_needle`
 fn get_crumbicon_data(text: &str, start_needle: &str, end_needle: &str) -> Vec<Option<u8>> {
@@ -30,20 +29,13 @@ fn get_crumbicon_data(text: &str, start_needle: &str, end_needle: &str) -> Vec<O
         .collect()
 }
 
-pub fn load_and_resize_image<P: AsRef<Path>>(path: P) -> Result<Vec<Vec<[u8; 4]>>, String> {
-    let path_ref = path.as_ref();
-
-    // Open the file
-    let file = File::open(path_ref).map_err(|e| format!("Failed to open file: {}", e))?;
-    let buf_reader = BufReader::new(file);
-
-    // Guess image format from the file contents
-    let format = ImageFormat::from_path(path_ref)
-        .map_err(|_| "File is not a recognized image format".to_string())?;
-
-    // Load the image
-    let img =
-        image::load(buf_reader, format).map_err(|e| format!("Failed to load image: {}", e))?;
+pub fn load_and_resize_image_bytes(bytes: &[u8]) -> Result<Vec<Vec<[u8; 4]>>, String> {
+    // Guess image format from bytes first; fall back to the image crate detector.
+    let img = match image::guess_format(bytes) {
+        Ok(format) => image::load_from_memory_with_format(bytes, format)
+            .map_err(|e| format!("Failed to load image: {}", e))?,
+        Err(_) => image::load_from_memory(bytes).map_err(|e| format!("Failed to load image: {}", e))?,
+    };
 
     // Resize to 16x16 (forcing size)
     let resized: DynamicImage = img.resize_exact(16, 16, FilterType::Nearest);
@@ -61,40 +53,19 @@ pub fn load_and_resize_image<P: AsRef<Path>>(path: P) -> Result<Vec<Vec<[u8; 4]>
     Ok(pixels_2d)
 }
 
-/// Reads a "Crumbicon" file, or if invalid, tries to open the provided file as a regular image.
+/// Parses bytes as a Crumbicon payload, or if invalid, tries as a regular image.
 ///
 /// # Returns
 /// - `Vec<Option<u8>>`: flattened pixel data (None = transparent, Some = ANSI8 color)
 /// - `Vec<Option<u8>>`: palette of unique ANSI8 colors used
 /// - `u8`: size of the icon (16 for fallback images)
-/// - `String`: path of the original Crumbicon file, or modified path (fallback images get `.svg`)
-pub fn import_file(
-    file_path: &str,
+/// - `String`: path/name of the original Crumbicon file, or modified path (`.svg`) for images.
+pub fn import_bytes(
+    file_name: &str,
+    bytes: &[u8],
 ) -> Result<(Vec<Option<u8>>, Vec<Option<u8>>, u8, String), String> {
-    let path = Path::new(file_path);
-
     // Attempt to read as Crumbicon
-    let text = if path.exists() {
-        // File exists → read content (ignore errors for now)
-        fs::read_to_string(path).unwrap_or_default()
-    } else {
-        // File does NOT exist → return default empty 8x8 icon immediately
-        let mut new_path = Path::new(file_path).to_path_buf();
-        new_path.set_extension("svg"); // force `.svg` extension
-
-        if new_path.exists() {
-            // If the .svg exists, try to read it (call import_file)
-            return import_file(&new_path.to_string_lossy());
-        } else {
-            // Neither original file nor .svg exists → return default empty 8x8 icon
-            return Ok((
-                vec![None; 8 * 8],                       // default 8x8 empty pixels
-                vec![None; 8],                           // default empty palette
-                8,                                       // default size 8
-                new_path.to_string_lossy().into_owned(), // fallback path
-            ));
-        }
-    };
+    let text = String::from_utf8_lossy(bytes).to_string();
 
     // Extract crumbicon data & palette
     let crumbicon_data = get_crumbicon_data(&text, "<!-- crumbicon-data:", "crumbicon-data -->");
@@ -114,12 +85,12 @@ pub fn import_file(
             crumbicon_data,
             crumbicon_palette,
             size,
-            file_path.to_string(),
+            file_name.to_string(),
         ));
     }
 
     // Try loading as regular image
-    match load_and_resize_image(file_path) {
+    match load_and_resize_image_bytes(bytes) {
         Ok(pixels_2d) => {
             let mut data = Vec::with_capacity(16 * 16); // flattened pixel array
             let mut palette = Vec::new(); // unique ANSI8 colors
@@ -146,7 +117,7 @@ pub fn import_file(
             }
 
             // For fallback images, overwrite path with `.svg`
-            let mut new_path = Path::new(file_path).to_path_buf();
+            let mut new_path = Path::new(file_name).to_path_buf();
             new_path.set_extension("svg");
 
             Ok((
@@ -157,6 +128,35 @@ pub fn import_file(
             ))
         }
         // Neither valid crumbicon nor image → error
-        Err(_) => Err(format!("Invalid file: {}", file_path)),
+        Err(_) => Err(format!("Invalid file: {}", file_name)),
     }
+}
+
+/// Reads a "Crumbicon" file, or if invalid, tries to open the provided file as a regular image.
+///
+/// Native-only path-based importer used by terminal mode.
+#[cfg(not(target_arch = "wasm32"))]
+pub fn import_file(
+    file_path: &str,
+) -> Result<(Vec<Option<u8>>, Vec<Option<u8>>, u8, String), String> {
+    let path = Path::new(file_path);
+
+    if !path.exists() {
+        let mut new_path = Path::new(file_path).to_path_buf();
+        new_path.set_extension("svg");
+
+        if new_path.exists() {
+            return import_file(&new_path.to_string_lossy());
+        }
+
+        return Ok((
+            vec![None; 8 * 8],
+            vec![None; 8],
+            8,
+            new_path.to_string_lossy().into_owned(),
+        ));
+    }
+
+    let bytes = fs::read(path).map_err(|e| format!("Failed to read file: {}", e))?;
+    import_bytes(file_path, &bytes)
 }

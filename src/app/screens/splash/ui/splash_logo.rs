@@ -1,6 +1,5 @@
 use crate::{
     core::model::AppPhase,
-    ui::{APP_HEIGHT, APP_WIDTH},
     State,
 };
 use little_tui::*;

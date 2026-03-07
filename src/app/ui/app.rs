@@ -42,9 +42,20 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
             }
 
             if !state.flow.launch_import_started {
+                let from_drop = io_for_loop.launch_drop_ready();
                 state.flow.launch_start_new = false;
                 state.flow.launch_import_started = true;
                 io_for_loop.start_import(state.editor.file_path.clone());
+
+                if from_drop {
+                    state.flow.phase = AppPhase::Splash;
+                    state.flow.splash_started_ms = None;
+                    Globals::set_tick_rate(10.0);
+                    if state.flow.phase != phase_before {
+                        el.draw();
+                    }
+                    return;
+                }
             }
 
             if let Some(import_result) = io_for_loop.take_import_result() {

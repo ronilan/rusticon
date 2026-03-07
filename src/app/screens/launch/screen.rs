@@ -14,8 +14,8 @@ pub fn build() -> Rectangle<State> {
         el.showed(!state.flow.viewport_too_small && state.flow.phase == AppPhase::Launch);
     });
 
-    // Reuse splash logo animation so launch and splash look consistent.
-    wrapper.add(crate::screens::splash::ui::splash_logo::build());
+    // Launch uses a static logo.
+    wrapper.add(super::ui::launch_logo::build());
     wrapper.elements_snap_center_y();
     
     wrapper.add(crate::screens::splash::ui::splash_footer::build());
