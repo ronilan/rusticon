@@ -15,7 +15,10 @@ pub fn build() -> Rectangle<State> {
     });
 
     wrapper.add(super::ui::splash_logo::build());
+    wrapper.elements_snap_center_y();
+    
     wrapper.add(super::ui::splash_footer::build());
+    wrapper.elements_snap_center_x();
 
     wrapper
 }

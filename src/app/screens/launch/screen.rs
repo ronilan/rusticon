@@ -11,21 +11,17 @@ pub fn build() -> Rectangle<State> {
     wrapper.showed(false);
     wrapper.width(APP_WIDTH).height(APP_HEIGHT).fill(Some(' '));
     wrapper.on_state(|el, state| {
-        let show = !state.flow.viewport_too_small && state.flow.phase == AppPhase::Launch;
-        if el.get_showed() != show {
-            el.showed(show);
-            el.draw();
-        }
+        el.showed(!state.flow.viewport_too_small && state.flow.phase == AppPhase::Launch);
     });
-
-    wrapper.add(super::ui::launch_hint::build());
-    wrapper.add(super::ui::start_new::build());
-
-    wrapper.elements_snap_center_x();
 
     // Reuse splash logo animation so launch and splash look consistent.
     wrapper.add(crate::screens::splash::ui::splash_logo::build());
+    wrapper.elements_snap_center_y();
+    
     wrapper.add(crate::screens::splash::ui::splash_footer::build());
+    wrapper.add(super::ui::launch_hint::build());
+    wrapper.add(super::ui::start_new::build());
+    wrapper.elements_snap_center_x();
 
     wrapper
 }

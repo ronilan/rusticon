@@ -46,11 +46,7 @@ fn art_line(n: usize, s: &str) -> Vec<Block> {
 
 pub fn build() -> Element<State> {
     let splash_logo = Element::new();
-    let art_width = 39;
-    let art_height = 7;
-    let x = ((APP_WIDTH.saturating_sub(art_width)) / 2) as isize;
-    let y = ((APP_HEIGHT.saturating_sub(art_height)) / 2) as isize;
-    splash_logo.x(x).y(y);
+    splash_logo.look(Look::from((39, 7)));
 
     splash_logo.on_loop(|el, state: &mut State, event| {
         if state.flow.phase != AppPhase::Splash && state.flow.phase != AppPhase::Launch {
