@@ -1,4 +1,4 @@
-use crate::State;
+use crate::{core::model::ExitFlow, State};
 use little_tui::*;
 use little_tui_collection::TextButton;
 
@@ -12,9 +12,9 @@ pub fn build() -> TextButton<State> {
         .y(Y)
         .text("Exit")
         .underline(true)
-        .on_mouse(|_el, _state, event| {
+        .on_mouse(|_el, state, event| {
             if event.mouse == Mouse::Click {
-                exit();
+                state.flow.exit_flow = ExitFlow::ExitRequested;
             }
         });
 

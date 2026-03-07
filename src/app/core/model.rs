@@ -9,6 +9,7 @@ pub enum AppPhase {
 #[derive(Clone, Debug, PartialEq)]
 pub enum ExitFlow {
     None,
+    ExitRequested,
     SaveThenExit {
         save_done: bool,
         started_ms: Option<f64>,

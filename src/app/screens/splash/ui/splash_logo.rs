@@ -1,7 +1,4 @@
-use crate::{
-    core::model::AppPhase,
-    State,
-};
+use crate::{core::model::AppPhase, State};
 use little_tui::*;
 
 fn bouncing_text(n: usize) -> Vec<Block> {

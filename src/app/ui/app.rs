@@ -10,6 +10,19 @@ use super::super::{
 };
 use super::{APP_HEIGHT, APP_WIDTH};
 
+fn back_to_launch(state: &mut State) {
+    state.flow.phase = AppPhase::Launch;
+    state.flow.launch_start_new = false;
+    state.flow.launch_import_started = false;
+    state.flow.launch_started_ms = None;
+    state.flow.splash_started_ms = None;
+    state.flow.message_text = None;
+    state.flow.message_color = 196;
+    state.flow.exit_flow = ExitFlow::None;
+    state.editor.save_flag = false;
+    Globals::set_tick_rate(10.0);
+}
+
 pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
     let io_for_loop = io.clone();
 
@@ -33,6 +46,18 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
         let phase_before = state.flow.phase.clone();
 
         if state.flow.viewport_too_small {
+            return;
+        }
+
+        if state.flow.exit_flow == ExitFlow::ExitRequested {
+            if io_for_loop.return_to_launch_on_exit() {
+                back_to_launch(state);
+                if state.flow.phase != phase_before {
+                    el.draw();
+                }
+            } else {
+                exit();
+            }
             return;
         }
 
@@ -125,7 +150,14 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
                     io_for_loop.handle_final_save(state);
                 }
                 if should_exit {
-                    exit();
+                    if io_for_loop.return_to_launch_on_exit() {
+                        back_to_launch(state);
+                        if state.flow.phase != phase_before {
+                            el.draw();
+                        }
+                    } else {
+                        exit();
+                    }
                 }
             }
 

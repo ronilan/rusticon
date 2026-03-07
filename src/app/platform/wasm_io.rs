@@ -137,6 +137,10 @@ impl RusticonIo for WasmIo {
         AppPhase::Launch
     }
 
+    fn return_to_launch_on_exit(&self) -> bool {
+        true
+    }
+
     fn start_import(&self, path: String) {
         let mut guard = RESULT_HOLDER.lock().unwrap();
         let mut launch = LAUNCH_STATE.lock().unwrap();

@@ -1,7 +1,4 @@
-use crate::{
-    ui::{APP_HEIGHT},
-    State,
-};
+use crate::{ui::APP_HEIGHT, State};
 use little_tui::*;
 use little_tui_collection::Text;
 

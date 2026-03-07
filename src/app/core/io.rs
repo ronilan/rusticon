@@ -8,6 +8,9 @@ pub trait RusticonIo {
     fn initial_phase(&self) -> AppPhase {
         AppPhase::Splash
     }
+    fn return_to_launch_on_exit(&self) -> bool {
+        false
+    }
     fn start_import(&self, path: String);
     fn launch_drop_ready(&self) -> bool {
         false

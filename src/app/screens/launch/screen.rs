@@ -17,7 +17,7 @@ pub fn build() -> Rectangle<State> {
     // Launch uses a static logo.
     wrapper.add(super::ui::launch_logo::build());
     wrapper.elements_snap_center_y();
-    
+
     wrapper.add(crate::screens::splash::ui::splash_footer::build());
     wrapper.add(super::ui::launch_hint::build());
     wrapper.add(super::ui::start_new::build());
