@@ -17,7 +17,6 @@ exclude = ["examples", "media"]
 crate-type = ["cdylib"]
 
 [dependencies]
-terminal_style = "0.4.0"
 little_tui = { path = "../little_tui/packages/little_tui" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]

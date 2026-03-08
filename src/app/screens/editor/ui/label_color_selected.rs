@@ -8,7 +8,7 @@ pub fn build() -> Element<State> {
     let label_color_selected: Element<State> = Element::new();
     label_color_selected.x(X).y(Y).on_state(|el, state| {
         let text = match state.paintbrush {
-            Some(c) => format!("{:<3}   {}", c, terminal_style::color::ansi8_to_hex(c)),
+            Some(c) => format!("{:<3}   {}", c, Colors::ansi8_to_hex(c)),
             None => format!("{:<13}", ":transparent:"),
         };
 

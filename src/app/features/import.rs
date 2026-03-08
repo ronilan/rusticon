@@ -1,7 +1,7 @@
 use image::{imageops::FilterType, DynamicImage, GenericImageView, ImageFormat};
 use std::fs;
 use std::path::Path;
-use terminal_style::color::rgb_to_ansi8;
+use little_tui::Colors;
 
 use std::fs::File;
 use std::io::BufReader;
@@ -131,7 +131,7 @@ pub fn import_file(
                     let val = if a == 0 {
                         None // transparent
                     } else {
-                        let ansi8 = rgb_to_ansi8([px[0], px[1], px[2]]); // RGB → ANSI8
+                        let ansi8 = Colors::rgb_to_ansi8([px[0], px[1], px[2]]); // RGB → ANSI8
                         Some(ansi8)
                     };
                     data.push(val);

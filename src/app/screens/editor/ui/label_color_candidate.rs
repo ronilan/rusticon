@@ -13,7 +13,7 @@ pub fn build() -> Element<State> {
         .on_state(|el, state| {
             let text = if state.picker_mode {
                 match state.candidate {
-                    Some(c) => format!("{:<3}   {}", c, terminal_style::color::ansi8_to_hex(c)),
+                    Some(c) => format!("{:<3}   {}", c, Colors::ansi8_to_hex(c)),
                     None => format!("{:<13}", ":transparent:"),
                 }
             } else {
