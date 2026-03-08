@@ -5,7 +5,7 @@ mod app;
 pub use app::{core, features, platform, rusticon_screen, screens, splash_screen, ui};
 
 #[cfg(target_arch = "wasm32")]
-pub use core::model::{SplashState, State, MIN_SPLASH_LOOPS};
+pub use core::model::{SplashState, State, MIN_SPLASH_MS};
 
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen::prelude::wasm_bindgen]

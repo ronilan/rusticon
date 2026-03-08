@@ -697,6 +697,7 @@ dependencies = [
 name = "little_tui_output_browser"
 version = "0.1.0"
 dependencies = [
+ "js-sys",
  "little_tui",
  "wasm-bindgen",
  "web-sys",

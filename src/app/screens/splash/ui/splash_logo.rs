@@ -43,7 +43,7 @@ fn art_line(n: usize, s: &str) -> Vec<Block> {
 pub fn build() -> Element<SplashState> {
     let splash_logo = Element::new();
 
-    splash_logo.on_loop(|el, state: &mut SplashState, event| {
+    splash_logo.on_loop(|el, _state: &mut SplashState, event| {
         let n = event.loop_count as usize;
 
         let term_cols = Terminal::columns();
@@ -70,8 +70,6 @@ pub fn build() -> Element<SplashState> {
         el.y(y);
 
         el.draw();
-
-        state.loop_count = event.loop_count
     });
 
     splash_logo

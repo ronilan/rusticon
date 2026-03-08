@@ -85,7 +85,7 @@ pub fn run_flow(io: &impl RusticonIo) {
     io.reset_import_result();
     io.load_file_in_background(file_path);
 
-    let splash_state = SplashState { loop_count: 0 };
+    let splash_state = SplashState { started_ms: None };
     let splash_root = splash_screen::build();
 
     Globals::set_tick_rate(10.0);
@@ -118,7 +118,7 @@ pub fn run_flow(io: impl RusticonIo + Clone + 'static) {
     io.reset_import_result();
     io.load_file_in_background(file_path);
 
-    let splash_state = SplashState { loop_count: 0 };
+    let splash_state = SplashState { started_ms: None };
     let splash_root = splash_screen::build();
 
     Globals::set_tick_rate(10.0);

@@ -1,6 +1,6 @@
 #[derive(Clone, Debug, PartialEq)]
 pub struct SplashState {
-    pub loop_count: usize,
+    pub started_ms: Option<f64>,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -19,4 +19,4 @@ pub struct State {
     pub file_path: String,
 }
 
-pub const MIN_SPLASH_LOOPS: usize = 20;
+pub const MIN_SPLASH_MS: f64 = 2000.0;
