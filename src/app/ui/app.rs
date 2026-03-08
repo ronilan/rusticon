@@ -14,7 +14,6 @@ fn back_to_launch(state: &mut State) {
     state.flow.phase = AppPhase::Launch;
     state.flow.launch_start_new = false;
     state.flow.launch_import_started = false;
-    state.flow.launch_started_ms = None;
     state.flow.splash_started_ms = None;
     state.flow.message_text = None;
     state.flow.message_color = 196;

@@ -19,7 +19,7 @@ fn art_line(n: usize, s: &str) -> Vec<Block> {
 
 pub fn build() -> Element<State> {
     let launch_logo = Element::new();
-    launch_logo.look(Look::from((39, 7)));
+    launch_logo.look(Look::from((40, 7)));
 
     #[rustfmt::skip]
     let art_cells: Vec<Vec<Block>> = vec![

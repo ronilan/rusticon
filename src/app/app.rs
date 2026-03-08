@@ -17,7 +17,6 @@ pub fn app(io: impl RusticonIo + Clone + 'static) -> RunHandle<State> {
             viewport_too_small: false,
             launch_start_new: false,
             launch_import_started: false,
-            launch_started_ms: None,
             splash_started_ms: None,
             message_text: None,
             message_color: 196,

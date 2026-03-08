@@ -22,7 +22,6 @@ pub struct FlowState {
     pub viewport_too_small: bool,
     pub launch_start_new: bool,
     pub launch_import_started: bool,
-    pub launch_started_ms: Option<f64>,
     pub splash_started_ms: Option<f64>,
     pub message_text: Option<String>,
     pub message_color: u8,

@@ -42,30 +42,14 @@ fn art_line(n: usize, s: &str) -> Vec<Block> {
 
 pub fn build() -> Element<State> {
     let splash_logo = Element::new();
-    splash_logo.look(Look::from((39, 7)));
+    splash_logo.look(Look::from((40, 7)));
 
     splash_logo.on_loop(|el, state: &mut State, event| {
-        if state.flow.phase != AppPhase::Splash && state.flow.phase != AppPhase::Launch {
+        if state.flow.phase != AppPhase::Splash {
             return;
         }
 
-        let n = if state.flow.phase == AppPhase::Launch {
-            if state.flow.launch_started_ms.is_none() {
-                state.flow.launch_started_ms = Some(Globals::now());
-            }
-            let elapsed = state
-                .flow
-                .launch_started_ms
-                .map(|start| Globals::now() - start)
-                .unwrap_or(0.0);
-            if elapsed >= 2000.0 {
-                0
-            } else {
-                event.loop_count
-            }
-        } else {
-            event.loop_count
-        };
+        let n = event.loop_count;
 
         #[rustfmt::skip]
         let art_cells: Vec<Vec<Block>> = vec![
