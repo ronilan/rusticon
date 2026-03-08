@@ -1,6 +1,6 @@
 use image::{imageops::FilterType, DynamicImage, GenericImageView};
+use little_tui::Colors;
 use std::path::Path;
-use terminal_style::color::rgb_to_ansi8;
 
 #[cfg(not(target_arch = "wasm32"))]
 use std::fs;
@@ -104,7 +104,7 @@ pub fn import_bytes(
                     let val = if a == 0 {
                         None // transparent
                     } else {
-                        let ansi8 = rgb_to_ansi8([px[0], px[1], px[2]]); // RGB → ANSI8
+                        let ansi8 = Colors::rgb_to_ansi8([px[0], px[1], px[2]]); // RGB → ANSI8
                         Some(ansi8)
                     };
                     data.push(val);

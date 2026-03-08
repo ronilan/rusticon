@@ -1167,7 +1167,6 @@ dependencies = [
  "little_tui_input_crossterm",
  "little_tui_output_browser",
  "little_tui_output_terminal",
- "terminal_style",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
@@ -1284,12 +1283,6 @@ dependencies = [
  "quote",
  "unicode-ident",
 ]
-
-[[package]]
-name = "terminal_style"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "044dee2a7b4660fa66071972c6ef3e93844df1eecbbbd892113981e11c24ff6e"
 
 [[package]]
 name = "thiserror"

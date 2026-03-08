@@ -1,9 +1,8 @@
+use little_tui::Colors;
 #[cfg(not(target_arch = "wasm32"))]
 use std::fs;
 #[cfg(not(target_arch = "wasm32"))]
 use std::path::Path;
-
-use terminal_style::color::ansi8_to_hex;
 
 fn to_colon_list(values: &[Option<u8>]) -> String {
     values
@@ -37,7 +36,7 @@ pub fn build_svg(
         let y = (i / cols) * px;
 
         let fill = match cell {
-            Some(idx) => ansi8_to_hex(*idx),
+            Some(idx) => Colors::ansi8_to_hex(*idx),
             None => "none".to_string(),
         };
 
