@@ -666,7 +666,7 @@ dependencies = [
  "little_tui_event_loop_terminal",
  "little_tui_input_browser",
  "little_tui_input_crossterm",
- "little_tui_output_browser",
+ "little_tui_output_html",
  "little_tui_output_terminal",
  "little_tui_proc_macros",
  "unicode-normalization",
@@ -716,7 +716,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "little_tui_output_browser"
+name = "little_tui_output_html"
 version = "0.1.0"
 dependencies = [
  "js-sys",
@@ -1165,7 +1165,7 @@ dependencies = [
  "little_tui_event_loop_terminal",
  "little_tui_input_browser",
  "little_tui_input_crossterm",
- "little_tui_output_browser",
+ "little_tui_output_html",
  "little_tui_output_terminal",
  "wasm-bindgen",
  "wasm-bindgen-futures",

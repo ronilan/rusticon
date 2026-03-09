@@ -31,7 +31,7 @@ little_tui_input_crossterm = { path = "../little_tui/packages/little_tui_input_c
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 little_tui_event_loop_browser = { path = "../little_tui/packages/little_tui_event_loop_browser" }
-little_tui_output_browser = { path = "../little_tui/packages/little_tui_output_browser" }
+little_tui_output_html = { path = "../little_tui/packages/little_tui_output_html" }
 little_tui_input_browser = { path = "../little_tui/packages/little_tui_input_browser" }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"

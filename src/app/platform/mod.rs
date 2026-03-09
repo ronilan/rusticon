@@ -6,7 +6,7 @@ pub mod native_io;
 pub mod wasm_io;
 
 #[cfg(target_arch = "wasm32")]
-use little_tui_output_browser::BrowserOutput;
+use little_tui_output_html::HtmlOutput;
 #[cfg(not(target_arch = "wasm32"))]
 use little_tui_output_terminal::AnsiOutput;
 
@@ -19,6 +19,6 @@ pub fn app_output_provider(input: Box<dyn TerminalInput>) -> Box<dyn TerminalOut
     #[cfg(target_arch = "wasm32")]
     {
         let _ = input;
-        Box::new(BrowserOutput::new())
+        Box::new(HtmlOutput::new())
     }
 }
