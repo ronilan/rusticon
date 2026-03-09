@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <!-- Probes: outside #surface so set_inner_html never wipes them.
-         #probes mirrors the theme class of #surface so CSS scoping still works. -->
+    <!-- Probes: permanently outside #surface so set_inner_html on #surface
+         never wipes them. #probes mirrors the theme class of #surface so
+         scoped palette selectors (#probes.dracula .ansi-N) still work. -->
     <div id="probes">
       <span id="char-probe"></span>
       <span class="ansi-probe ansi-0"></span>
@@ -29,11 +30,15 @@
       <span class="ansi-probe ansi-14"></span>
       <span class="ansi-probe ansi-15"></span>
     </div>
+
     <div id="terminal">
-      <pre id="surface"></pre>
+      <!-- #surface is a plain div. Each backend's new() injects its own
+           child element: <pre> for HTML backend, <canvas> for canvas backend.
+           CSS handles both via #surface > pre and #surface > canvas rules. -->
+      <div id="surface"></div>
     </div>
 
-    <!-- Theme picker — outside #terminal so fixed positioning works correctly -->
+    <!-- Theme picker -->
     <button id="theme-btn" title="Choose theme" aria-label="Choose theme">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="8" cy="8" r="2.5"/>
@@ -48,7 +53,7 @@
         Basic
       </button>
       <button class="theme-option" data-theme="solarized-light" role="menuitem">
-        <span class="theme-swatch" style="background:#fdf6e3;"></span>
+        <span class="theme-swatch" style="background:#268bd2; outline: 1px solid rgba(0,0,0,0.15);"></span>
         Solarized Light
       </button>
       <button class="theme-option" data-theme="solarized-dark" role="menuitem">
@@ -74,18 +79,20 @@
     </div>
 
     <script>
-      const btn = document.getElementById('theme-btn');
-      const menu = document.getElementById('theme-menu');
+      const btn     = document.getElementById('theme-btn');
+      const menu    = document.getElementById('theme-menu');
       const surface = document.getElementById('surface');
-      const probes = document.getElementById('probes');
+      const probes  = document.getElementById('probes');
       const options = menu.querySelectorAll('.theme-option');
       const STORAGE_KEY = 'terminal-theme';
 
       const themes = ['dracula', 'nord', 'solarized-dark', 'solarized-light', 'gruvbox-dark', 'tokyo-night'];
 
       function applyTheme(name) {
-        // Apply theme class to both #surface and #probes so CSS scoping works
-        // while keeping probes outside #surface (safe from set_inner_html).
+        // Mirror class on #surface, #probes, and body.
+        // #surface -> fg/bg colors (read by Rust via getComputedStyle)
+        // #probes  -> palette probes scoped to active theme
+        // body     -> theme-btn color override for light themes
         surface.classList.remove(...themes);
         probes.classList.remove(...themes);
         document.body.classList.remove(...themes);
@@ -95,37 +102,22 @@
           document.body.classList.add(name);
         }
 
-        // Update active state in menu
         options.forEach(opt => {
           opt.classList.toggle('active', opt.dataset.theme === name);
         });
 
-        // Persist
         localStorage.setItem(STORAGE_KEY, name);
 
-        // Notify WASM terminal to re-read CSS palette and repaint
+        // Notify WASM to re-read CSS palette and repaint.
         window.dispatchEvent(new CustomEvent('terminal', { detail: { type: 'theme' } }));
       }
 
-      // Toggle menu
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menu.classList.toggle('open');
-      });
-
-      // Pick theme
-      options.forEach(opt => {
-        opt.addEventListener('click', () => {
-          applyTheme(opt.dataset.theme);
-          menu.classList.remove('open');
-        });
-      });
-
-      // Close on outside click
+      btn.addEventListener('click', e => { e.stopPropagation(); menu.classList.toggle('open'); });
+      options.forEach(opt => { opt.addEventListener('click', () => { applyTheme(opt.dataset.theme); menu.classList.remove('open'); }); });
       document.addEventListener('click', () => menu.classList.remove('open'));
       menu.addEventListener('click', e => e.stopPropagation());
 
-      // Restore persisted theme before WASM loads so there is no flash
+      // Restore before WASM loads - no flash.
       const saved = localStorage.getItem(STORAGE_KEY) || '';
       if (saved) applyTheme(saved);
     </script>

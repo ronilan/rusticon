@@ -6,7 +6,7 @@ use super::super::{
         io::RusticonIo,
         model::{AppPhase, ExitFlow, State, MIN_SPLASH_MS},
     },
-    screens,
+    platform, screens,
 };
 use super::{APP_HEIGHT, APP_WIDTH};
 
@@ -28,6 +28,7 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
     let app = App::new(AppOptions {
         height: None,
         draw_on_window_resize: false,
+        output_provider: platform::app_output_provider,
         ..Default::default()
     });
 

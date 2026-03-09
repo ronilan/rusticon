@@ -26,16 +26,35 @@ body {
    TERMINAL SURFACE
    ======================================== */
 
+/* #surface is a plain div — backend-agnostic container.
+   Each backend injects its own child on init. */
 #surface {
-  margin: auto;
+  margin: 0;
   padding: 0;
-  text-align: center;
   user-select: none;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
-#surface span {
+/* HTML backend child: <pre> injected by BrowserOutput::new() */
+#surface > pre {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#surface > pre span {
   display: inline-block;
   text-align: center;
+}
+
+/* Canvas backend child: <canvas> injected by CanvasOutput::new() */
+#surface > canvas {
+  display: block;
 }
 
 .wc {
@@ -47,17 +66,21 @@ body {
 
 /* ========================================
    USER SETTINGS
-   Edit these to change the terminal font,
-   default colors, or add new themes.
+   Edit font, default colors, and themes here.
    ======================================== */
 
 /* ----------------------------------------
    Font
    Applied to both #surface and #char-probe
    so char size measurement stays in sync.
+   To change the font, edit this one rule.
    ---------------------------------------- */
 
+/* Font applied to #surface (canvas backend reads it), #surface > pre
+   (HTML backend inherits it), and #char-probe (measurement probe).
+   All three must stay in sync or char size measurement will be wrong. */
 #surface,
+#surface > pre,
 #char-probe {
   font-family: Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
   font-size: 16px;
@@ -65,201 +88,197 @@ body {
 }
 
 /* ----------------------------------------
-   Default palette
-   fg/bg on #surface, ansi 0–15 on probes.
+   Default palette (Basic dark)
+   fg/bg on #surface; ansi 0–15 on probes
+   inside #surface.
    ---------------------------------------- */
 
-#surface           { color: #eeeeee; background-color: #111111; }
-#probes .ansi-0   { color: #111111; }
-#probes .ansi-1   { color: #ff5555; }
-#probes .ansi-2   { color: #55ff55; }
-#probes .ansi-3   { color: #ffff55; }
-#probes .ansi-4   { color: #5555ff; }
-#probes .ansi-5   { color: #ff55ff; }
-#probes .ansi-6   { color: #55ffff; }
-#probes .ansi-7   { color: #eeeeee; }
-#probes .ansi-8   { color: #666666; }
-#probes .ansi-9   { color: #ff8888; }
-#probes .ansi-10  { color: #88ff88; }
-#probes .ansi-11  { color: #ffff88; }
-#probes .ansi-12  { color: #8888ff; }
-#probes .ansi-13  { color: #ff88ff; }
-#probes .ansi-14  { color: #88ffff; }
-#probes .ansi-15  { color: #ffffff; }
+#surface            { color: #FFFFFF; background-color: #1C1C1C; }
+#probes .ansi-0    { color: #1C1C1C; }
+#probes .ansi-1    { color: #AF0000; }
+#probes .ansi-2    { color: #5FAF5F; }
+#probes .ansi-3    { color: #FFAF00; }
+#probes .ansi-4    { color: #005FAF; }
+#probes .ansi-5    { color: #AF5FAF; }
+#probes .ansi-6    { color: #00AFAF; }
+#probes .ansi-7    { color: #E4E4E4; }
+#probes .ansi-8    { color: #6C6C6C; }
+#probes .ansi-9    { color: #FF8787; }
+#probes .ansi-10   { color: #87FF87; }
+#probes .ansi-11   { color: #FFD75F; }
+#probes .ansi-12   { color: #00AFFF; }
+#probes .ansi-13   { color: #D7AFFF; }
+#probes .ansi-14   { color: #00FFFF; }
+#probes .ansi-15   { color: #FFFFFF; }
 
 /* ----------------------------------------
    Dracula
    ---------------------------------------- */
 
-#surface.dracula           { color: #f8f8f2; background-color: #282a36; }
-#probes.dracula .ansi-0   { color: #282a36; }
-#probes.dracula .ansi-1   { color: #ff5555; }
-#probes.dracula .ansi-2   { color: #50fa7b; }
-#probes.dracula .ansi-3   { color: #f1fa8c; }
-#probes.dracula .ansi-4   { color: #bd93f9; }
-#probes.dracula .ansi-5   { color: #ff79c6; }
-#probes.dracula .ansi-6   { color: #8be9fd; }
-#probes.dracula .ansi-7   { color: #f8f8f2; }
-#probes.dracula .ansi-8   { color: #6272a4; }
-#probes.dracula .ansi-9   { color: #ff6e6e; }
-#probes.dracula .ansi-10  { color: #69ff94; }
-#probes.dracula .ansi-11  { color: #ffffa5; }
-#probes.dracula .ansi-12  { color: #d6acff; }
-#probes.dracula .ansi-13  { color: #ff92df; }
-#probes.dracula .ansi-14  { color: #a4ffff; }
-#probes.dracula .ansi-15  { color: #ffffff; }
+#surface.dracula            { color: #f8f8f2; background-color: #282a36; }
+#probes.dracula .ansi-0    { color: #282a36; }
+#probes.dracula .ansi-1    { color: #ff5555; }
+#probes.dracula .ansi-2    { color: #50fa7b; }
+#probes.dracula .ansi-3    { color: #f1fa8c; }
+#probes.dracula .ansi-4    { color: #bd93f9; }
+#probes.dracula .ansi-5    { color: #ff79c6; }
+#probes.dracula .ansi-6    { color: #8be9fd; }
+#probes.dracula .ansi-7    { color: #f8f8f2; }
+#probes.dracula .ansi-8    { color: #6272a4; }
+#probes.dracula .ansi-9    { color: #ff6e6e; }
+#probes.dracula .ansi-10   { color: #69ff94; }
+#probes.dracula .ansi-11   { color: #ffffa5; }
+#probes.dracula .ansi-12   { color: #d6acff; }
+#probes.dracula .ansi-13   { color: #ff92df; }
+#probes.dracula .ansi-14   { color: #a4ffff; }
+#probes.dracula .ansi-15   { color: #ffffff; }
 
 /* ----------------------------------------
    Nord
    ---------------------------------------- */
 
-#surface.nord           { color: #d8dee9; background-color: #2e3440; }
-#probes.nord .ansi-0   { color: #3b4252; }
-#probes.nord .ansi-1   { color: #bf616a; }
-#probes.nord .ansi-2   { color: #a3be8c; }
-#probes.nord .ansi-3   { color: #ebcb8b; }
-#probes.nord .ansi-4   { color: #81a1c1; }
-#probes.nord .ansi-5   { color: #b48ead; }
-#probes.nord .ansi-6   { color: #88c0d0; }
-#probes.nord .ansi-7   { color: #e5e9f0; }
-#probes.nord .ansi-8   { color: #4c566a; }
-#probes.nord .ansi-9   { color: #bf616a; }
-#probes.nord .ansi-10  { color: #a3be8c; }
-#probes.nord .ansi-11  { color: #ebcb8b; }
-#probes.nord .ansi-12  { color: #81a1c1; }
-#probes.nord .ansi-13  { color: #b48ead; }
-#probes.nord .ansi-14  { color: #8fbcbb; }
-#probes.nord .ansi-15  { color: #eceff4; }
+#surface.nord            { color: #d8dee9; background-color: #2e3440; }
+#probes.nord .ansi-0    { color: #3b4252; }
+#probes.nord .ansi-1    { color: #bf616a; }
+#probes.nord .ansi-2    { color: #a3be8c; }
+#probes.nord .ansi-3    { color: #ebcb8b; }
+#probes.nord .ansi-4    { color: #81a1c1; }
+#probes.nord .ansi-5    { color: #b48ead; }
+#probes.nord .ansi-6    { color: #88c0d0; }
+#probes.nord .ansi-7    { color: #e5e9f0; }
+#probes.nord .ansi-8    { color: #4c566a; }
+#probes.nord .ansi-9    { color: #bf616a; }
+#probes.nord .ansi-10   { color: #a3be8c; }
+#probes.nord .ansi-11   { color: #ebcb8b; }
+#probes.nord .ansi-12   { color: #81a1c1; }
+#probes.nord .ansi-13   { color: #b48ead; }
+#probes.nord .ansi-14   { color: #8fbcbb; }
+#probes.nord .ansi-15   { color: #eceff4; }
 
 /* ----------------------------------------
    Solarized Dark
    ---------------------------------------- */
 
-#surface.solarized-dark           { color: #839496; background-color: #002b36; }
-#probes.solarized-dark .ansi-0   { color: #073642; }
-#probes.solarized-dark .ansi-1   { color: #dc322f; }
-#probes.solarized-dark .ansi-2   { color: #859900; }
-#probes.solarized-dark .ansi-3   { color: #b58900; }
-#probes.solarized-dark .ansi-4   { color: #268bd2; }
-#probes.solarized-dark .ansi-5   { color: #d33682; }
-#probes.solarized-dark .ansi-6   { color: #2aa198; }
-#probes.solarized-dark .ansi-7   { color: #eee8d5; }
-#probes.solarized-dark .ansi-8   { color: #002b36; }
-#probes.solarized-dark .ansi-9   { color: #cb4b16; }
-#probes.solarized-dark .ansi-10  { color: #586e75; }
-#probes.solarized-dark .ansi-11  { color: #657b83; }
-#probes.solarized-dark .ansi-12  { color: #839496; }
-#probes.solarized-dark .ansi-13  { color: #6c71c4; }
-#probes.solarized-dark .ansi-14  { color: #93a1a1; }
-#probes.solarized-dark .ansi-15  { color: #fdf6e3; }
-
-/* ----------------------------------------
-   Gruvbox Dark
-   ---------------------------------------- */
-
-#surface.gruvbox-dark           { color: #ebdbb2; background-color: #282828; }
-#probes.gruvbox-dark .ansi-0   { color: #282828; }
-#probes.gruvbox-dark .ansi-1   { color: #cc241d; }
-#probes.gruvbox-dark .ansi-2   { color: #98971a; }
-#probes.gruvbox-dark .ansi-3   { color: #d79921; }
-#probes.gruvbox-dark .ansi-4   { color: #458588; }
-#probes.gruvbox-dark .ansi-5   { color: #b16286; }
-#probes.gruvbox-dark .ansi-6   { color: #689d6a; }
-#probes.gruvbox-dark .ansi-7   { color: #a89984; }
-#probes.gruvbox-dark .ansi-8   { color: #928374; }
-#probes.gruvbox-dark .ansi-9   { color: #fb4934; }
-#probes.gruvbox-dark .ansi-10  { color: #b8bb26; }
-#probes.gruvbox-dark .ansi-11  { color: #fabd2f; }
-#probes.gruvbox-dark .ansi-12  { color: #83a598; }
-#probes.gruvbox-dark .ansi-13  { color: #d3869b; }
-#probes.gruvbox-dark .ansi-14  { color: #8ec07c; }
-#probes.gruvbox-dark .ansi-15  { color: #ebdbb2; }
-
-/* ----------------------------------------
-   Tokyo Night
-   ---------------------------------------- */
-
-#surface.tokyo-night           { color: #a9b1d6; background-color: #1a1b26; }
-#probes.tokyo-night .ansi-0   { color: #15161e; }
-#probes.tokyo-night .ansi-1   { color: #f7768e; }
-#probes.tokyo-night .ansi-2   { color: #9ece6a; }
-#probes.tokyo-night .ansi-3   { color: #e0af68; }
-#probes.tokyo-night .ansi-4   { color: #7aa2f7; }
-#probes.tokyo-night .ansi-5   { color: #bb9af7; }
-#probes.tokyo-night .ansi-6   { color: #7dcfff; }
-#probes.tokyo-night .ansi-7   { color: #a9b1d6; }
-#probes.tokyo-night .ansi-8   { color: #414868; }
-#probes.tokyo-night .ansi-9   { color: #f7768e; }
-#probes.tokyo-night .ansi-10  { color: #9ece6a; }
-#probes.tokyo-night .ansi-11  { color: #e0af68; }
-#probes.tokyo-night .ansi-12  { color: #7aa2f7; }
-#probes.tokyo-night .ansi-13  { color: #bb9af7; }
-#probes.tokyo-night .ansi-14  { color: #7dcfff; }
-#probes.tokyo-night .ansi-15  { color: #c0caf5; }
+#surface.solarized-dark            { color: #839496; background-color: #002b36; }
+#probes.solarized-dark .ansi-0    { color: #073642; }
+#probes.solarized-dark .ansi-1    { color: #dc322f; }
+#probes.solarized-dark .ansi-2    { color: #859900; }
+#probes.solarized-dark .ansi-3    { color: #b58900; }
+#probes.solarized-dark .ansi-4    { color: #268bd2; }
+#probes.solarized-dark .ansi-5    { color: #d33682; }
+#probes.solarized-dark .ansi-6    { color: #2aa198; }
+#probes.solarized-dark .ansi-7    { color: #eee8d5; }
+#probes.solarized-dark .ansi-8    { color: #002b36; }
+#probes.solarized-dark .ansi-9    { color: #cb4b16; }
+#probes.solarized-dark .ansi-10   { color: #586e75; }
+#probes.solarized-dark .ansi-11   { color: #657b83; }
+#probes.solarized-dark .ansi-12   { color: #839496; }
+#probes.solarized-dark .ansi-13   { color: #6c71c4; }
+#probes.solarized-dark .ansi-14   { color: #93a1a1; }
+#probes.solarized-dark .ansi-15   { color: #fdf6e3; }
 
 /* ----------------------------------------
    Solarized Light
    ---------------------------------------- */
 
-#surface.solarized-light           { color: #657b83; background-color: #fdf6e3; }
-#probes.solarized-light .ansi-0   { color: #eee8d5; }
-#probes.solarized-light .ansi-1   { color: #dc322f; }
-#probes.solarized-light .ansi-2   { color: #859900; }
-#probes.solarized-light .ansi-3   { color: #b58900; }
-#probes.solarized-light .ansi-4   { color: #268bd2; }
-#probes.solarized-light .ansi-5   { color: #d33682; }
-#probes.solarized-light .ansi-6   { color: #2aa198; }
-#probes.solarized-light .ansi-7   { color: #073642; }
-#probes.solarized-light .ansi-8   { color: #fdf6e3; }
-#probes.solarized-light .ansi-9   { color: #cb4b16; }
-#probes.solarized-light .ansi-10  { color: #586e75; }
-#probes.solarized-light .ansi-11  { color: #657b83; }
-#probes.solarized-light .ansi-12  { color: #839496; }
-#probes.solarized-light .ansi-13  { color: #6c71c4; }
-#probes.solarized-light .ansi-14  { color: #93a1a1; }
-#probes.solarized-light .ansi-15  { color: #002b36; }
+#surface.solarized-light            { color: #657b83; background-color: #fdf6e3; }
+#probes.solarized-light .ansi-0    { color: #eee8d5; }
+#probes.solarized-light .ansi-1    { color: #dc322f; }
+#probes.solarized-light .ansi-2    { color: #859900; }
+#probes.solarized-light .ansi-3    { color: #b58900; }
+#probes.solarized-light .ansi-4    { color: #268bd2; }
+#probes.solarized-light .ansi-5    { color: #d33682; }
+#probes.solarized-light .ansi-6    { color: #2aa198; }
+#probes.solarized-light .ansi-7    { color: #073642; }
+#probes.solarized-light .ansi-8    { color: #fdf6e3; }
+#probes.solarized-light .ansi-9    { color: #cb4b16; }
+#probes.solarized-light .ansi-10   { color: #586e75; }
+#probes.solarized-light .ansi-11   { color: #657b83; }
+#probes.solarized-light .ansi-12   { color: #839496; }
+#probes.solarized-light .ansi-13   { color: #6c71c4; }
+#probes.solarized-light .ansi-14   { color: #93a1a1; }
+#probes.solarized-light .ansi-15   { color: #002b36; }
+
+/* ----------------------------------------
+   Gruvbox Dark
+   ---------------------------------------- */
+
+#surface.gruvbox-dark            { color: #ebdbb2; background-color: #282828; }
+#probes.gruvbox-dark .ansi-0    { color: #282828; }
+#probes.gruvbox-dark .ansi-1    { color: #cc241d; }
+#probes.gruvbox-dark .ansi-2    { color: #98971a; }
+#probes.gruvbox-dark .ansi-3    { color: #d79921; }
+#probes.gruvbox-dark .ansi-4    { color: #458588; }
+#probes.gruvbox-dark .ansi-5    { color: #b16286; }
+#probes.gruvbox-dark .ansi-6    { color: #689d6a; }
+#probes.gruvbox-dark .ansi-7    { color: #a89984; }
+#probes.gruvbox-dark .ansi-8    { color: #928374; }
+#probes.gruvbox-dark .ansi-9    { color: #fb4934; }
+#probes.gruvbox-dark .ansi-10   { color: #b8bb26; }
+#probes.gruvbox-dark .ansi-11   { color: #fabd2f; }
+#probes.gruvbox-dark .ansi-12   { color: #83a598; }
+#probes.gruvbox-dark .ansi-13   { color: #d3869b; }
+#probes.gruvbox-dark .ansi-14   { color: #8ec07c; }
+#probes.gruvbox-dark .ansi-15   { color: #ebdbb2; }
+
+/* ----------------------------------------
+   Tokyo Night
+   ---------------------------------------- */
+
+#surface.tokyo-night            { color: #a9b1d6; background-color: #1a1b26; }
+#probes.tokyo-night .ansi-0    { color: #15161e; }
+#probes.tokyo-night .ansi-1    { color: #f7768e; }
+#probes.tokyo-night .ansi-2    { color: #9ece6a; }
+#probes.tokyo-night .ansi-3    { color: #e0af68; }
+#probes.tokyo-night .ansi-4    { color: #7aa2f7; }
+#probes.tokyo-night .ansi-5    { color: #bb9af7; }
+#probes.tokyo-night .ansi-6    { color: #7dcfff; }
+#probes.tokyo-night .ansi-7    { color: #a9b1d6; }
+#probes.tokyo-night .ansi-8    { color: #414868; }
+#probes.tokyo-night .ansi-9    { color: #f7768e; }
+#probes.tokyo-night .ansi-10   { color: #9ece6a; }
+#probes.tokyo-night .ansi-11   { color: #e0af68; }
+#probes.tokyo-night .ansi-12   { color: #7aa2f7; }
+#probes.tokyo-night .ansi-13   { color: #bb9af7; }
+#probes.tokyo-night .ansi-14   { color: #7dcfff; }
+#probes.tokyo-night .ansi-15   { color: #c0caf5; }
 
 /* ========================================
    INTERNAL — do not edit below this line
    ======================================== */
 
-/* Probe container — off-screen, never visible.
-   Houses both #char-probe and .ansi-probe elements.
-   Mirrors the theme class of #surface so scoped
-   palette selectors (#probes.dracula .ansi-N) work. */
-#probes {
+/* Char size probe — off-screen, never visible.
+   Font is inherited from the shared rule above.
+   Position absolute requires body { position: relative }. */
+#char-probe {
   position: absolute;
   left: -9999px;
   top: -9999px;
   visibility: hidden;
   pointer-events: none;
-}
-
-/* Char size probe — font inherited from shared rule above. */
-#char-probe {
   white-space: pre;
-  display: inline-block;
 }
 
-/* ANSI color probes — read by Rust via getComputedStyle. */
+/* ANSI color probes — children of #surface so they inherit its theme class.
+   Read by Rust via getComputedStyle. Colors defined in palette sections above. */
 .ansi-probe {
-  display: inline-block;
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
 }
 
-/* Theme picker
-   Default assumes dark terminal — white tinted button.
-   Light themes override to dark tinted. */
+/* Theme picker button */
 #theme-btn {
   position: fixed;
-  bottom: 12px;
+  top: 12px;
   right: 12px;
   z-index: 100;
   width: 32px;
   height: 32px;
   border: none;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -269,19 +288,8 @@ body {
 }
 
 #theme-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
-  color: rgba(255, 255, 255, 0.95);
-}
-
-/* Light theme overrides — class mirrored on body by applyTheme() */
-body.solarized-light #theme-btn {
-  background: rgba(0, 0, 0, 0.07);
-  color: rgba(0, 0, 0, 0.35);
-}
-
-body.solarized-light #theme-btn:hover {
-  background: rgba(0, 0, 0, 0.14);
-  color: rgba(0, 0, 0, 0.85);
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 #theme-btn svg {
@@ -290,9 +298,15 @@ body.solarized-light #theme-btn:hover {
   pointer-events: none;
 }
 
+/* Solarized light needs a dark button */
+body.solarized-light #theme-btn {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.4);
+}
+
 #theme-menu {
   position: fixed;
-  bottom: 50px;
+  top: 50px;
   right: 12px;
   z-index: 100;
   background: #1e1e2e;
@@ -303,7 +317,7 @@ body.solarized-light #theme-btn:hover {
   flex-direction: column;
   gap: 2px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  min-width: 140px;
+  min-width: 150px;
 }
 
 #theme-menu.open {
