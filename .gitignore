@@ -20,3 +20,11 @@ Icon
 
 # Rust
 /target
+
+# JS / web
+/node_modules
+/pkg
+/dist
+
+# the default image created
+/favicon.svg

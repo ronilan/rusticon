@@ -225,12 +225,6 @@ impl<'a, S> Elements<'a, S> {
         // It returns a `Ref<'_, Vec<Element<'a, S>>>`, which implements `Deref<Target=Vec<...>>`.
         self.inner.borrow()
     }
-
-    pub fn extend(&self, other: Elements<'a, S>) {
-        let mut self_borrow = self.inner.borrow_mut();
-        let mut other_borrow = other.inner.borrow_mut();
-        self_borrow.append(&mut other_borrow);
-    }
 }
 
 impl<'a, S> Default for Elements<'a, S> {
