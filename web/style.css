@@ -1,9 +1,17 @@
-html,
+/* ========================================
+   PAGE LAYOUT
+   ======================================== */
+
+html {
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   padding: 0;
   background-color: #fefefe;
   overflow: hidden;
+  position: relative;
 }
 
 #terminal {
@@ -14,21 +22,39 @@ body {
   overflow: hidden;
 }
 
+/* ========================================
+   TERMINAL SURFACE
+   ======================================== */
+
+/* #surface is a plain div — backend-agnostic container.
+   Each backend injects its own child on init. */
 #surface {
-  font-family: Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
-  text-align: center;
-  margin: auto;
+  margin: 0;
   padding: 0;
-  font-size: 16px;
-  line-height: 16px;
-  color: #eee;
-  background-color: #111;
   user-select: none;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
-#surface span {
+/* HTML backend child: <pre> injected by HtmlOutput::new() */
+#surface > pre {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#surface > pre span {
   display: inline-block;
   text-align: center;
+}
+
+/* Canvas backend child: <canvas> injected by CanvasOutput::new() */
+#surface > canvas {
+  display: block;
 }
 
 .wc {
@@ -36,4 +62,324 @@ body {
   width: 2ch;
   text-align: center;
   vertical-align: bottom;
+}
+
+/* ========================================
+   USER SETTINGS
+   Edit font, default colors, and themes here.
+   ======================================== */
+
+/* ----------------------------------------
+   Font
+   Applied to both #surface and #char-probe
+   so char size measurement stays in sync.
+   To change the font, edit this one rule.
+   ---------------------------------------- */
+
+/* Font applied to #surface (canvas backend reads it), #surface > pre
+   (HTML backend inherits it), and #char-probe (measurement probe).
+   All three must stay in sync or char size measurement will be wrong. */
+#surface,
+#surface > pre,
+#char-probe {
+  font-family: Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+/* ----------------------------------------
+   Default palette (Basic dark)
+   fg/bg on #surface; ansi 0–15 on probes
+   inside #surface.
+   ---------------------------------------- */
+
+#surface            { color: #eeeeee; background-color: #111111; }
+#probes .ansi-0    { color: #111111; }
+#probes .ansi-1    { color: #ff5555; }
+#probes .ansi-2    { color: #55ff55; }
+#probes .ansi-3    { color: #ffff55; }
+#probes .ansi-4    { color: #5555ff; }
+#probes .ansi-5    { color: #ff55ff; }
+#probes .ansi-6    { color: #55ffff; }
+#probes .ansi-7    { color: #eeeeee; }
+#probes .ansi-8    { color: #666666; }
+#probes .ansi-9    { color: #ff8888; }
+#probes .ansi-10   { color: #88ff88; }
+#probes .ansi-11   { color: #ffff88; }
+#probes .ansi-12   { color: #8888ff; }
+#probes .ansi-13   { color: #ff88ff; }
+#probes .ansi-14   { color: #88ffff; }
+#probes .ansi-15   { color: #ffffff; }
+
+/* ----------------------------------------
+   Basic light)
+   fg/bg on #surface; ansi 0–15 on probes
+   ---------------------------------------- */
+
+#surface.basic-light            {  color: #111111; background-color: #eeeeee; }
+#probes.basic-light .ansi-0    { color: #ffffff;}
+#probes.basic-light .ansi-1    { color: #ff5555; }
+#probes.basic-light .ansi-2    { color: #55ff55; }
+#probes.basic-light .ansi-3    { color: #ffff55; }
+#probes.basic-light .ansi-4    { color: #5555ff; }
+#probes.basic-light .ansi-5    { color: #ff55ff; }
+#probes.basic-light .ansi-6    { color: #55ffff; }
+#probes.basic-light .ansi-7    { color: #666666; }
+#probes.basic-light .ansi-8    { color: #eeeeee; }
+#probes.basic-light .ansi-9    { color: #ff8888; }
+#probes.basic-light .ansi-10   { color: #88ff88; }
+#probes.basic-light .ansi-11   { color: #ffff88; }
+#probes.basic-light .ansi-12   { color: #8888ff; }
+#probes.basic-light .ansi-13   { color: #ff88ff; }
+#probes.basic-light .ansi-14   { color: #88ffff; }
+#probes.basic-light .ansi-15   { color: #111111; }
+
+/* ----------------------------------------
+   Dracula
+   ---------------------------------------- */
+
+#surface.dracula            { color: #f8f8f2; background-color: #282a36; }
+#probes.dracula .ansi-0    { color: #282a36; }
+#probes.dracula .ansi-1    { color: #ff5555; }
+#probes.dracula .ansi-2    { color: #50fa7b; }
+#probes.dracula .ansi-3    { color: #f1fa8c; }
+#probes.dracula .ansi-4    { color: #bd93f9; }
+#probes.dracula .ansi-5    { color: #ff79c6; }
+#probes.dracula .ansi-6    { color: #8be9fd; }
+#probes.dracula .ansi-7    { color: #f8f8f2; }
+#probes.dracula .ansi-8    { color: #6272a4; }
+#probes.dracula .ansi-9    { color: #ff6e6e; }
+#probes.dracula .ansi-10   { color: #69ff94; }
+#probes.dracula .ansi-11   { color: #ffffa5; }
+#probes.dracula .ansi-12   { color: #d6acff; }
+#probes.dracula .ansi-13   { color: #ff92df; }
+#probes.dracula .ansi-14   { color: #a4ffff; }
+#probes.dracula .ansi-15   { color: #ffffff; }
+
+/* ----------------------------------------
+   Nord
+   ---------------------------------------- */
+
+#surface.nord            { color: #d8dee9; background-color: #2e3440; }
+#probes.nord .ansi-0    { color: #3b4252; }
+#probes.nord .ansi-1    { color: #bf616a; }
+#probes.nord .ansi-2    { color: #a3be8c; }
+#probes.nord .ansi-3    { color: #ebcb8b; }
+#probes.nord .ansi-4    { color: #81a1c1; }
+#probes.nord .ansi-5    { color: #b48ead; }
+#probes.nord .ansi-6    { color: #88c0d0; }
+#probes.nord .ansi-7    { color: #e5e9f0; }
+#probes.nord .ansi-8    { color: #4c566a; }
+#probes.nord .ansi-9    { color: #bf616a; }
+#probes.nord .ansi-10   { color: #a3be8c; }
+#probes.nord .ansi-11   { color: #ebcb8b; }
+#probes.nord .ansi-12   { color: #81a1c1; }
+#probes.nord .ansi-13   { color: #b48ead; }
+#probes.nord .ansi-14   { color: #8fbcbb; }
+#probes.nord .ansi-15   { color: #eceff4; }
+
+/* ----------------------------------------
+   Solarized Dark
+   ---------------------------------------- */
+
+#surface.solarized-dark            { color: #839496; background-color: #002b36; }
+#probes.solarized-dark .ansi-0    { color: #073642; }
+#probes.solarized-dark .ansi-1    { color: #dc322f; }
+#probes.solarized-dark .ansi-2    { color: #859900; }
+#probes.solarized-dark .ansi-3    { color: #b58900; }
+#probes.solarized-dark .ansi-4    { color: #268bd2; }
+#probes.solarized-dark .ansi-5    { color: #d33682; }
+#probes.solarized-dark .ansi-6    { color: #2aa198; }
+#probes.solarized-dark .ansi-7    { color: #eee8d5; }
+#probes.solarized-dark .ansi-8    { color: #002b36; }
+#probes.solarized-dark .ansi-9    { color: #cb4b16; }
+#probes.solarized-dark .ansi-10   { color: #586e75; }
+#probes.solarized-dark .ansi-11   { color: #657b83; }
+#probes.solarized-dark .ansi-12   { color: #839496; }
+#probes.solarized-dark .ansi-13   { color: #6c71c4; }
+#probes.solarized-dark .ansi-14   { color: #93a1a1; }
+#probes.solarized-dark .ansi-15   { color: #fdf6e3; }
+
+/* ----------------------------------------
+   Solarized Light
+   ---------------------------------------- */
+
+#surface.solarized-light            { color: #657b83; background-color: #fdf6e3; }
+#probes.solarized-light .ansi-0    { color: #eee8d5; }
+#probes.solarized-light .ansi-1    { color: #dc322f; }
+#probes.solarized-light .ansi-2    { color: #859900; }
+#probes.solarized-light .ansi-3    { color: #b58900; }
+#probes.solarized-light .ansi-4    { color: #268bd2; }
+#probes.solarized-light .ansi-5    { color: #d33682; }
+#probes.solarized-light .ansi-6    { color: #2aa198; }
+#probes.solarized-light .ansi-7    { color: #073642; }
+#probes.solarized-light .ansi-8    { color: #fdf6e3; }
+#probes.solarized-light .ansi-9    { color: #cb4b16; }
+#probes.solarized-light .ansi-10   { color: #586e75; }
+#probes.solarized-light .ansi-11   { color: #657b83; }
+#probes.solarized-light .ansi-12   { color: #839496; }
+#probes.solarized-light .ansi-13   { color: #6c71c4; }
+#probes.solarized-light .ansi-14   { color: #93a1a1; }
+#probes.solarized-light .ansi-15   { color: #002b36; }
+
+/* ----------------------------------------
+   Gruvbox Dark
+   ---------------------------------------- */
+
+#surface.gruvbox-dark            { color: #ebdbb2; background-color: #282828; }
+#probes.gruvbox-dark .ansi-0    { color: #282828; }
+#probes.gruvbox-dark .ansi-1    { color: #cc241d; }
+#probes.gruvbox-dark .ansi-2    { color: #98971a; }
+#probes.gruvbox-dark .ansi-3    { color: #d79921; }
+#probes.gruvbox-dark .ansi-4    { color: #458588; }
+#probes.gruvbox-dark .ansi-5    { color: #b16286; }
+#probes.gruvbox-dark .ansi-6    { color: #689d6a; }
+#probes.gruvbox-dark .ansi-7    { color: #a89984; }
+#probes.gruvbox-dark .ansi-8    { color: #928374; }
+#probes.gruvbox-dark .ansi-9    { color: #fb4934; }
+#probes.gruvbox-dark .ansi-10   { color: #b8bb26; }
+#probes.gruvbox-dark .ansi-11   { color: #fabd2f; }
+#probes.gruvbox-dark .ansi-12   { color: #83a598; }
+#probes.gruvbox-dark .ansi-13   { color: #d3869b; }
+#probes.gruvbox-dark .ansi-14   { color: #8ec07c; }
+#probes.gruvbox-dark .ansi-15   { color: #ebdbb2; }
+
+/* ----------------------------------------
+   Tokyo Night
+   ---------------------------------------- */
+
+#surface.tokyo-night            { color: #a9b1d6; background-color: #1a1b26; }
+#probes.tokyo-night .ansi-0    { color: #15161e; }
+#probes.tokyo-night .ansi-1    { color: #f7768e; }
+#probes.tokyo-night .ansi-2    { color: #9ece6a; }
+#probes.tokyo-night .ansi-3    { color: #e0af68; }
+#probes.tokyo-night .ansi-4    { color: #7aa2f7; }
+#probes.tokyo-night .ansi-5    { color: #bb9af7; }
+#probes.tokyo-night .ansi-6    { color: #7dcfff; }
+#probes.tokyo-night .ansi-7    { color: #a9b1d6; }
+#probes.tokyo-night .ansi-8    { color: #414868; }
+#probes.tokyo-night .ansi-9    { color: #f7768e; }
+#probes.tokyo-night .ansi-10   { color: #9ece6a; }
+#probes.tokyo-night .ansi-11   { color: #e0af68; }
+#probes.tokyo-night .ansi-12   { color: #7aa2f7; }
+#probes.tokyo-night .ansi-13   { color: #bb9af7; }
+#probes.tokyo-night .ansi-14   { color: #7dcfff; }
+#probes.tokyo-night .ansi-15   { color: #c0caf5; }
+
+/* ========================================
+   INTERNAL — do not edit below this line
+   ======================================== */
+
+/* Char size probe — off-screen, never visible.
+   Font is inherited from the shared rule above.
+   Position absolute requires body { position: relative }. */
+#char-probe {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: pre;
+}
+
+/* ANSI color probes — children of #surface so they inherit its theme class.
+   Read by Rust via getComputedStyle. Colors defined in palette sections above. */
+.ansi-probe {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Theme picker button */
+#theme-btn {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  z-index: 100;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  padding: 0;
+}
+
+#theme-btn:hover, #case-btn:hover, #renderer-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+#theme-btn svg, #case-btn svg, #renderer-btn svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+/* Solarized light needs a dark button */
+body.solarized-light #theme-btn, 
+body.solarized-light #case-btn,
+body.solarized-light #renderer-btn {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.4);
+}
+
+#theme-menu, #case-menu, #renderer-menu {
+  position: fixed;
+  bottom: 50px;
+  right: 12px;
+  z-index: 100;
+  background: #1e1e2e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 4px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  min-width: 150px;
+}
+
+
+#theme-menu.open, #case-menu.open, #renderer-menu.open {
+  display: flex;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: Courier New, monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  border: none;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  transition: background 0.1s, color 0.1s;
+}
+
+.theme-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.theme-option.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }

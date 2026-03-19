@@ -12,7 +12,7 @@ use little_tui_event_loop_browser::run_event_loop_wasm as looper;
 #[cfg(target_arch = "wasm32")]
 use little_tui_input_browser::BrowserInput;
 #[cfg(target_arch = "wasm32")]
-use little_tui_output_browser::BrowserOutput;
+use little_tui_output_html::HtmlOutput;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::Closure, JsCast};
 
@@ -30,7 +30,7 @@ fn setup_runtime<S: Clone + PartialEq + 'static>() {
 fn setup_runtime<S: Clone + PartialEq + 'static>() {
     setup(Providers {
         input: Box::new(BrowserInput::new()),
-        output: Box::new(BrowserOutput::new()),
+        output: Box::new(HtmlOutput::new()),
     });
 }
 
@@ -122,10 +122,10 @@ pub fn run_flow(io: impl RusticonIo + Clone + 'static) {
     Globals::set_tick_rate(10.0);
     setup_runtime::<SplashState>();
 
-    let splash_handle = tui_run(splash_root, splash_state, |_| {});
+    let splash_handle = tui_run(splash_root, splash_state, looper, |_| {});
     let io_after_splash = io.clone();
 
-    splash_handle.on_exit(
+    splash_handle.on_set(
         move |_final_splash_state| match io_after_splash.take_import_result() {
             Some(Ok((data, palette, icon_size, returned_path))) => {
                 let io_for_main = io_after_splash.clone();
@@ -141,9 +141,9 @@ pub fn run_flow(io: impl RusticonIo + Clone + 'static) {
                     Globals::set_tick_rate(33.0);
                     setup_runtime::<State>();
 
-                    let main_handle = tui_run(root, ui_state, |_| {});
+                    let main_handle = tui_run(root, ui_state, looper, |_| {});
                     let io_after_main = io_for_main.clone();
-                    main_handle.on_exit(move |final_ui_state| {
+                    main_handle.on_set(move |final_ui_state| {
                         io_after_main.handle_final_save(&final_ui_state);
                         show_app_terminated();
                     });

@@ -3,11 +3,163 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>rusticon wasm</title>
-    <link rel="stylesheet" href="/style.css" />
+    <title>Rusticon WASM</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div id="terminal"><pre id="surface"></pre></div>
-    <script type="module" src="/main.ts"></script>
+    <!-- Probes: permanently outside #surface so set_inner_html on #surface
+         never wipes them. #probes mirrors the theme class of #surface so
+         scoped palette selectors (#probes.dracula .ansi-N) still work. -->
+    <div id="probes">
+      <span id="char-probe"></span>
+      <span class="ansi-probe ansi-0"></span>
+      <span class="ansi-probe ansi-1"></span>
+      <span class="ansi-probe ansi-2"></span>
+      <span class="ansi-probe ansi-3"></span>
+      <span class="ansi-probe ansi-4"></span>
+      <span class="ansi-probe ansi-5"></span>
+      <span class="ansi-probe ansi-6"></span>
+      <span class="ansi-probe ansi-7"></span>
+      <span class="ansi-probe ansi-8"></span>
+      <span class="ansi-probe ansi-9"></span>
+      <span class="ansi-probe ansi-10"></span>
+      <span class="ansi-probe ansi-11"></span>
+      <span class="ansi-probe ansi-12"></span>
+      <span class="ansi-probe ansi-13"></span>
+      <span class="ansi-probe ansi-14"></span>
+      <span class="ansi-probe ansi-15"></span>
+    </div>
+
+    <div id="terminal">
+      <!-- #surface is a plain div. Each backend's new() injects its own
+           child element: <pre> for HTML backend, <canvas> for canvas backend.
+           CSS handles both via #surface > pre and #surface > canvas rules. -->
+      <div id="surface"></div>
+    </div>
+
+    <!-- Theme picker -->
+    <button id="theme-btn" title="Choose theme" aria-label="Choose theme">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="8" cy="8" r="2.5"/>
+        <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15"/>
+        <path d="M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"/>
+      </svg>
+    </button>
+
+    <div id="theme-menu" role="menu">
+      <button class="theme-option active" data-theme="" role="menuitem">
+        <span class="theme-swatch" style="background:#eeeeee;"></span>
+        Basic Dark
+      </button>
+      <button class="theme-option" data-theme="basic-light" role="menuitem">
+        <span class="theme-swatch" style="background:#eeeeee;"></span>
+        Basic Light
+      </button>
+      <button class="theme-option" data-theme="solarized-light" role="menuitem">
+        <span class="theme-swatch" style="background:#268bd2; outline: 1px solid rgba(0,0,0,0.15);"></span>
+        Solarized Light
+      </button>
+      <button class="theme-option" data-theme="solarized-dark" role="menuitem">
+        <span class="theme-swatch" style="background:#268bd2;"></span>
+        Solarized Dark
+      </button>
+      <button class="theme-option" data-theme="dracula" role="menuitem">
+        <span class="theme-swatch" style="background:#bd93f9;"></span>
+        Dracula
+      </button>
+      <button class="theme-option" data-theme="nord" role="menuitem">
+        <span class="theme-swatch" style="background:#81a1c1;"></span>
+        Nord
+      </button>
+      <button class="theme-option" data-theme="gruvbox-dark" role="menuitem">
+        <span class="theme-swatch" style="background:#d79921;"></span>
+        Gruvbox Dark
+      </button>
+      <button class="theme-option" data-theme="tokyo-night" role="menuitem">
+        <span class="theme-swatch" style="background:#7aa2f7;"></span>
+        Tokyo Night
+      </button>
+    </div>
+
+    <!-- Case picker -->
+    <button id="case-btn" title="Choose example" aria-label="Choose example">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="12" height="12" rx="2" />
+        <path d="M2 6h12M6 2v12" />
+      </svg>
+    </button>
+    <div id="case-menu" role="menu"></div>
+
+    <!-- Renderer picker -->
+    <button id="renderer-btn" title="Choose renderer" aria-label="Choose renderer">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="12" height="8" rx="1.5" />
+        <path d="M5 13h6" />
+      </svg>
+    </button>
+    <div id="renderer-menu" role="menu">
+      <button class="theme-option renderer-option" data-renderer="html" role="menuitem">HTML</button>
+      <button class="theme-option renderer-option" data-renderer="canvas" role="menuitem">Canvas</button>
+    </div>
+
+    <script>
+      const btn     = document.getElementById('theme-btn');
+      const menu    = document.getElementById('theme-menu');
+      const cbtn    = document.getElementById('case-btn');
+      const cmenu   = document.getElementById('case-menu');
+      const rbtn    = document.getElementById('renderer-btn');
+      const rmenu   = document.getElementById('renderer-menu');
+      const surface = document.getElementById('surface');
+      const probes  = document.getElementById('probes');
+      const options = menu.querySelectorAll('.theme-option');
+      const rOptions = rmenu.querySelectorAll('.renderer-option');
+      const STORAGE_KEY = 'terminal-theme';
+
+      const themes = ['basic-light', 'dracula', 'nord', 'solarized-dark', 'solarized-light', 'gruvbox-dark', 'tokyo-night'];
+
+      function applyTheme(name) {
+        // Mirror class on #surface, #probes, and body.
+        // #surface -> fg/bg colors (read by Rust via getComputedStyle)
+        // #probes  -> palette probes scoped to active theme
+        // body     -> theme-btn color override for light themes
+        surface.classList.remove(...themes);
+        probes.classList.remove(...themes);
+        document.body.classList.remove(...themes);
+        if (name) {
+          surface.classList.add(name);
+          probes.classList.add(name);
+          document.body.classList.add(name);
+        }
+
+        options.forEach(opt => {
+          opt.classList.toggle('active', opt.dataset.theme === name);
+        });
+
+        localStorage.setItem(STORAGE_KEY, name);
+
+        // Notify WASM to re-read CSS palette and repaint.
+        window.dispatchEvent(new CustomEvent('terminal', { detail: { type: 'theme' } }));
+      }
+
+      btn.addEventListener('click', e => { 
+        e.stopPropagation(); 
+        menu.classList.toggle('open'); 
+        cmenu.classList.remove('open');
+        rmenu.classList.remove('open');
+      });
+      options.forEach(opt => { opt.addEventListener('click', () => { applyTheme(opt.dataset.theme); menu.classList.remove('open'); }); });
+      
+      document.addEventListener('click', () => {
+        menu.classList.remove('open');
+      });
+      menu.addEventListener('click', e => e.stopPropagation());
+
+      // Restore before WASM loads - no flash.
+      const saved = localStorage.getItem(STORAGE_KEY) || '';
+      if (saved) applyTheme(saved);
+    </script>
+
+    <script type="module" src="./main.ts"></script>
   </body>
 </html>
