@@ -16,8 +16,14 @@ pub fn build() -> Element<State> {
                     (0..1)
                         .map(|_col| {
                             let ansi_code: u8 = Colors::rgb_to_ansi8(Colors::ansi8_to_rgb(row));
-                            let decor =
-                                Decor::new(false, false, false, false, None, Some(ansi_code));
+                            let decor = Decor::new(
+                                false,
+                                false,
+                                false,
+                                false,
+                                None,
+                                Some(Color::Ansi(ansi_code)),
+                            );
                             Block::new(' ', decor)
                         })
                         .collect::<Vec<Block>>()

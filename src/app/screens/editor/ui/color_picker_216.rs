@@ -17,8 +17,14 @@ pub fn build() -> Element<State> {
                         .map(|col| {
                             // original crumb formula: (row * 12) + (col * 16)
                             let ansi_code = (row * 12 + col + 16).min(231) as u8;
-                            let decor =
-                                Decor::new(false, false, false, false, None, Some(ansi_code));
+                            let decor = Decor::new(
+                                false,
+                                false,
+                                false,
+                                false,
+                                None,
+                                Some(Color::Ansi(ansi_code)),
+                            );
                             Block::new(' ', decor)
                         })
                         .collect::<Vec<Block>>()

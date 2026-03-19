@@ -1,14 +1,14 @@
 use little_tui::{run as tui_run, setup, Globals, Providers};
 
 #[cfg(not(target_arch = "wasm32"))]
-use little_tui_event_loop_terminal::run_event_loop;
+use little_tui_event_loop_terminal::run_event_loop as looper;
 #[cfg(not(target_arch = "wasm32"))]
 use little_tui_input_crossterm::CrosstermInput;
 #[cfg(not(target_arch = "wasm32"))]
 use little_tui_output_terminal::AnsiOutput;
 
 #[cfg(target_arch = "wasm32")]
-use little_tui_event_loop_browser::run_event_loop_wasm;
+use little_tui_event_loop_browser::run_event_loop_wasm as looper;
 #[cfg(target_arch = "wasm32")]
 use little_tui_input_browser::BrowserInput;
 #[cfg(target_arch = "wasm32")]
@@ -23,7 +23,6 @@ fn setup_runtime<S: Clone + PartialEq + 'static>() {
     setup(Providers {
         input: Box::new(CrosstermInput::new()),
         output: Box::new(AnsiOutput::new(Box::new(CrosstermInput::new()))),
-        looper: run_event_loop::<S>,
     });
 }
 
@@ -32,7 +31,6 @@ fn setup_runtime<S: Clone + PartialEq + 'static>() {
     setup(Providers {
         input: Box::new(BrowserInput::new()),
         output: Box::new(BrowserOutput::new()),
-        looper: run_event_loop_wasm::<S>,
     });
 }
 
@@ -91,8 +89,8 @@ pub fn run_flow(io: &impl RusticonIo) {
     Globals::set_tick_rate(10.0);
     setup_runtime::<SplashState>();
 
-    let splash_handle = tui_run(splash_root, splash_state, |_| {});
-    let _ = splash_handle.wait_final_state();
+    let splash_handle = tui_run(splash_root, splash_state, looper, |_| {});
+    let _ = splash_handle.get();
 
     match io.take_import_result() {
         Some(Ok((data, palette, icon_size, returned_path))) => {
@@ -102,8 +100,8 @@ pub fn run_flow(io: &impl RusticonIo) {
             Globals::set_tick_rate(33.0);
             setup_runtime::<State>();
 
-            let main_handle = tui_run(root, ui_state, |_| {});
-            let final_ui_state = main_handle.wait_final_state();
+            let main_handle = tui_run(root, ui_state, looper, |_| {});
+            let final_ui_state = main_handle.get();
             io.handle_final_save(&final_ui_state);
         }
         Some(Err(err_msg)) => io.finish_with_error(&err_msg, 196),

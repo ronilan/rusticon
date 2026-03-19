@@ -1,7 +1,7 @@
 use image::{imageops::FilterType, DynamicImage, GenericImageView, ImageFormat};
+use little_tui::Colors;
 use std::fs;
 use std::path::Path;
-use little_tui::Colors;
 
 use std::fs::File;
 use std::io::BufReader;

@@ -55,7 +55,18 @@ pub fn build<'a>() -> Element<State> {
                         let coloring = pll[palette_idx];
                         let active = col_i == pl * 4 + 1 || col_i == pl * 4 + 2;
 
-                        let decor = Decor::new(false, false, false, false, None, coloring);
+                        let mut decor = Decor::default();
+                        if let Some(ansi_code) = coloring {
+                            decor = Decor::new(
+                                false,
+                                false,
+                                false,
+                                false,
+                                None,
+                                Some(Color::Ansi(ansi_code)),
+                            );
+                        }
+
                         let content = if active {
                             '+'
                         } else {
