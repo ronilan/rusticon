@@ -3,7 +3,7 @@
   "version": "0.2.3",
   "private": true,
   "scripts": {
-    "build:wasm": "wasm-pack build --target web --mode no-install",
+    "build:wasm": "wasm-pack build --target web",
     "build:ts": "tsc",
     "build:site": "vite build",
     "build": "pnpm run build:wasm && pnpm run build:site",
