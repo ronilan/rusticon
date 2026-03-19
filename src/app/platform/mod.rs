@@ -1,4 +1,4 @@
-use little_tui::terminal::{TerminalInput, TerminalOutput};
+use little_tui::*;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod native_io;

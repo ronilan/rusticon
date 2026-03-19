@@ -30,8 +30,14 @@ pub(crate) fn canvas_look_from_data(size: usize, data: &[Option<u8>]) -> Look {
                     let half_col = col / 2;
                     match data[row * size + half_col] {
                         Some(ansi_code) => {
-                            let decor =
-                                Decor::new(false, false, false, false, None, Some(ansi_code));
+                            let decor = Decor::new(
+                                false,
+                                false,
+                                false,
+                                false,
+                                None,
+                                Some(Color::Ansi(ansi_code)),
+                            );
                             Block::new(' ', decor)
                         }
                         None => Block::new(':', Decor::default()),

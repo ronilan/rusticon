@@ -1,4 +1,4 @@
-use little_tui::{Globals, RunHandle};
+use little_tui::*;
 
 use super::{
     core::{
@@ -8,7 +8,7 @@ use super::{
     ui,
 };
 
-pub fn app(io: impl RusticonIo + Clone + 'static) -> RunHandle<State> {
+pub fn app(io: impl RusticonIo + Clone + 'static) -> DeferredValue<State> {
     let initial_phase = io.initial_phase();
 
     let initial_state = State {

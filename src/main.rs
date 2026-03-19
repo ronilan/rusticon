@@ -13,8 +13,7 @@ use platform::native_io::NativeIo;
 #[cfg(not(target_arch = "wasm32"))]
 fn main() {
     let io = NativeIo::new();
-    let run_handle = app::app(io);
-    let _ = run_handle.wait_final_state();
+    app::app(io);
 }
 
 #[cfg(target_arch = "wasm32")]
