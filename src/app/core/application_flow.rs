@@ -3,14 +3,14 @@ use little_tui::{run as tui_run, setup, Globals, Providers};
 #[cfg(not(target_arch = "wasm32"))]
 use little_tui_event_loop_terminal::run_event_loop as looper;
 #[cfg(not(target_arch = "wasm32"))]
-use little_tui_input_crossterm::CrosstermInput;
+use little_tui_input_crossterm::{CrosstermInput, NativeClipboard};
 #[cfg(not(target_arch = "wasm32"))]
 use little_tui_output_terminal::AnsiOutput;
 
 #[cfg(target_arch = "wasm32")]
 use little_tui_event_loop_browser::run_event_loop_wasm as looper;
 #[cfg(target_arch = "wasm32")]
-use little_tui_input_browser::BrowserInput;
+use little_tui_input_browser::{BrowserClipboard, BrowserInput};
 #[cfg(target_arch = "wasm32")]
 use little_tui_output_html::HtmlOutput;
 #[cfg(target_arch = "wasm32")]
@@ -23,6 +23,7 @@ fn setup_runtime<S: Clone + PartialEq + 'static>() {
     setup(Providers {
         input: Box::new(CrosstermInput::new()),
         output: Box::new(AnsiOutput::new(Box::new(CrosstermInput::new()))),
+        clipboard: Box::new(NativeClipboard),
     });
 }
 
@@ -31,6 +32,7 @@ fn setup_runtime<S: Clone + PartialEq + 'static>() {
     setup(Providers {
         input: Box::new(BrowserInput::new()),
         output: Box::new(HtmlOutput::new()),
+        clipboard: Box::new(BrowserClipboard),
     });
 }
 

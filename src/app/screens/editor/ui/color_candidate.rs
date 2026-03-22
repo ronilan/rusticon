@@ -17,7 +17,11 @@ pub fn build() -> Element<State> {
                 state.paintbrush
             };
 
-            el.background(color_source);
+            if let Some(bg) = color_source {
+                el.background(Some(Color::Ansi(bg)));
+            } else {
+                el.background(None);
+            }
 
             reposition(el, X, Y, state);
             el.decorate();

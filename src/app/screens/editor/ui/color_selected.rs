@@ -11,7 +11,11 @@ pub fn build() -> Element<State> {
         .y(Y)
         .look(Look::from((15, 2, ' ')))
         .on_state(|el, state| {
-            el.background(state.paintbrush);
+            if let Some(bg) = state.paintbrush {
+                el.background(Some(Color::Ansi(bg)));
+            } else {
+                el.background(None);
+            }
 
             reposition(el, X, Y, state);
             el.decorate();
