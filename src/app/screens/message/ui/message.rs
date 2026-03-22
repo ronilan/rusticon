@@ -33,7 +33,7 @@ pub fn build() -> Rectangle<State> {
             text_el
                 .text(&text_value)
                 .bold(true)
-                .color(Some(state.flow.message_color));
+                .color(Some(Color::Ansi(state.flow.message_color)));
         }
 
         el.elements_to_center();

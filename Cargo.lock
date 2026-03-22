@@ -702,6 +702,7 @@ version = "0.1.0"
 dependencies = [
  "little_tui",
  "wasm-bindgen",
+ "wasm-bindgen-futures",
  "web-sys",
 ]
 
@@ -711,6 +712,7 @@ version = "0.1.0"
 dependencies = [
  "crossterm",
  "futures",
+ "libc",
  "little_tui",
 ]
 

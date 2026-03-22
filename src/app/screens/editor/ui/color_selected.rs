@@ -14,7 +14,11 @@ pub fn build() -> Rectangle<State> {
         .height(2)
         .fill(Some(' '))
         .on_state(|el, state| {
-            el.background(state.editor.paintbrush);
+            if let Some(bg) = state.editor.paintbrush {
+                el.background(Some(Color::Ansi(bg)));
+            } else {
+                el.background(None);
+            }
             el.draw();
         });
 

@@ -20,7 +20,11 @@ pub fn build() -> Rectangle<State> {
                 state.editor.paintbrush
             };
 
-            el.background(color_source);
+            if let Some(bg) = color_source {
+                el.background(Some(Color::Ansi(bg)));
+            } else {
+                el.background(None);
+            }
             el.draw();
         });
 
