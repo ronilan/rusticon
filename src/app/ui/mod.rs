@@ -1,4 +1,3 @@
-pub(crate) mod app;
 pub(crate) mod title_bar;
 pub(crate) mod viewport_guard;
 

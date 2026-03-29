@@ -1,14 +1,14 @@
-use little_tui::*;
+use little_tui::{DeferredValue, Globals};
 
-use super::{
+use crate::{
+    app,
     core::{
         io::RusticonIo,
         model::{AppPhase, EditorState, ExitFlow, FlowState, State},
     },
-    ui,
 };
 
-pub fn app(io: impl RusticonIo + Clone + 'static) -> DeferredValue<State> {
+pub fn run(io: impl RusticonIo + Clone + 'static) -> DeferredValue<State> {
     let initial_phase = io.initial_phase();
 
     let initial_state = State {
@@ -42,7 +42,6 @@ pub fn app(io: impl RusticonIo + Clone + 'static) -> DeferredValue<State> {
         io.start_import(file_path);
     }
 
-    let app = ui::app::build(io.clone());
-
+    let app = app::build(io.clone());
     app.run(initial_state)
 }

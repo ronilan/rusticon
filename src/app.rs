@@ -1,28 +1,35 @@
 use little_tui::*;
 use little_tui_collection::{App, AppOptions};
 
-use super::super::{
-    core::{
-        io::RusticonIo,
-        model::{AppPhase, ExitFlow, State, MIN_SPLASH_MS},
-    },
-    platform, screens,
-};
-use super::{APP_HEIGHT, APP_WIDTH};
+#[path = "app/core/mod.rs"]
+pub mod core;
+#[path = "app/features/mod.rs"]
+pub mod features;
+#[path = "app/screens/mod.rs"]
+pub mod screens;
+#[path = "app/ui/mod.rs"]
+pub mod ui;
 
-fn back_to_launch(state: &mut State) {
-    state.flow.phase = AppPhase::Launch;
-    state.flow.launch_start_new = false;
-    state.flow.launch_import_started = false;
-    state.flow.splash_started_ms = None;
-    state.flow.message_text = None;
-    state.flow.message_color = 196;
-    state.flow.exit_flow = ExitFlow::None;
-    state.editor.save_flag = false;
-    Globals::set_tick_rate(10.0);
-}
+use crate::platform;
+use core::{
+    io::RusticonIo,
+    model::{AppPhase, ExitFlow, State, MIN_SPLASH_MS},
+};
+use ui::{APP_HEIGHT, APP_WIDTH};
 
 pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
+    fn back_to_launch(state: &mut State) {
+        state.flow.phase = AppPhase::Launch;
+        state.flow.launch_start_new = false;
+        state.flow.launch_import_started = false;
+        state.flow.splash_started_ms = None;
+        state.flow.message_text = None;
+        state.flow.message_color = 196;
+        state.flow.exit_flow = ExitFlow::None;
+        state.editor.save_flag = false;
+        Globals::set_tick_rate(10.0);
+    }
+
     let io_for_loop = io.clone();
 
     let app = App::new(AppOptions {
@@ -216,9 +223,8 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
     app.add(screens::splash::screen::build());
     app.add(screens::editor::screen::build());
     app.add(screens::message::screen::build());
-    app.add(super::title_bar::build());
-    app.add(super::viewport_guard::build());
-    app.elements_to_center();
+    app.add(ui::title_bar::build());
+    app.add(ui::viewport_guard::build());
 
     app
 }
