@@ -655,10 +655,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "little_tui_clipboard_browser"
+version = "0.1.0"
+dependencies = [
+ "little_tui",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "little_tui_clipboard_native"
+version = "0.1.0"
+dependencies = [
+ "libc",
+ "little_tui",
+]
+
+[[package]]
 name = "little_tui_collection"
 version = "0.1.0"
 dependencies = [
  "little_tui",
+ "little_tui_clipboard_browser",
+ "little_tui_clipboard_native",
  "little_tui_decl_macros",
  "little_tui_event_loop_browser",
  "little_tui_event_loop_terminal",
@@ -702,7 +722,6 @@ version = "0.1.0"
 dependencies = [
  "little_tui",
  "wasm-bindgen",
- "wasm-bindgen-futures",
  "web-sys",
 ]
 
