@@ -35,6 +35,7 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
     let app = App::new(AppOptions {
         height: None,
         draw_on_window_resize: false,
+        draw_on_initialization: false,
         output_provider: platform::app_output_provider,
         ..Default::default()
     });
@@ -44,9 +45,7 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
             el.elements_to_center();
             state.flow.viewport_too_small =
                 Terminal::columns() < APP_WIDTH || Terminal::rows() < APP_HEIGHT;
-            if event.loop_count > 0 {
                 el.draw();
-            }
         }
     })
     .on_loop(move |el, state, _event| {

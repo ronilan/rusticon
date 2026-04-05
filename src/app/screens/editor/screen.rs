@@ -9,7 +9,6 @@ use little_tui_collection::Rectangle;
 pub fn build() -> Rectangle<State> {
     let wrapper: Rectangle<State> = Rectangle::new();
     wrapper
-        .showed(false)
         .x(0)
         .y(1)
         .width(APP_WIDTH)
@@ -47,6 +46,8 @@ pub fn build() -> Rectangle<State> {
     wrapper.add(super::ui::label_end::build());
     wrapper.add(super::ui::button_save::build());
     wrapper.add(super::ui::button_exit::build());
+
+    wrapper.showed(false);
 
     wrapper
 }
