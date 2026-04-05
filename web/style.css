@@ -47,9 +47,10 @@ body {
   overflow: hidden;
 }
 
-#surface > pre span {
-  display: inline-block;
-  text-align: center;
+#surface > pre > span {
+  display: block;
+  white-space: pre;
+  text-align: left;
 }
 
 /* Canvas backend child: <canvas> injected by CanvasOutput::new() */
@@ -310,26 +311,25 @@ body {
   padding: 0;
 }
 
-#theme-btn:hover, #case-btn:hover, #renderer-btn:hover {
+#theme-btn:hover {
   background: rgba(255, 255, 255, 0.15);
   color: rgba(255, 255, 255, 0.9);
 }
 
-#theme-btn svg, #case-btn svg, #renderer-btn svg {
+#theme-btn svg {
   width: 16px;
   height: 16px;
   pointer-events: none;
 }
 
-/* Solarized light needs a dark button */
-body.solarized-light #theme-btn, 
-body.solarized-light #case-btn,
-body.solarized-light #renderer-btn {
+/*  Light themes need a dark button */
+body.basic-light #theme-btn,
+body.solarized-light #theme-btn {
   background: rgba(0, 0, 0, 0.08);
   color: rgba(0, 0, 0, 0.4);
 }
 
-#theme-menu, #case-menu, #renderer-menu {
+#theme-menu {
   position: fixed;
   bottom: 50px;
   right: 12px;
@@ -345,8 +345,7 @@ body.solarized-light #renderer-btn {
   min-width: 150px;
 }
 
-
-#theme-menu.open, #case-menu.open, #renderer-menu.open {
+#theme-menu.open {
   display: flex;
 }
 

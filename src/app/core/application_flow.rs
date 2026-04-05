@@ -3,16 +3,20 @@ use little_tui::{run as tui_run, setup, Globals, Providers};
 #[cfg(not(target_arch = "wasm32"))]
 use little_tui_event_loop_terminal::run_event_loop as looper;
 #[cfg(not(target_arch = "wasm32"))]
-use little_tui_input_crossterm::{CrosstermInput, NativeClipboard};
+use little_tui_input_crossterm::CrosstermInput;
 #[cfg(not(target_arch = "wasm32"))]
 use little_tui_output_terminal::AnsiOutput;
+#[cfg(not(target_arch = "wasm32"))]
+use little_tui_clipboard_native::NativeClipboard;
 
 #[cfg(target_arch = "wasm32")]
 use little_tui_event_loop_browser::run_event_loop_wasm as looper;
 #[cfg(target_arch = "wasm32")]
-use little_tui_input_browser::{BrowserClipboard, BrowserInput};
+use little_tui_input_browser::BrowserInput;
 #[cfg(target_arch = "wasm32")]
 use little_tui_output_html::HtmlOutput;
+#[cfg(target_arch = "wasm32")]
+use little_tui_clipboard_browser::BrowserClipboard;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::Closure, JsCast};
 

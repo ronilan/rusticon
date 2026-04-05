@@ -2,6 +2,7 @@
   "name": "rusticon",
   "version": "0.2.3",
   "private": true,
+  "type": "module",
   "scripts": {
     "build:wasm": "wasm-pack build --target web",
     "build:ts": "tsc",

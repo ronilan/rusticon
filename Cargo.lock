@@ -656,6 +656,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "little_tui_clipboard_browser"
+version = "0.1.0"
+dependencies = [
+ "little_tui",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "little_tui_clipboard_native"
+version = "0.1.0"
+dependencies = [
+ "libc",
+ "little_tui",
+]
+
+[[package]]
+name = "little_tui_debug"
+version = "0.1.0"
+
+[[package]]
 name = "little_tui_event_loop_browser"
 version = "0.1.0"
 dependencies = [
@@ -671,6 +693,7 @@ version = "0.1.0"
 dependencies = [
  "futures",
  "little_tui",
+ "little_tui_debug",
 ]
 
 [[package]]
@@ -679,7 +702,6 @@ version = "0.1.0"
 dependencies = [
  "little_tui",
  "wasm-bindgen",
- "wasm-bindgen-futures",
  "web-sys",
 ]
 
@@ -1131,6 +1153,8 @@ dependencies = [
  "image",
  "js-sys",
  "little_tui",
+ "little_tui_clipboard_browser",
+ "little_tui_clipboard_native",
  "little_tui_event_loop_browser",
  "little_tui_event_loop_terminal",
  "little_tui_input_browser",
