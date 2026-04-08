@@ -83,9 +83,9 @@ body {
 #surface,
 #surface > pre,
 #char-probe {
-  font-family: Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
+  font-family: monospace;
   font-size: 16px;
-  line-height: 16px;
+  line-height: 18px;
 }
 
 /* ----------------------------------------
@@ -356,7 +356,7 @@ body.solarized-light #theme-btn {
   padding: 7px 10px;
   border-radius: 5px;
   cursor: pointer;
-  font-family: Courier New, monospace;
+  font-family: monospace;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
   border: none;
