@@ -7,15 +7,15 @@ use little_tui::*;
 // clears screen on resize, "mouse out" of pickers.
 pub fn build() -> Element<State> {
     let screen: Element<State> = Element::new();
-    screen.look(Look::from((Terminal::columns(), Terminal::rows(), ' ')));
+    screen.look(Look::from((Platform::columns(), Platform::rows(), ' ')));
 
     screen
         .on_loop(|_el, state, _event| {
-            let x = (Terminal::columns().saturating_sub(APP_WIDTH) / 2) as isize;
-            let y = (Terminal::rows().saturating_sub(APP_HEIGHT) / 2) as isize;
+            let x = (Platform::columns().saturating_sub(APP_WIDTH) / 2) as isize;
+            let y = (Platform::rows().saturating_sub(APP_HEIGHT) / 2) as isize;
 
             if x != state.app_x || y != state.app_y {
-                Terminal::clear_screen();
+                Platform::clear_screen();
 
                 state.app_x = x;
                 state.app_y = y;

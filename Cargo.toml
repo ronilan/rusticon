@@ -13,6 +13,11 @@ keywords = ["favicon", "icon", "svg", "terminal", "image"]
 categories = ["command-line-utilities", "graphics", "web-programming"]
 exclude = ["examples", "media"]
 
+[package.metadata.html]
+title = "Rusticon"
+description = "Rusticon is a mouse driven SVG favicon editor for your terminal."
+keywords = "favicon, icon, svg, terminal, image"
+
 [lib]
 crate-type = ["cdylib"]
 

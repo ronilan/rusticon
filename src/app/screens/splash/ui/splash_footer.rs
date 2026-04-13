@@ -9,8 +9,8 @@ pub fn build() -> Element<SplashState> {
             state.started_ms = Some(Globals::now());
         }
 
-        let term_cols = Terminal::columns() as isize;
-        let term_rows = Terminal::rows() as isize;
+        let term_cols = Platform::columns() as isize;
+        let term_rows = Platform::rows() as isize;
 
         let text = "Made with Rust";
         el.x((term_cols.saturating_sub(text.len() as isize)) / 2)

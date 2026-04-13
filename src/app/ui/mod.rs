@@ -31,7 +31,7 @@ pub(crate) static APP_WIDTH: usize = 80;
 pub(crate) static APP_HEIGHT: usize = 24;
 
 pub(crate) fn reposition<S>(el: &Element<S>, x: isize, y: isize, state: &State) {
-    if Terminal::columns() >= APP_WIDTH && Terminal::rows() >= APP_HEIGHT {
+    if Platform::columns() >= APP_WIDTH && Platform::rows() >= APP_HEIGHT {
         el.x(state.app_x + x);
         el.y(state.app_y + y);
     }
