@@ -2,8 +2,8 @@ use little_tui::*;
 
 /// Draws a full-screen message centered in the terminal
 pub fn draw_message(msg: &str, color_code: u8) {
-    let term_cols = Terminal::columns() as usize;
-    let term_rows = Terminal::rows() as usize;
+    let term_cols = Platform::columns() as usize;
+    let term_rows = Platform::rows() as usize;
 
     // Split message into lines
     let message_lines: Vec<String> = msg.lines().map(|s| s.to_string()).collect();

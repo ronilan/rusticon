@@ -44,8 +44,8 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
         if event.window == Window::Resize {
             el.elements_to_center();
             state.flow.viewport_too_small =
-                Terminal::columns() < APP_WIDTH || Terminal::rows() < APP_HEIGHT;
-                el.draw();
+                Platform::columns() < APP_WIDTH || Platform::rows() < APP_HEIGHT;
+            el.draw();
         }
     })
     .on_loop(move |el, state, _event| {

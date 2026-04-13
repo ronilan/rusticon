@@ -29,7 +29,7 @@ pub fn io() -> impl crate::core::io::RusticonIo + Clone + 'static {
     }
 }
 
-pub fn app_output_provider(input: Box<dyn TerminalInput>) -> Box<dyn TerminalOutput> {
+pub fn app_output_provider(input: Box<dyn PlatformInput>) -> Box<dyn PlatformOutput> {
     #[cfg(not(target_arch = "wasm32"))]
     {
         Box::new(AnsiOutput::new(input))

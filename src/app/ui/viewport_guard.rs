@@ -5,7 +5,7 @@ use little_tui_collection::{Rectangle, Text};
 pub fn build() -> Rectangle<State> {
     let guard: Rectangle<State> = Rectangle::new();
     guard.x(0).y(0).fused(true).showed(false).fill(Some(' '));
-    guard.width(Terminal::columns()).height(Terminal::rows());
+    guard.width(Platform::columns()).height(Platform::rows());
     guard.on_state(|el, state| {
         let should_show = state.flow.viewport_too_small;
         if el.get_showed() != should_show {

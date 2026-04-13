@@ -679,7 +679,6 @@ dependencies = [
  "little_tui",
  "little_tui_clipboard_browser",
  "little_tui_clipboard_native",
- "little_tui_debug",
  "little_tui_decl_macros",
  "little_tui_event_loop_browser",
  "little_tui_event_loop_terminal",
@@ -693,15 +692,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "little_tui_debug"
-version = "0.1.0"
-
-[[package]]
 name = "little_tui_decl_macros"
 version = "0.1.0"
 dependencies = [
  "little_tui_proc_macros",
 ]
+
+[[package]]
+name = "little_tui_dev_tools"
+version = "0.1.0"
 
 [[package]]
 name = "little_tui_event_loop_browser"
@@ -719,7 +718,7 @@ version = "0.1.0"
 dependencies = [
  "futures",
  "little_tui",
- "little_tui_debug",
+ "little_tui_dev_tools",
 ]
 
 [[package]]

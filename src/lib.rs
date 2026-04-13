@@ -7,7 +7,6 @@ mod runtime;
 
 #[cfg(target_arch = "wasm32")]
 pub use app::{core, features, screens, ui};
-
 #[cfg(target_arch = "wasm32")]
 pub use core::model::{AppPhase, State, MIN_SPLASH_MS};
 
