@@ -10,7 +10,6 @@ pub mod screens;
 #[path = "app/ui/mod.rs"]
 pub mod ui;
 
-use crate::platform;
 use core::{
     io::RusticonIo,
     model::{AppPhase, ExitFlow, State, MIN_SPLASH_MS},
@@ -36,7 +35,6 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
         height: None,
         draw_on_window_resize: false,
         draw_on_initialization: false,
-        output_provider: platform::app_output_provider,
         ..Default::default()
     });
 
