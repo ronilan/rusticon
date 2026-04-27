@@ -11,7 +11,10 @@ use crate::{
 };
 use wasm_bindgen::{closure::Closure, JsCast, JsValue};
 use wasm_bindgen_futures::{spawn_local, JsFuture};
-use web_sys::DragEvent;
+use web_sys::{DragEvent, FileSystemFileHandle, FileSystemWritableFileStream};
+
+pub type FileHandle = JsValue;
+pub type DroppedData = (JsValue, Vec<u8>, String); // (handle, bytes, name)
 
 #[derive(Clone, Default)]
 pub struct WasmIo;
@@ -19,7 +22,7 @@ pub struct WasmIo;
 #[derive(Default)]
 struct LaunchState {
     drop_ready: bool,
-    pending_outcome: Option<ImportOutcome>,
+    pending_outcome: Option<(ImportOutcome, Option<JsValue>)>,
 }
 
 static LAUNCH_STATE: LazyLock<Arc<Mutex<LaunchState>>> =
@@ -40,91 +43,79 @@ impl WasmIo {
         }
     }
 
-    fn download_svg(&self, svg: &str, file_name: &str) -> Result<(), String> {
-        let window = web_sys::window().ok_or_else(|| "window not available".to_string())?;
-        let document = window
-            .document()
-            .ok_or_else(|| "document not available".to_string())?;
-        let body = document
-            .body()
-            .ok_or_else(|| "document.body not available".to_string())?;
-
-        let parts = js_sys::Array::new();
-        parts.push(&JsValue::from_str(svg));
-        let blob = web_sys::Blob::new_with_str_sequence(&parts)
-            .map_err(|_| "failed to create blob".to_string())?;
-        let url = web_sys::Url::create_object_url_with_blob(&blob)
-            .map_err(|_| "failed to create object URL".to_string())?;
-
-        let anchor = document
-            .create_element("a")
-            .map_err(|_| "failed to create anchor".to_string())?
-            .dyn_into::<web_sys::HtmlAnchorElement>()
-            .map_err(|_| "failed to cast anchor element".to_string())?;
-
-        anchor.set_href(&url);
-        anchor.set_download(file_name);
-        let _ = anchor.set_attribute("style", "display:none");
-
-        let _ = body.append_child(&anchor);
-        anchor.click();
-        anchor.remove();
-        let _ = web_sys::Url::revoke_object_url(&url);
-
+    async fn save_to_handle(&self, handle: JsValue, content: String) -> Result<(), JsValue> {
+        let handle: FileSystemFileHandle = handle.unchecked_into();
+        let writable = JsFuture::from(handle.create_writable()).await?;
+        let stream: FileSystemWritableFileStream = writable.unchecked_into();
+        
+        JsFuture::from(stream.write_with_str(&content)?).await?;
+        JsFuture::from(stream.close()).await?;
         Ok(())
+    }
+
+    async fn save_as_wasm(&self, content: String) -> Result<(JsValue, String), JsValue> {
+        let window = web_sys::window().unwrap();
+        let picker_fn = js_sys::Reflect::get(&window, &JsValue::from_str("showSaveFilePicker"))?
+            .dyn_into::<js_sys::Function>()?;
+        
+        let promise = picker_fn.call0(&window)?;
+        let handle_js = JsFuture::from(promise.unchecked_into::<js_sys::Promise>()).await?;
+        let handle: FileSystemFileHandle = handle_js.clone().unchecked_into();
+        let name = handle.name();
+
+        self.save_to_handle(handle_js.clone(), content).await?;
+        Ok((handle_js, name))
     }
 }
 
 fn setup_drop_listeners() {
-    let Some(window) = web_sys::window() else {
-        return;
-    };
-    let Some(document) = window.document() else {
-        return;
-    };
-    let Some(surface) = document.get_element_by_id("surface") else {
-        return;
-    };
+    let Some(window) = web_sys::window() else { return };
 
+    // Prevent default browser behavior on the whole window
     let prevent_default = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
         event.prevent_default();
     });
-    let _ = surface
-        .add_event_listener_with_callback("dragover", prevent_default.as_ref().unchecked_ref());
+    let _ = window.add_event_listener_with_callback("dragover", prevent_default.as_ref().unchecked_ref());
     prevent_default.forget();
 
     let on_drop = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
         event.prevent_default();
 
-        let Some(data_transfer) = event.data_transfer() else {
-            return;
-        };
-        let Some(files) = data_transfer.files() else {
-            return;
-        };
-        let Some(file) = files.get(0) else {
-            return;
-        };
-
-        let file_name = file.name();
-        let promise = file.array_buffer();
-
+        let Some(data_transfer) = event.data_transfer() else { return };
+        
         spawn_local(async move {
-            let outcome = match JsFuture::from(promise).await {
-                Ok(js_value) => {
-                    let bytes = js_sys::Uint8Array::new(&js_value).to_vec();
-                    import_bytes(&file_name, &bytes)
-                }
-                Err(_) => Err("Failed to read dropped file.".to_string()),
-            };
+            let items = data_transfer.items();
+            if items.length() > 0 {
+                let item = items.get(0).unwrap();
+                if item.kind() == "file" {
+                    // Capture handle using Reflect hack
+                    let handle_promise = js_sys::Reflect::get(&item, &JsValue::from_str("getAsFileSystemHandle"))
+                        .unwrap()
+                        .dyn_into::<js_sys::Function>()
+                        .unwrap()
+                        .call0(&item)
+                        .unwrap();
 
-            let mut launch = LAUNCH_STATE.lock().unwrap();
-            launch.pending_outcome = Some(outcome);
-            launch.drop_ready = true;
+                    let handle: JsValue = JsFuture::from(handle_promise.unchecked_into::<js_sys::Promise>()).await.unwrap();
+                    let file_handle: FileSystemFileHandle = handle.clone().unchecked_into();
+                    let file = JsFuture::from(file_handle.get_file()).await.unwrap();
+                    let file: web_sys::File = file.unchecked_into();
+                    
+                    let file_name = file.name();
+                    let buffer = JsFuture::from(file.array_buffer()).await.unwrap();
+                    let bytes = js_sys::Uint8Array::new(&buffer).to_vec();
+                    
+                    let outcome = import_bytes(&file_name, &bytes);
+
+                    let mut launch = LAUNCH_STATE.lock().unwrap();
+                    launch.pending_outcome = Some((outcome, Some(handle)));
+                    launch.drop_ready = true;
+                }
+            }
         });
     });
 
-    let _ = surface.add_event_listener_with_callback("drop", on_drop.as_ref().unchecked_ref());
+    let _ = window.add_event_listener_with_callback("drop", on_drop.as_ref().unchecked_ref());
     on_drop.forget();
 }
 
@@ -146,7 +137,9 @@ impl RusticonIo for WasmIo {
         let mut launch = LAUNCH_STATE.lock().unwrap();
 
         if launch.drop_ready {
-            *guard = launch.pending_outcome.take();
+            if let Some((outcome, _handle)) = launch.pending_outcome.take() {
+                *guard = Some(outcome);
+            }
             launch.drop_ready = false;
             return;
         }
@@ -184,11 +177,26 @@ impl RusticonIo for WasmIo {
         };
 
         let svg = build_svg(&data, &final_ui_state.editor.palette_colors, size, size, 32);
-        let file_name = self.normalize_svg_name(&final_ui_state.editor.file_path);
+        
+        let io = self.clone();
+        let handle = final_ui_state.editor.file_handle.clone();
 
-        match self.download_svg(&svg, &file_name) {
-            Ok(_) => self.report_message("Export download started.", 10),
-            Err(err_msg) => self.report_message(&err_msg, 196),
-        }
+        spawn_local(async move {
+            if let Some(h) = handle {
+                match io.save_to_handle(h, svg).await {
+                    Ok(_) => io.report_message("Saved successfully.", 10),
+                    Err(_) => io.report_message("Save failed.", 196),
+                }
+            } else {
+                // Save As flow
+                match io.save_as_wasm(svg).await {
+                    Ok((_new_handle, _new_name)) => {
+                        io.report_message("File created.", 10);
+                        // Future: Push new handle back to State
+                    },
+                    Err(_) => io.report_message("Save cancelled.", 196),
+                }
+            }
+        });
     }
 }

@@ -11,6 +11,7 @@ use crate::{
 pub fn run(io: impl RusticonIo + Clone + 'static) -> DeferredValue<State> {
     let initial_phase = io.initial_phase();
 
+    let file_path = io.initial_file_path();
     let initial_state = State {
         flow: FlowState {
             phase: initial_phase.clone(),
@@ -32,12 +33,12 @@ pub fn run(io: impl RusticonIo + Clone + 'static) -> DeferredValue<State> {
             canvas8_data: vec![None; 8 * 8],
             size: 8,
             save_flag: false,
-            file_path: "favicon.svg".to_string(),
+            file_path: file_path.clone(),
+            file_handle: crate::platform::to_file_handle(file_path.clone()),
         },
     };
 
     Globals::set_tick_rate(10.0);
-    let file_path = io.initial_file_path();
     if initial_phase != AppPhase::Launch {
         io.start_import(file_path);
     }

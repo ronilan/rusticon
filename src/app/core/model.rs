@@ -40,6 +40,7 @@ pub struct EditorState {
     pub size: u8,
     pub save_flag: bool,
     pub file_path: String,
+    pub file_handle: Option<crate::platform::FileHandle>,
 }
 
 #[derive(Clone, Debug, PartialEq)]

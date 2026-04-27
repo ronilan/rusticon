@@ -9,6 +9,9 @@ use crate::{
     State,
 };
 
+pub type FileHandle = String;
+pub type DroppedData = (String, Vec<u8>, String); // (path, bytes, name)
+
 #[derive(Clone, Default)]
 pub struct NativeIo;
 
