@@ -4,7 +4,7 @@ use crate::{
     State,
 };
 use little_tui::*;
-use little_tui_collection::Rectangle;
+use little_tui_elements::Rectangle;
 
 pub fn build() -> Rectangle<State> {
     let wrapper: Rectangle<State> = Rectangle::new();

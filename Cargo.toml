@@ -24,7 +24,7 @@ crate-type = ["cdylib"]
 [dependencies]
 image = "0.25.6"
 little_tui = { path = "../little_tui/packages/little_tui" }
-little_tui_collection = { path = "../little_tui/packages/little_tui_collection" }
+little_tui_elements = { path = "../little_tui/packages/little_tui_elements" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 crossterm = { version = "0.29", features = ["event-stream"] }

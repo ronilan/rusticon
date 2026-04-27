@@ -1,6 +1,6 @@
 use crate::State;
 use little_tui::*;
-use little_tui_collection::Text;
+use little_tui_elements::Text;
 
 pub fn build() -> Text<State> {
     let hint: Text<State> = Text::default();

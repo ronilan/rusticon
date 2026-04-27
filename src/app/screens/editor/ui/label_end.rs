@@ -1,6 +1,6 @@
 use crate::State;
 use little_tui::*;
-use little_tui_collection::Text;
+use little_tui_elements::Text;
 
 static X: isize = 59;
 static Y: isize = 19;

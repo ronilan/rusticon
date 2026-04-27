@@ -1,6 +1,6 @@
 use crate::{ui::APP_HEIGHT, State};
 use little_tui::*;
-use little_tui_collection::Text;
+use little_tui_elements::Text;
 
 pub fn build() -> Text<State> {
     let splash_footer: Text<State> = Text::default();

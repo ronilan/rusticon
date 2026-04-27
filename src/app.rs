@@ -1,5 +1,5 @@
 use little_tui::*;
-use little_tui_collection::{App, AppOptions};
+use little_tui_elements::{App, AppOptions};
 
 #[path = "app/core/mod.rs"]
 pub mod core;

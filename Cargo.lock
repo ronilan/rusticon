@@ -353,23 +353,9 @@ dependencies = [
 
 [[package]]
 name = "fax"
-version = "0.2.6"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f05de7d48f37cd6730705cbca900770cab77a89f413d23e100ad7fad7795a0ab"
-dependencies = [
- "fax_derive",
-]
-
-[[package]]
-name = "fax_derive"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a0aca10fb742cb43f9e7bb8467c91aa9bcb8e3ffbc6a6f7389bb93ffc920577d"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
+checksum = "caf1079563223d5d59d83c85886a56e586cfd5c1a26292e971a0fa266531ac5a"
 
 [[package]]
 name = "fdeflate"
@@ -666,7 +652,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "little_tui_collection"
+name = "little_tui_decl_macros"
+version = "0.1.0"
+dependencies = [
+ "little_tui_proc_macros",
+]
+
+[[package]]
+name = "little_tui_elements"
 version = "0.1.0"
 dependencies = [
  "little_tui",
@@ -683,13 +676,6 @@ dependencies = [
  "unicode-normalization",
  "unicode-width",
  "web-sys",
-]
-
-[[package]]
-name = "little_tui_decl_macros"
-version = "0.1.0"
-dependencies = [
- "little_tui_proc_macros",
 ]
 
 [[package]]
@@ -1185,7 +1171,7 @@ dependencies = [
  "image",
  "js-sys",
  "little_tui",
- "little_tui_collection",
+ "little_tui_elements",
  "little_tui_event_loop_browser",
  "little_tui_event_loop_terminal",
  "little_tui_input_browser",

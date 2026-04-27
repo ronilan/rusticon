@@ -1,6 +1,6 @@
 use crate::State;
 use little_tui::*;
-use little_tui_collection::{Rectangle, Text};
+use little_tui_elements::{Rectangle, Text};
 
 pub fn build() -> Rectangle<State> {
     let guard: Rectangle<State> = Rectangle::new();

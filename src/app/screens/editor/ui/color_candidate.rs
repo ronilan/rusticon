@@ -1,6 +1,6 @@
 use crate::State;
 use little_tui::*;
-use little_tui_collection::Rectangle;
+use little_tui_elements::Rectangle;
 
 static X: isize = 61;
 static Y: isize = 11;
