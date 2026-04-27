@@ -5,12 +5,12 @@ use little_tui_event_loop_terminal::run_event_loop as looper;
 #[cfg(not(target_arch = "wasm32"))]
 use little_tui_input_crossterm::CrosstermInput;
 #[cfg(not(target_arch = "wasm32"))]
-use little_tui_output_terminal::AnsiOutput;
+use little_tui_output_terminal::TerminalOutput;
 #[cfg(not(target_arch = "wasm32"))]
-use little_tui_clipboard_native::NativeClipboard;
+use little_tui_clipboard_terminal::NativeClipboard;
 
 #[cfg(target_arch = "wasm32")]
-use little_tui_event_loop_browser::run_event_loop_wasm as looper;
+use little_tui_event_loop_browser::run_event_loop as looper;
 #[cfg(target_arch = "wasm32")]
 use little_tui_input_browser::BrowserInput;
 #[cfg(target_arch = "wasm32")]
@@ -26,7 +26,7 @@ use crate::{core::io::RusticonIo, rusticon_screen, splash_screen, SplashState, S
 fn setup_runtime<S: Clone + PartialEq + 'static>() {
     setup(Providers {
         input: Box::new(CrosstermInput::new()),
-        output: Box::new(AnsiOutput::new(Box::new(CrosstermInput::new()))),
+        output: Box::new(TerminalOutput::new(Box::new(CrosstermInput::new()))),
         clipboard: Box::new(NativeClipboard),
     });
 }
