@@ -12,5 +12,5 @@ pub use core::model::{AppPhase, State, MIN_SPLASH_MS};
 #[wasm_bindgen::prelude::wasm_bindgen]
 pub fn main() {
     platform::init();
-    runtime::run(platform::io());
+    runtime::run();
 }

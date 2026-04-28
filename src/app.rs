@@ -1,18 +1,16 @@
 use little_tui::*;
 use little_tui_elements::{App, AppOptions};
-
-pub use crate::core;
-pub use crate::features;
-pub use crate::screens;
-pub use crate::ui;
-
-use crate::core::{
+  
+pub use crate::core::{
     io::RusticonIo,
     model::{AppPhase, ExitFlow, State, MIN_SPLASH_MS},
 };
-use ui::{APP_HEIGHT, APP_WIDTH};
 
-pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
+use crate::ui;
+use crate::screens;
+use crate::platform;
+
+pub fn build() -> App<State> {
     fn back_to_launch(state: &mut State) {
         state.flow.phase = AppPhase::Launch;
         state.flow.launch_start_new = false;
@@ -25,8 +23,6 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
         Globals::set_tick_rate(10.0);
     }
 
-    let io_for_loop = io.clone();
-
     let app = App::new(AppOptions {
         height: None,
         draw_on_window_resize: false,
@@ -38,11 +34,12 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
         if event.window == Window::Resize {
             el.elements_to_center();
             state.flow.viewport_too_small =
-                Platform::columns() < APP_WIDTH || Platform::rows() < APP_HEIGHT;
+                Platform::columns() < ui::APP_WIDTH || Platform::rows() < ui::APP_HEIGHT;
             el.draw();
         }
     })
     .on_loop(move |el, state, _event| {
+        let io = platform::get_io();
         let phase_before = state.flow.phase.clone();
 
         if state.flow.viewport_too_small {
@@ -50,7 +47,7 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
         }
 
         if state.flow.exit_flow == ExitFlow::ExitRequested {
-            if io_for_loop.return_to_launch_on_exit() {
+            if io.return_to_launch_on_exit() {
                 back_to_launch(state);
                 if state.flow.phase != phase_before {
                     el.draw();
@@ -62,15 +59,15 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
         }
 
         if state.flow.phase == AppPhase::Launch {
-            if !(state.flow.launch_start_new || io_for_loop.launch_drop_ready()) {
+            if !(state.flow.launch_start_new || io.launch_drop_ready()) {
                 return;
             }
 
             if !state.flow.launch_import_started {
-                let from_drop = io_for_loop.launch_drop_ready();
+                let from_drop = io.launch_drop_ready();
                 state.flow.launch_start_new = false;
                 state.flow.launch_import_started = true;
-                io_for_loop.start_import(state.editor.file_path.clone());
+                io.start_import(state.editor.file_path.clone());
 
                 if from_drop {
                     state.flow.phase = AppPhase::Splash;
@@ -83,7 +80,7 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
                 }
             }
 
-            if let Some(import_result) = io_for_loop.take_import_result() {
+            if let Some(import_result) = io.take_import_result() {
                 state.flow.launch_import_started = false;
                 match import_result {
                     Ok((data, palette, icon_size, returned_path)) => {
@@ -147,10 +144,10 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
                 }
 
                 if should_save {
-                    io_for_loop.handle_final_save(state);
+                    io.handle_final_save(state);
                 }
                 if should_exit {
-                    if io_for_loop.return_to_launch_on_exit() {
+                    if io.return_to_launch_on_exit() {
                         back_to_launch(state);
                         if state.flow.phase != phase_before {
                             el.draw();
@@ -178,7 +175,7 @@ pub fn build(io: impl RusticonIo + Clone + 'static) -> App<State> {
             return;
         }
 
-        if let Some(import_result) = io_for_loop.take_import_result() {
+        if let Some(import_result) = io.take_import_result() {
             match import_result {
                 Ok((data, palette, icon_size, returned_path)) => {
                     Globals::set_tick_rate(33.0);

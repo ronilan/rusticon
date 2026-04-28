@@ -4,10 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:wasm": "wasm-pack build --target web",
-    "build:ts": "tsc",
+    "clean": "rm -rf dist pkg docs target",
+    "build:wasm": "wasm-pack build --target web --release",
     "build:site": "vite build",
-    "build": "cargo update && pnpm run build:wasm && pnpm run build:site",
+    "build:web": "pnpm run build:wasm && pnpm run build:site",
+    "build:terminal": "cargo build --release --bin rusticon && mkdir -p dist && cp target/release/rusticon dist/",
+    "build:macos": "cargo build --release --bin rusticon_macos --features macos-native && mkdir -p dist && cp target/release/rusticon_macos dist/",
+    "bundle:macos": "node scripts/bundle.js",
+    "build:all": "rm -rf dist && pnpm run build:web && pnpm run build:terminal && pnpm run build:macos && pnpm run bundle:macos",
+    "build": "cargo update && pnpm run build:all",
     "dev": "cargo update && pnpm run build:wasm && vite",
     "dev:watch": "cargo watch -s 'pnpm run build:wasm' & vite",
     "preview": "vite preview"

@@ -1,18 +1,17 @@
+
 mod app;
 mod platform;
 mod runtime;
+mod core;
+mod features;
+mod screens;
+mod ui;
 
-pub mod core;
-pub mod features;
-pub mod screens;
-pub mod ui;
 
-pub use crate::core::model::{AppPhase, State, MIN_SPLASH_MS};
-
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(all(not(target_arch = "wasm32"), not(feature = "macos-native")))]
 fn main() {
     platform::init();
-    runtime::run(platform::io());
+    runtime::run();
 }
 
 #[cfg(target_arch = "wasm32")]

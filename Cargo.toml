@@ -18,8 +18,19 @@ title = "Rusticon"
 description = "Rusticon is a mouse driven SVG favicon editor for your terminal."
 keywords = "favicon, icon, svg, terminal, image"
 
+[package.metadata.bundle]
+app_name = "Rusticon"
+binary_name = "rusticon_macos"
+icon_source = "web/favicon.svg"
+
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
+[features]
+default = []
+macos-native = [
+    "little_tui_elements/macos-native",
+    "little_tui_window_macos",
+]
 
 [dependencies]
 image = "0.25.6"
@@ -34,8 +45,8 @@ little_tui_event_loop_terminal = { path = "../little_tui/packages/little_tui_eve
 little_tui_output_terminal = { path = "../little_tui/packages/little_tui_output_terminal" }
 little_tui_input_crossterm = { path = "../little_tui/packages/little_tui_input_crossterm" }
 
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-little_tui_event_loop_browser = { path = "../little_tui/packages/little_tui_event_loop_browser" }
+[target.'cfg(target_os = "macos")'.dependencies]
+little_tui_window_macos = { path = "../little_tui/packages/little_tui_window_macos", optional = true }
 little_tui_output_html = { path = "../little_tui/packages/little_tui_output_html" }
 little_tui_input_browser = { path = "../little_tui/packages/little_tui_input_browser" }
 wasm-bindgen = "0.2"
@@ -65,7 +76,39 @@ web-sys = { version = "0.3", features = [
 name = "rusticon"
 path = "src/main.rs"
 
+[[bin]]
+name = "rusticon_macos"
+path = "src/macos.rs"
+required-features = ["macos-native"]
+
 [profile.release]
 opt-level = 3
 lto = "thin"
 codegen-units = 1
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+little_tui_event_loop_browser = { path = "../little_tui/packages/little_tui_event_loop_browser" }
+little_tui_output_html = { path = "../little_tui/packages/little_tui_output_html" }
+little_tui_input_browser = { path = "../little_tui/packages/little_tui_input_browser" }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+console_error_panic_hook = "0.1"
+web-sys = { version = "0.3", features = [
+    "Window",
+    "Document",
+    "HtmlElement",
+    "HtmlAnchorElement",
+    "Location",
+    "Url",
+    "UrlSearchParams",
+    "Blob",
+    "DragEvent",
+    "DataTransfer",
+    "DataTransferItem",
+    "DataTransferItemList",
+    "FileList",
+    "File",
+    "FileSystemFileHandle",
+    "FileSystemWritableFileStream",
+] }
