@@ -1,14 +1,14 @@
 use little_tui::*;
 use little_tui_elements::{App, AppOptions};
-  
+
 pub use crate::core::{
     io::RusticonIo,
     model::{AppPhase, ExitFlow, State, MIN_SPLASH_MS},
 };
 
-use crate::ui;
-use crate::screens;
 use crate::platform;
+use crate::screens;
+use crate::ui;
 
 pub fn build() -> App<State> {
     fn back_to_launch(state: &mut State) {
@@ -39,7 +39,16 @@ pub fn build() -> App<State> {
         }
     })
     .on_loop(move |el, state, _event| {
+        platform::setup_macos_hooks();
         let io = platform::get_io();
+
+        if io.launch_drop_ready()
+            && state.flow.phase != AppPhase::Launch
+            && state.flow.phase != AppPhase::Splash
+        {
+            state.flow.phase = AppPhase::Launch;
+        }
+
         let phase_before = state.flow.phase.clone();
 
         if state.flow.viewport_too_small {

@@ -1,4 +1,4 @@
-use crate::{core::model::{ExitFlow, AppPhase, State}};
+use crate::core::model::{AppPhase, ExitFlow, State};
 use little_tui::*;
 use little_tui_elements::TextButton;
 

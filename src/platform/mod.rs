@@ -1,6 +1,6 @@
+use crate::core::io::RusticonIo;
 use std::cell::RefCell;
 use std::sync::Arc;
-use crate::core::io::RusticonIo;
 
 #[cfg(not(target_arch = "wasm32"))]
 mod native;
@@ -8,9 +8,9 @@ mod native;
 mod wasm;
 
 #[cfg(not(target_arch = "wasm32"))]
-pub use native::{FileHandle};
+pub use native::FileHandle;
 #[cfg(target_arch = "wasm32")]
-pub use wasm::{FileHandle, DroppedData, WasmIo};
+pub use wasm::{DroppedData, FileHandle, WasmIo};
 
 thread_local! {
     static IO_PROVIDER: RefCell<Option<Arc<dyn RusticonIo>>> = RefCell::new(None);
@@ -27,7 +27,7 @@ pub fn get_io() -> Arc<dyn RusticonIo> {
 pub fn init() {
     #[cfg(target_arch = "wasm32")]
     console_error_panic_hook::set_once();
-    
+
     set_io(Arc::new(io()));
 }
 
@@ -43,12 +43,7 @@ pub fn io() -> impl crate::core::io::RusticonIo + Clone + 'static {
     }
 }
 
-/// Helper to convert a path String into a platform FileHandle
-#[cfg(not(target_arch = "wasm32"))]
-pub fn to_file_handle(path: String) -> Option<FileHandle> {
-    Some(path)
-}
-#[cfg(target_arch = "wasm32")]
-pub fn to_file_handle(_path: String) -> Option<FileHandle> {
-    None
+pub fn setup_macos_hooks() {
+    #[cfg(all(not(target_arch = "wasm32"), target_os = "macos"))]
+    native::setup_macos_hooks();
 }

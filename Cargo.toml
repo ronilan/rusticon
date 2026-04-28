@@ -44,6 +44,9 @@ futures-timer = "3.0.3"
 little_tui_event_loop_terminal = { path = "../little_tui/packages/little_tui_event_loop_terminal" }
 little_tui_output_terminal = { path = "../little_tui/packages/little_tui_output_terminal" }
 little_tui_input_crossterm = { path = "../little_tui/packages/little_tui_input_crossterm" }
+objc2 = { version = "0.6.4", features = ["std"] }
+objc2-foundation = { version = "0.3.2", features = ["NSArray", "NSString", "NSURL", "NSPathUtilities"] }
+objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSWindow", "NSView", "NSSavePanel", "NSDragging", "NSPasteboard"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 little_tui_window_macos = { path = "../little_tui/packages/little_tui_window_macos", optional = true }

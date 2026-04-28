@@ -1,5 +1,6 @@
-use crate::{
-    core::{model::{AppPhase, State}, shared::ImportOutcome},
+use crate::core::{
+    model::{AppPhase, State},
+    shared::ImportOutcome,
 };
 
 pub trait RusticonIo {

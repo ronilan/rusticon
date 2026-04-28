@@ -1,8 +1,8 @@
 pub mod app;
-pub mod platform;
-pub mod runtime;
 pub mod core;
 pub mod features;
+pub mod platform;
+pub mod runtime;
 pub mod screens;
 pub mod ui;
 

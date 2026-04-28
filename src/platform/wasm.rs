@@ -47,7 +47,7 @@ impl WasmIo {
         let handle: FileSystemFileHandle = handle.unchecked_into();
         let writable = JsFuture::from(handle.create_writable()).await?;
         let stream: FileSystemWritableFileStream = writable.unchecked_into();
-        
+
         JsFuture::from(stream.write_with_str(&content)?).await?;
         JsFuture::from(stream.close()).await?;
         Ok(())
@@ -57,7 +57,7 @@ impl WasmIo {
         let window = web_sys::window().unwrap();
         let picker_fn = js_sys::Reflect::get(&window, &JsValue::from_str("showSaveFilePicker"))?
             .dyn_into::<js_sys::Function>()?;
-        
+
         let promise = picker_fn.call0(&window)?;
         let handle_js = JsFuture::from(promise.unchecked_into::<js_sys::Promise>()).await?;
         let handle: FileSystemFileHandle = handle_js.clone().unchecked_into();
@@ -69,42 +69,51 @@ impl WasmIo {
 }
 
 fn setup_drop_listeners() {
-    let Some(window) = web_sys::window() else { return };
+    let Some(window) = web_sys::window() else {
+        return;
+    };
 
     // Prevent default browser behavior on the whole window
     let prevent_default = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
         event.prevent_default();
     });
-    let _ = window.add_event_listener_with_callback("dragover", prevent_default.as_ref().unchecked_ref());
+    let _ = window
+        .add_event_listener_with_callback("dragover", prevent_default.as_ref().unchecked_ref());
     prevent_default.forget();
 
     let on_drop = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
         event.prevent_default();
 
-        let Some(data_transfer) = event.data_transfer() else { return };
-        
+        let Some(data_transfer) = event.data_transfer() else {
+            return;
+        };
+
         spawn_local(async move {
             let items = data_transfer.items();
             if items.length() > 0 {
                 let item = items.get(0).unwrap();
                 if item.kind() == "file" {
                     // Capture handle using Reflect hack
-                    let handle_promise = js_sys::Reflect::get(&item, &JsValue::from_str("getAsFileSystemHandle"))
-                        .unwrap()
-                        .dyn_into::<js_sys::Function>()
-                        .unwrap()
-                        .call0(&item)
-                        .unwrap();
+                    let handle_promise =
+                        js_sys::Reflect::get(&item, &JsValue::from_str("getAsFileSystemHandle"))
+                            .unwrap()
+                            .dyn_into::<js_sys::Function>()
+                            .unwrap()
+                            .call0(&item)
+                            .unwrap();
 
-                    let handle: JsValue = JsFuture::from(handle_promise.unchecked_into::<js_sys::Promise>()).await.unwrap();
+                    let handle: JsValue =
+                        JsFuture::from(handle_promise.unchecked_into::<js_sys::Promise>())
+                            .await
+                            .unwrap();
                     let file_handle: FileSystemFileHandle = handle.clone().unchecked_into();
                     let file = JsFuture::from(file_handle.get_file()).await.unwrap();
                     let file: web_sys::File = file.unchecked_into();
-                    
+
                     let file_name = file.name();
                     let buffer = JsFuture::from(file.array_buffer()).await.unwrap();
                     let bytes = js_sys::Uint8Array::new(&buffer).to_vec();
-                    
+
                     let outcome = import_bytes(&file_name, &bytes);
 
                     let mut launch = LAUNCH_STATE.lock().unwrap();
@@ -177,7 +186,7 @@ impl RusticonIo for WasmIo {
         };
 
         let svg = build_svg(&data, &final_ui_state.editor.palette_colors, size, size, 32);
-        
+
         let io = self.clone();
         let handle = final_ui_state.editor.file_handle.clone();
 
@@ -193,7 +202,7 @@ impl RusticonIo for WasmIo {
                     Ok((_new_handle, _new_name)) => {
                         io.report_message("File created.", 10);
                         // Future: Push new handle back to State
-                    },
+                    }
                     Err(_) => io.report_message("Save cancelled.", 196),
                 }
             }

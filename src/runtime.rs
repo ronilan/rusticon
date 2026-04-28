@@ -1,11 +1,9 @@
-use little_tui::{DeferredValue, Globals};
 use crate::{
     app,
-    core::{
-        model::{AppPhase, State},
-    },
+    core::model::{AppPhase, State},
     platform,
 };
+use little_tui::{DeferredValue, Globals};
 
 pub fn run() -> DeferredValue<State> {
     let io = platform::get_io();

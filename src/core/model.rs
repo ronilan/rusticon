@@ -43,7 +43,6 @@ pub struct EditorState {
     pub file_handle: Option<crate::platform::FileHandle>,
 }
 
-
 #[derive(Clone, Debug, PartialEq)]
 pub struct State {
     pub flow: FlowState,
@@ -51,34 +50,33 @@ pub struct State {
 }
 
 impl Default for State {
-  fn default() -> Self {
-
-      State {
-        flow: FlowState {
-            phase: AppPhase::Splash,
-            viewport_too_small: false,
-            launch_start_new: false,
-            launch_import_started: false,
-            splash_started_ms: None,
-            message_text: None,
-            message_color: 196,
-            exit_flow: ExitFlow::None,
-        },
-        editor: EditorState {
-            candidate: None,
-            paintbrush: None,
-            palette_index: 0,
-            palette_colors: vec![None; 8],
-            picker_mode: false,
-            canvas16_data: vec![None; 16 * 16],
-            canvas8_data: vec![None; 8 * 8],
-            size: 8,
-            save_flag: false,
-            file_path: String::new(),
-            file_handle: None,
-        },
-      }
-  }
+    fn default() -> Self {
+        State {
+            flow: FlowState {
+                phase: AppPhase::Splash,
+                viewport_too_small: false,
+                launch_start_new: false,
+                launch_import_started: false,
+                splash_started_ms: None,
+                message_text: None,
+                message_color: 196,
+                exit_flow: ExitFlow::None,
+            },
+            editor: EditorState {
+                candidate: None,
+                paintbrush: None,
+                palette_index: 0,
+                palette_colors: vec![None; 8],
+                picker_mode: false,
+                canvas16_data: vec![None; 16 * 16],
+                canvas8_data: vec![None; 8 * 8],
+                size: 8,
+                save_flag: false,
+                file_path: String::new(),
+                file_handle: None,
+            },
+        }
+    }
 }
 
 pub const MIN_SPLASH_MS: f64 = 2000.0;

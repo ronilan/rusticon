@@ -3,14 +3,22 @@ use std::{env, thread};
 use crate::{
     core::{
         io::RusticonIo,
-        model::{AppPhase,State},
-        shared::{ImportOutcome, RESULT_HOLDER},
+        model::{AppPhase, State},
+        shared::{ImportOutcome, DROP_HOLDER, RESULT_HOLDER},
     },
     features::{export::export_svg, import::import_file, message::draw_message},
 };
 
-pub type FileHandle = String;
+#[cfg(target_os = "macos")]
+use {
+    objc2::rc::Retained,
+    objc2::runtime::{AnyClass, AnyObject, Imp, Sel},
+    objc2::{ffi, msg_send, sel, MainThreadMarker},
+    objc2_app_kit::{NSApplication, NSWindow},
+    objc2_foundation::{NSArray, NSString},
+};
 
+pub type FileHandle = String;
 
 #[derive(Clone, Default)]
 pub struct NativeIo;
@@ -33,6 +41,9 @@ impl RusticonIo for NativeIo {
     }
 
     fn start_import(&self, path: String) {
+        let dropped_path = DROP_HOLDER.lock().unwrap().take();
+        let actual_path = dropped_path.unwrap_or(path);
+
         {
             let mut guard = RESULT_HOLDER.lock().unwrap();
             *guard = None;
@@ -41,13 +52,17 @@ impl RusticonIo for NativeIo {
         let result_holder_thread = RESULT_HOLDER.clone();
 
         thread::spawn(move || {
-            let result = std::panic::catch_unwind(|| import_file(&path))
+            let result = std::panic::catch_unwind(|| import_file(&actual_path))
                 .map_err(|e| format!("Panic in import_file: {:?}", e))
                 .and_then(|res| res);
 
             let mut guard = result_holder_thread.lock().unwrap();
             *guard = Some(result);
         });
+    }
+
+    fn launch_drop_ready(&self) -> bool {
+        DROP_HOLDER.lock().unwrap().is_some()
     }
 
     fn take_import_result(&self) -> Option<ImportOutcome> {
@@ -79,6 +94,104 @@ impl RusticonIo for NativeIo {
         ) {
             Ok(_) => self.report_message("Export succeeded!", 10),
             Err(err_msg) => self.report_message(&err_msg, 196),
+        }
+    }
+}
+
+#[cfg(target_os = "macos")]
+pub fn setup_macos_hooks() {
+    static mut HOOKED: bool = false;
+    unsafe {
+        if HOOKED {
+            return;
+        }
+        let mtm = MainThreadMarker::new().expect("must be on main thread");
+        let app = NSApplication::sharedApplication(mtm);
+        let windows = app.windows();
+
+        if windows.len() > 0 {
+            let window: Retained<NSWindow> = windows.objectAtIndex(0);
+            let view = window.contentView();
+            let Some(view) = view else { return };
+
+            let type_string = NSString::from_str("NSFilenamesPboardType");
+            let types = NSArray::from_slice(&[&*type_string]);
+            let _: () = msg_send![&*window, registerForDraggedTypes: &*types];
+            let _: () = msg_send![&*view, registerForDraggedTypes: &*types];
+
+            let cls = view.class() as *const AnyClass as *mut AnyClass;
+
+            extern "C" fn dragging_entered(
+                _this: &AnyObject,
+                _sel: Sel,
+                _sender: &AnyObject,
+            ) -> usize {
+                1
+            }
+            let dragging_entered_imp: Imp = std::mem::transmute(
+                dragging_entered as extern "C" fn(&AnyObject, Sel, &AnyObject) -> usize,
+            );
+            let sel_e = sel!(draggingEntered:);
+            let _ = ffi::class_addMethod(
+                cls as _,
+                std::mem::transmute(sel_e),
+                dragging_entered_imp,
+                "Q@:@\0".as_ptr() as _,
+            );
+
+            extern "C" fn dragging_updated(
+                _this: &AnyObject,
+                _sel: Sel,
+                _sender: &AnyObject,
+            ) -> usize {
+                1
+            }
+            let dragging_updated_imp: Imp = std::mem::transmute(
+                dragging_updated as extern "C" fn(&AnyObject, Sel, &AnyObject) -> usize,
+            );
+            let sel_u = sel!(draggingUpdated:);
+            let _ = ffi::class_addMethod(
+                cls as _,
+                std::mem::transmute(sel_u),
+                dragging_updated_imp,
+                "Q@:@\0".as_ptr() as _,
+            );
+
+            extern "C" fn perform_drag_operation(
+                _this: &AnyObject,
+                _sel: Sel,
+                sender: &AnyObject,
+            ) -> bool {
+                unsafe {
+                    let pboard: Retained<AnyObject> = msg_send![sender, draggingPasteboard];
+                    let type_string = NSString::from_str("NSFilenamesPboardType");
+                    let files: Option<Retained<NSArray<NSString>>> =
+                        msg_send![&*pboard, propertyListForType: &*type_string];
+
+                    if let Some(files) = files {
+                        if files.len() > 0 {
+                            let path_ns = files.objectAtIndex(0);
+                            let path = path_ns.to_string();
+                            if let Ok(mut guard) = DROP_HOLDER.lock() {
+                                *guard = Some(path);
+                            }
+                        }
+                    }
+                }
+                true
+            }
+            let perform_drag_imp = std::mem::transmute(
+                perform_drag_operation as extern "C" fn(&AnyObject, Sel, &AnyObject) -> bool,
+            );
+            let sel_p = sel!(performDragOperation:);
+            let _ = ffi::class_addMethod(
+                cls as _,
+                std::mem::transmute(sel_p),
+                perform_drag_imp,
+                "B@:@\0".as_ptr() as _,
+            );
+
+            HOOKED = true;
         }
     }
 }
