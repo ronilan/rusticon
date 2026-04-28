@@ -1,16 +1,12 @@
 use little_tui::*;
 use little_tui_elements::{App, AppOptions};
 
-#[path = "app/core/mod.rs"]
-pub mod core;
-#[path = "app/features/mod.rs"]
-pub mod features;
-#[path = "app/screens/mod.rs"]
-pub mod screens;
-#[path = "app/ui/mod.rs"]
-pub mod ui;
+pub use crate::core;
+pub use crate::features;
+pub use crate::screens;
+pub use crate::ui;
 
-use core::{
+use crate::core::{
     io::RusticonIo,
     model::{AppPhase, ExitFlow, State, MIN_SPLASH_MS},
 };
