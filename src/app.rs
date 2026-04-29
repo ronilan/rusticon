@@ -44,9 +44,17 @@ pub fn build() -> App<State> {
 
         if io.launch_drop_ready()
             && state.flow.phase != AppPhase::Launch
-            && state.flow.phase != AppPhase::Splash
         {
             state.flow.phase = AppPhase::Launch;
+        }
+
+        if state.editor.save_requested {
+            state.editor.save_requested = false;
+            io.perform_save(state);
+        }
+
+        if let Some(handle) = io.take_pending_handle() {
+            state.editor.file_handle = Some(handle);
         }
 
         let phase_before = state.flow.phase.clone();
@@ -127,44 +135,9 @@ pub fn build() -> App<State> {
 
         if state.flow.phase != AppPhase::Splash {
             if state.flow.phase == AppPhase::Message {
-                let now = Globals::now();
-                let mut should_save = false;
-                let mut should_exit = false;
-
-                if let ExitFlow::SaveThenExit {
-                    save_done,
-                    started_ms,
-                } = &mut state.flow.exit_flow
-                {
-                    if !*save_done {
-                        *save_done = true;
-                        should_save = true;
-                    }
-
-                    if started_ms.is_none() {
-                        *started_ms = Some(now);
-                    }
-
-                    if let Some(start) = *started_ms {
-                        if now - start >= 2000.0 {
-                            should_exit = true;
-                        }
-                    }
-                }
-
-                if should_save {
-                    io.handle_final_save(state);
-                }
-                if should_exit {
-                    if io.return_to_launch_on_exit() {
-                        back_to_launch(state);
-                        if state.flow.phase != phase_before {
-                            el.draw();
-                        }
-                    } else {
-                        exit();
-                    }
-                }
+                // messages can be cleared by clicking or after timeout, 
+                // but for now we just let them stay or be handled by specific logic.
+                // Minimal change: just return for now.
             }
 
             return;
@@ -185,6 +158,7 @@ pub fn build() -> App<State> {
         }
 
         if let Some(import_result) = io.take_import_result() {
+            state.flow.launch_import_started = false;
             match import_result {
                 Ok((data, palette, icon_size, returned_path)) => {
                     Globals::set_tick_rate(33.0);

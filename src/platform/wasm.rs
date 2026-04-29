@@ -23,6 +23,7 @@ pub struct WasmIo;
 struct LaunchState {
     drop_ready: bool,
     pending_outcome: Option<(ImportOutcome, Option<JsValue>)>,
+    pending_handle: Option<JsValue>,
 }
 
 static LAUNCH_STATE: LazyLock<Arc<Mutex<LaunchState>>> =
@@ -146,8 +147,11 @@ impl RusticonIo for WasmIo {
         let mut launch = LAUNCH_STATE.lock().unwrap();
 
         if launch.drop_ready {
-            if let Some((outcome, _handle)) = launch.pending_outcome.take() {
+            if let Some((outcome, handle)) = launch.pending_outcome.take() {
                 *guard = Some(outcome);
+                if let Some(h) = handle {
+                    launch.pending_handle = Some(h);
+                }
             }
             launch.drop_ready = false;
             return;
@@ -174,38 +178,44 @@ impl RusticonIo for WasmIo {
         draw_message(msg, color_code);
     }
 
-    fn handle_final_save(&self, final_ui_state: &State) {
-        if !final_ui_state.editor.save_flag {
-            return;
-        }
-
-        let (data, size) = if final_ui_state.editor.size == 16 {
-            (final_ui_state.editor.canvas16_data.clone(), 16)
+    fn perform_save(&self, state: &State) {
+        let (data, size) = if state.editor.size == 16 {
+            (state.editor.canvas16_data.clone(), 16)
         } else {
-            (final_ui_state.editor.canvas8_data.clone(), 8)
+            (state.editor.canvas8_data.clone(), 8)
         };
 
-        let svg = build_svg(&data, &final_ui_state.editor.palette_colors, size, size, 32);
+        let svg = build_svg(&data, &state.editor.palette_colors, size, size, 32);
 
         let io = self.clone();
-        let handle = final_ui_state.editor.file_handle.clone();
+        let handle = state.editor.file_handle.clone();
 
         spawn_local(async move {
             if let Some(h) = handle {
-                match io.save_to_handle(h, svg).await {
-                    Ok(_) => io.report_message("Saved successfully.", 10),
-                    Err(_) => io.report_message("Save failed.", 196),
+                if let Err(_) = io.save_to_handle(h, svg).await {
+                    io.report_message("Save failed.", 196);
                 }
             } else {
                 // Save As flow
                 match io.save_as_wasm(svg).await {
-                    Ok((_new_handle, _new_name)) => {
-                        io.report_message("File created.", 10);
-                        // Future: Push new handle back to State
+                    Ok((new_handle, _new_name)) => {
+                        let mut launch = LAUNCH_STATE.lock().unwrap();
+                        launch.pending_handle = Some(new_handle);
                     }
                     Err(_) => io.report_message("Save cancelled.", 196),
                 }
             }
         });
+    }
+
+    fn take_pending_handle(&self) -> Option<crate::platform::FileHandle> {
+        LAUNCH_STATE.lock().unwrap().pending_handle.take()
+    }
+
+    fn handle_final_save(&self, final_ui_state: &State) {
+        if !final_ui_state.editor.save_flag {
+            return;
+        }
+        self.perform_save(final_ui_state);
     }
 }

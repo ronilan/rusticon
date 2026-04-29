@@ -17,5 +17,9 @@ pub trait RusticonIo {
     }
     fn take_import_result(&self) -> Option<ImportOutcome>;
     fn report_message(&self, msg: &str, color_code: u8);
+    fn perform_save(&self, state: &State);
+    fn take_pending_handle(&self) -> Option<crate::platform::FileHandle> {
+        None
+    }
     fn handle_final_save(&self, final_ui_state: &State);
 }

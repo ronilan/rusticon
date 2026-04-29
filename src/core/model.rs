@@ -10,10 +10,6 @@ pub enum AppPhase {
 pub enum ExitFlow {
     None,
     ExitRequested,
-    SaveThenExit {
-        save_done: bool,
-        started_ms: Option<f64>,
-    },
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -39,6 +35,7 @@ pub struct EditorState {
     pub canvas8_data: Vec<Option<u8>>,
     pub size: u8,
     pub save_flag: bool,
+    pub save_requested: bool,
     pub file_path: String,
     pub file_handle: Option<crate::platform::FileHandle>,
 }
@@ -72,6 +69,7 @@ impl Default for State {
                 canvas8_data: vec![None; 8 * 8],
                 size: 8,
                 save_flag: false,
+                save_requested: false,
                 file_path: String::new(),
                 file_handle: None,
             },

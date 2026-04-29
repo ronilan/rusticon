@@ -1,4 +1,4 @@
-use crate::core::model::{AppPhase, ExitFlow, State};
+use crate::core::model::State;
 use little_tui::*;
 use little_tui_elements::TextButton;
 
@@ -14,14 +14,7 @@ pub fn build() -> TextButton<State> {
         .underline(true)
         .on_mouse(|_el, state, event| {
             if event.mouse == Mouse::Click {
-                state.editor.save_flag = true;
-                state.flow.phase = AppPhase::Message;
-                state.flow.message_text = Some("Saving...".to_string());
-                state.flow.message_color = 10;
-                state.flow.exit_flow = ExitFlow::SaveThenExit {
-                    save_done: false,
-                    started_ms: None,
-                };
+                state.editor.save_requested = true;
             }
         });
 
