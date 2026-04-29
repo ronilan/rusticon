@@ -39,8 +39,16 @@ pub fn load_and_resize_image_bytes(bytes: &[u8]) -> Result<Vec<Vec<[u8; 4]>>, St
         }
     };
 
+    let (w, h) = img.dimensions();
+    let size = w.min(h);
+    let x = (w - size) / 2;
+    let y = (h - size) / 2;
+
+    // Crop to center square
+    let cropped = img.crop_imm(x, y, size, size);
+
     // Resize to 16x16 (forcing size)
-    let resized: DynamicImage = img.resize_exact(16, 16, FilterType::Nearest);
+    let resized: DynamicImage = cropped.resize_exact(16, 16, FilterType::Nearest);
 
     // Convert to 2D vector of RGBA
     let mut pixels_2d = vec![vec![[0u8; 4]; 16]; 16];
