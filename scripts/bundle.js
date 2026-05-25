@@ -32,7 +32,7 @@ if (fs.existsSync(binaryPath)) {
     process.exit(1);
 }
 
-// 3. Create AppIcon.icns with macOS Margins
+// 3. Create AppIcon.icons with macOS Margins
 if (fs.existsSync(iconSource)) {
     console.log("Creating icon with native macOS margins...");
     const iconsetDir = path.join(distDir, "AppIcon.iconset");
@@ -72,3 +72,36 @@ if (fs.existsSync(iconSource)) {
 fs.copyFileSync("Info.plist", path.join(contentsDir, "Info.plist"));
 
 console.log(`Successfully created ${appBundle}`);
+
+// 5. Create DMG
+const stagingDir = path.join(distDir, "dmg");
+
+// Clean old staging dir
+fs.rmSync(stagingDir, { recursive: true, force: true });
+fs.mkdirSync(stagingDir, { recursive: true });
+
+// Copy app into staging
+const stagedApp = path.join(stagingDir, `${appName}.app`);
+fs.cpSync(appBundle, stagedApp, { recursive: true });
+
+// Create Applications symlink
+const applicationsLink = path.join(stagingDir, "Applications");
+fs.symlinkSync("/Applications", applicationsLink);
+
+// Create DMG
+const dmgPath = path.join(distDir, `${appName}.dmg`);
+
+if (fs.existsSync(dmgPath)) {
+    fs.unlinkSync(dmgPath);
+}
+
+execSync(`
+hdiutil create \
+  -volname "${appName}" \
+  -srcfolder "${stagingDir}" \
+  -ov \
+  -format UDZO \
+  "${dmgPath}"
+`, { stdio: 'inherit' });
+
+console.log(`Created ${dmgPath}`);
