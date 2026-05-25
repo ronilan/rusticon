@@ -1,6 +1,6 @@
 use crate::core::model::State;
-use little_tui::*;
-use little_tui_elements::Text;
+use incredible::*;
+use incredible_elements::Text;
 
 pub fn build() -> Text<State> {
     let hint: Text<State> = Text::default();

@@ -91,13 +91,6 @@ impl RusticonIo for NativeIo {
             self.report_message(&err_msg, 196);
         }
     }
-
-    fn handle_final_save(&self, final_ui_state: &State) {
-        if !final_ui_state.editor.save_flag {
-            return;
-        }
-        self.perform_save(final_ui_state);
-    }
 }
 
 #[cfg(target_os = "macos")]

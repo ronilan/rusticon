@@ -1,5 +1,5 @@
 use image::{imageops::FilterType, DynamicImage, GenericImageView};
-use little_tui::*;
+use incredible::*;
 use std::path::Path;
 
 #[cfg(not(target_arch = "wasm32"))]

@@ -1,6 +1,6 @@
 use super::utils::*;
 use crate::core::model::State;
-use little_tui::*;
+use incredible::*;
 
 static X: isize = 16;
 static Y: isize = 2;
@@ -19,6 +19,8 @@ pub fn build() -> Element<State> {
                             let decor = Decor::new(
                                 false,
                                 false,
+                                None,
+                                None,
                                 false,
                                 false,
                                 None,

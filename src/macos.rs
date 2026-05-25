@@ -19,9 +19,9 @@ pub use crate::core::model::{AppPhase, State, MIN_SPLASH_MS};
 
 #[cfg(feature = "macos-native")]
 fn main() {
-    little_tui_window_macos::set_window_title("Rusticon");
+    incredible_window_macos::set_window_title("Rusticon");
     platform::init();
-    little_tui_window_macos::run_app(runtime::run);
+    incredible_window_macos::run_app(runtime::run);
 }
 
 #[cfg(not(feature = "macos-native"))]

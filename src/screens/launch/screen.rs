@@ -2,8 +2,9 @@ use crate::{
     core::model::{AppPhase, State},
     ui::{APP_HEIGHT, APP_WIDTH},
 };
-use little_tui::*;
-use little_tui_elements::Rectangle;
+use incredible::*;
+use incredible_elements::Rectangle;
+use incredible_helpers_layout::arrangers::Arrangers;
 
 pub fn build() -> Rectangle<State> {
     let wrapper: Rectangle<State> = Rectangle::new();

@@ -1,6 +1,7 @@
 use crate::core::model::State;
-use little_tui::*;
-use little_tui_elements::{Rectangle, Text};
+use incredible::*;
+use incredible_elements::{Rectangle, Text};
+use incredible_helpers_layout::arrangers::Arrangers;
 
 pub fn build() -> Rectangle<State> {
     let guard: Rectangle<State> = Rectangle::new();

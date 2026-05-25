@@ -211,11 +211,4 @@ impl RusticonIo for WasmIo {
     fn take_pending_handle(&self) -> Option<crate::platform::FileHandle> {
         LAUNCH_STATE.lock().unwrap().pending_handle.take()
     }
-
-    fn handle_final_save(&self, final_ui_state: &State) {
-        if !final_ui_state.editor.save_flag {
-            return;
-        }
-        self.perform_save(final_ui_state);
-    }
 }

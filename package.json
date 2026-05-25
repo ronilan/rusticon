@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf dist pkg docs target",
+    "build:wasm:dev": "wasm-pack build --target web --dev",
     "build:wasm": "wasm-pack build --target web --release",
     "build:site": "vite build",
     "build:web": "pnpm run build:wasm && pnpm run build:site",
@@ -13,7 +14,7 @@
     "bundle:macos": "node scripts/bundle.js",
     "build:all": "rm -rf dist && pnpm run build:web && pnpm run build:terminal && pnpm run build:macos && pnpm run bundle:macos",
     "build": "cargo update && pnpm run build:all",
-    "dev": "cargo update && pnpm run build:wasm && vite",
+    "dev": "cargo update && pnpm run build:wasm:dev && vite",
     "dev:watch": "cargo watch -s 'pnpm run build:wasm' & vite",
     "preview": "vite preview"
   },
@@ -23,5 +24,6 @@
     "vite": "^5.0.0",
     "vite-plugin-wasm": "^3.3.0",
     "vite-plugin-top-level-await": "^1.4.0"
-  }
+  },
+  "packageManager": "pnpm@10.30.3+sha512.c961d1e0a2d8e354ecaa5166b822516668b7f44cb5bd95122d590dd81922f606f5473b6d23ec4a5be05e7fcd18e8488d47d978bbe981872f1145d06e9a740017"
 }

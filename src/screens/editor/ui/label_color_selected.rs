@@ -1,6 +1,6 @@
 use crate::core::model::State;
-use little_tui::*;
-use little_tui_elements::Text;
+use incredible::*;
+use incredible_elements::Text;
 
 static X: isize = 62;
 static Y: isize = 8;

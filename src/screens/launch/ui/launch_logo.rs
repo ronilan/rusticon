@@ -1,5 +1,5 @@
 use crate::core::model::State;
-use little_tui::*;
+use incredible::*;
 
 fn text_line(s: &str) -> Vec<Block> {
     s.chars().map(|c| Block::new(c, Decor::default())).collect()

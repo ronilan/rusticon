@@ -1,5 +1,5 @@
-use little_tui::*;
-use little_tui_elements::Text;
+use incredible::*;
+use incredible_elements::Text;
 
 use crate::core::model::{AppPhase, State};
 

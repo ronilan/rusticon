@@ -28,30 +28,31 @@ crate-type = ["cdylib", "rlib"]
 [features]
 default = []
 macos-native = [
-    "little_tui_elements/macos-native",
-    "little_tui_window_macos",
+    "incredible_elements/macos-native",
+    "incredible_window_macos",
 ]
 
 [dependencies]
 image = "0.25.6"
-little_tui = { path = "../little_tui/packages/little_tui" }
-little_tui_elements = { path = "../little_tui/packages/little_tui_elements" }
+incredible = { path = "../incredible/packages/incredible" }
+incredible_elements = { path = "../incredible/packages/incredible_elements" }
+incredible_helpers_layout = { path = "../incredible/packages/incredible_helpers_layout" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 crossterm = { version = "0.29", features = ["event-stream"] }
 futures = "0.3.31"
 futures-timer = "3.0.3"
-little_tui_event_loop_terminal = { path = "../little_tui/packages/little_tui_event_loop_terminal" }
-little_tui_output_terminal = { path = "../little_tui/packages/little_tui_output_terminal" }
-little_tui_input_crossterm = { path = "../little_tui/packages/little_tui_input_crossterm" }
+incredible_event_loop_terminal = { path = "../incredible/packages/incredible_event_loop_terminal" }
+incredible_output_terminal = { path = "../incredible/packages/incredible_output_terminal" }
+incredible_input_crossterm = { path = "../incredible/packages/incredible_input_crossterm" }
 objc2 = { version = "0.6.4", features = ["std"] }
 objc2-foundation = { version = "0.3.2", features = ["NSArray", "NSString", "NSURL", "NSPathUtilities"] }
 objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSWindow", "NSView", "NSSavePanel", "NSDragging", "NSPasteboard"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
-little_tui_window_macos = { path = "../little_tui/packages/little_tui_window_macos", optional = true }
-little_tui_output_html = { path = "../little_tui/packages/little_tui_output_html" }
-little_tui_input_browser = { path = "../little_tui/packages/little_tui_input_browser" }
+incredible_window_macos = { path = "../incredible/packages/incredible_window_macos", optional = true }
+incredible_output_html = { path = "../incredible/packages/incredible_output_html" }
+incredible_input_browser = { path = "../incredible/packages/incredible_input_browser" }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
@@ -90,9 +91,9 @@ lto = "thin"
 codegen-units = 1
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-little_tui_event_loop_browser = { path = "../little_tui/packages/little_tui_event_loop_browser" }
-little_tui_output_html = { path = "../little_tui/packages/little_tui_output_html" }
-little_tui_input_browser = { path = "../little_tui/packages/little_tui_input_browser" }
+incredible_event_loop_browser = { path = "../incredible/packages/incredible_event_loop_browser" }
+incredible_output_html = { path = "../incredible/packages/incredible_output_html" }
+incredible_input_browser = { path = "../incredible/packages/incredible_input_browser" }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"

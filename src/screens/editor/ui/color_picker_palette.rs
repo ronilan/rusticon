@@ -1,5 +1,5 @@
 use crate::core::model::State;
-use little_tui::*;
+use incredible::*;
 
 static X: isize = 23;
 static Y: isize = 21;
@@ -60,12 +60,13 @@ pub fn build<'a>() -> Element<State> {
                             decor = Decor::new(
                                 false,
                                 false,
+                                None,
+                                None,
                                 false,
                                 false,
                                 None,
                                 Some(Color::Ansi(ansi_code)),
-                            );
-                        }
+                            );                        }
 
                         let content = if active {
                             '+'

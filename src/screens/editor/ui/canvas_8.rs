@@ -1,7 +1,7 @@
 use super::utils::*;
 use crate::core::model::AppPhase;
 use crate::core::model::State;
-use little_tui::*;
+use incredible::*;
 
 static X: isize = 31;
 static Y: isize = 7;

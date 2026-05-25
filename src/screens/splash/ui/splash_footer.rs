@@ -1,6 +1,6 @@
 use crate::{core::model::State, ui::APP_HEIGHT};
-use little_tui::*;
-use little_tui_elements::Text;
+use incredible::*;
+use incredible_elements::Text;
 
 pub fn build() -> Text<State> {
     let splash_footer: Text<State> = Text::default();

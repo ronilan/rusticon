@@ -1,6 +1,6 @@
 use super::utils::*;
 use crate::core::model::State;
-use little_tui::*;
+use incredible::*;
 
 static X: isize = 16;
 static Y: isize = 18;

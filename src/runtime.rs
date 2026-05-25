@@ -3,7 +3,7 @@ use crate::{
     core::model::{AppPhase, State},
     platform,
 };
-use little_tui::{DeferredValue, Globals};
+use incredible::{DeferredValue, Globals};
 
 pub fn run() -> DeferredValue<State> {
     let io = platform::get_io();
