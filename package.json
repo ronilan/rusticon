@@ -19,6 +19,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "create-dmg": "^1.1.0",
     "toml": "^4.1.1",
     "typescript": "^5.0.0",
     "vite": "^5.0.0",

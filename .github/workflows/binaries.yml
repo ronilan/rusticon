@@ -1,15 +1,19 @@
 name: Binaries
+
 on:
   release:
-    types: [ published ]
+    types: [published]
+    
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build-and-upload:
-    name: Build and Upload Release Assets
+  build-cli:
+    name: Build CLI Binaries
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
         include:
@@ -30,58 +34,77 @@ jobs:
             target: x86_64-pc-windows-msvc
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Get Release Version from Tag
+      - name: Set version
         shell: bash
         run: echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
-
-      - name: Cache Cargo Dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
 
-      - name: Get Binary Name
+      - name: Build
+        shell: bash
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package CLI
         shell: bash
         run: |
           BIN_NAME=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[0].targets[0].name')
-          echo "BINARY_NAME=$BIN_NAME" >> $GITHUB_ENV
-
-      - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          command: build
-          args: --release --target ${{ matrix.target }}
-
-      - name: Package Binary
-        shell: bash
-        run: |
-          DIRNAME="${{ env.BINARY_NAME }}-${{ env.VERSION }}-${{ matrix.target }}"
+          DIRNAME="${BIN_NAME}-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$DIRNAME"
 
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            mv "target/${{ matrix.target }}/release/${{ env.BINARY_NAME }}.exe" "$DIRNAME/"
+            mv "target/${{ matrix.target }}/release/$BIN_NAME.exe" "$DIRNAME/"
             7z a "$DIRNAME.zip" "$DIRNAME"
             echo "ASSET=$DIRNAME.zip" >> $GITHUB_ENV
           else
-            mv "target/${{ matrix.target }}/release/${{ env.BINARY_NAME }}" "$DIRNAME/"
+            mv "target/${{ matrix.target }}/release/$BIN_NAME" "$DIRNAME/"
             tar -czf "$DIRNAME.tar.gz" "$DIRNAME"
             echo "ASSET=$DIRNAME.tar.gz" >> $GITHUB_ENV
           fi
 
-      - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Upload CLI Release Assets
+        uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.ASSET }}
-          fail_on_unmatched_files: false
+
+  build-dmg:
+    name: Build macOS DMG
+    runs-on: macos-latest
+    needs: build-cli
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install macOS deps
+        run: |
+          brew install librsvg
+          npm install
+
+      - name: Build macOS ARM binary (for DMG)
+        run: cargo build --release --target aarch64-apple-darwin
+
+      - name: Prepare DMG input
+        run: |
+          mkdir -p dist
+          BIN_NAME=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[0].targets[0].name')
+          cp "target/aarch64-apple-darwin/release/$BIN_NAME" "dist/$BIN_NAME"
+          chmod +x "dist/$BIN_NAME"
+
+      - name: Build DMG
+        run: node build.js
+
+      - name: Upload DMG
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.dmg
