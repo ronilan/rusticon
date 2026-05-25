@@ -1,9 +1,38 @@
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+}
+
 /* ========================================
    PAGE LAYOUT
    ======================================== */
 
-html {
-  overflow: hidden;
+html, body {
+  width: 100%;
+  height: 100%;
 }
 
 body {
@@ -12,6 +41,11 @@ body {
   background-color: #fefefe;
   overflow: hidden;
   position: relative;
+  font-family: 'JetBrains Mono', monospace;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 #terminal {
@@ -47,9 +81,8 @@ body {
   overflow: hidden;
 }
 
-#surface > pre > span {
-  display: block;
-  white-space: pre;
+#surface > pre span {
+  display: inline-block;
   text-align: left;
 }
 
@@ -83,9 +116,9 @@ body {
 #surface,
 #surface > pre,
 #char-probe {
-  font-family: monospace;
-  font-size: 16px;
-  line-height: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  line-height: 16px;
 }
 
 /* ----------------------------------------
@@ -224,6 +257,50 @@ body {
 #probes.solarized-light .ansi-15   { color: #002b36; }
 
 /* ----------------------------------------
+   Catppuccin Frappe
+   ---------------------------------------- */
+
+#surface.catppuccin-frappe            { color: #c6d0f5; background-color: #303446; }
+#probes.catppuccin-frappe .ansi-0    { color: #51576d; }
+#probes.catppuccin-frappe .ansi-1    { color: #e78284; }
+#probes.catppuccin-frappe .ansi-2    { color: #a6d189; }
+#probes.catppuccin-frappe .ansi-3    { color: #e5c890; }
+#probes.catppuccin-frappe .ansi-4    { color: #8caaee; }
+#probes.catppuccin-frappe .ansi-5    { color: #f4b8e4; }
+#probes.catppuccin-frappe .ansi-6    { color: #81c8be; }
+#probes.catppuccin-frappe .ansi-7    { color: #b5bfe2; }
+#probes.catppuccin-frappe .ansi-8    { color: #626880; }
+#probes.catppuccin-frappe .ansi-9    { color: #e78284; }
+#probes.catppuccin-frappe .ansi-10   { color: #a6d189; }
+#probes.catppuccin-frappe .ansi-11   { color: #e5c890; }
+#probes.catppuccin-frappe .ansi-12   { color: #8caaee; }
+#probes.catppuccin-frappe .ansi-13   { color: #f4b8e4; }
+#probes.catppuccin-frappe .ansi-14   { color: #81c8be; }
+#probes.catppuccin-frappe .ansi-15   { color: #a5adce; }
+
+/* ----------------------------------------
+   Catppuccin Latte
+   ---------------------------------------- */
+
+#surface.catppuccin-latte            { color: #4c4f69; background-color: #eff1f5; }
+#probes.catppuccin-latte .ansi-0    { color: #5c5f77; }
+#probes.catppuccin-latte .ansi-1    { color: #d20f39; }
+#probes.catppuccin-latte .ansi-2    { color: #40a02b; }
+#probes.catppuccin-latte .ansi-3    { color: #df8e1d; }
+#probes.catppuccin-latte .ansi-4    { color: #1e66f5; }
+#probes.catppuccin-latte .ansi-5    { color: #ea76cb; }
+#probes.catppuccin-latte .ansi-6    { color: #179299; }
+#probes.catppuccin-latte .ansi-7    { color: #acb0be; }
+#probes.catppuccin-latte .ansi-8    { color: #6c6f85; }
+#probes.catppuccin-latte .ansi-9    { color: #d20f39; }
+#probes.catppuccin-latte .ansi-10   { color: #40a02b; }
+#probes.catppuccin-latte .ansi-11   { color: #df8e1d; }
+#probes.catppuccin-latte .ansi-12   { color: #1e66f5; }
+#probes.catppuccin-latte .ansi-13   { color: #ea76cb; }
+#probes.catppuccin-latte .ansi-14   { color: #179299; }
+#probes.catppuccin-latte .ansi-15   { color: #bcc0cc; }
+
+/* ----------------------------------------
    Gruvbox Dark
    ---------------------------------------- */
 
@@ -246,26 +323,26 @@ body {
 #probes.gruvbox-dark .ansi-15   { color: #ebdbb2; }
 
 /* ----------------------------------------
-   Tokyo Night
+   Gruvbox Light
    ---------------------------------------- */
 
-#surface.tokyo-night            { color: #a9b1d6; background-color: #1a1b26; }
-#probes.tokyo-night .ansi-0    { color: #15161e; }
-#probes.tokyo-night .ansi-1    { color: #f7768e; }
-#probes.tokyo-night .ansi-2    { color: #9ece6a; }
-#probes.tokyo-night .ansi-3    { color: #e0af68; }
-#probes.tokyo-night .ansi-4    { color: #7aa2f7; }
-#probes.tokyo-night .ansi-5    { color: #bb9af7; }
-#probes.tokyo-night .ansi-6    { color: #7dcfff; }
-#probes.tokyo-night .ansi-7    { color: #a9b1d6; }
-#probes.tokyo-night .ansi-8    { color: #414868; }
-#probes.tokyo-night .ansi-9    { color: #f7768e; }
-#probes.tokyo-night .ansi-10   { color: #9ece6a; }
-#probes.tokyo-night .ansi-11   { color: #e0af68; }
-#probes.tokyo-night .ansi-12   { color: #7aa2f7; }
-#probes.tokyo-night .ansi-13   { color: #bb9af7; }
-#probes.tokyo-night .ansi-14   { color: #7dcfff; }
-#probes.tokyo-night .ansi-15   { color: #c0caf5; }
+#surface.gruvbox-light            { color: #3c3836; background-color: #fbf1c7; }
+#probes.gruvbox-light .ansi-0    { color: #fbf1c7; }
+#probes.gruvbox-light .ansi-1    { color: #cc241d; }
+#probes.gruvbox-light .ansi-2    { color: #98971a; }
+#probes.gruvbox-light .ansi-3    { color: #d79921; }
+#probes.gruvbox-light .ansi-4    { color: #458588; }
+#probes.gruvbox-light .ansi-5    { color: #b16286; }
+#probes.gruvbox-light .ansi-6    { color: #689d6a; }
+#probes.gruvbox-light .ansi-7    { color: #7c6f64; }
+#probes.gruvbox-light .ansi-8    { color: #928374; }
+#probes.gruvbox-light .ansi-9    { color: #9d0006; }
+#probes.gruvbox-light .ansi-10   { color: #79740e; }
+#probes.gruvbox-light .ansi-11   { color: #b57614; }
+#probes.gruvbox-light .ansi-12   { color: #076678; }
+#probes.gruvbox-light .ansi-13   { color: #8f3f71; }
+#probes.gruvbox-light .ansi-14   { color: #427b58; }
+#probes.gruvbox-light .ansi-15   { color: #3c3836; }
 
 /* ========================================
    INTERNAL — do not edit below this line
@@ -294,11 +371,11 @@ body {
 /* Theme picker button */
 #theme-btn {
   position: fixed;
-  bottom: 12px;
-  right: 12px;
+  bottom: 8px;
+  right: 8px;
   z-index: 100;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border: none;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.08);
@@ -317,21 +394,20 @@ body {
 }
 
 #theme-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   pointer-events: none;
 }
 
 /*  Light themes need a dark button */
-body.basic-light #theme-btn,
-body.solarized-light #theme-btn {
+body.basic-light #theme-btn, body.solarized-light #theme-btn, body.catppuccin-latte #theme-btn, body.gruvbox-light #theme-btn {
   background: rgba(0, 0, 0, 0.08);
   color: rgba(0, 0, 0, 0.4);
 }
 
 #theme-menu {
   position: fixed;
-  bottom: 50px;
+  bottom: 40px;
   right: 12px;
   z-index: 100;
   background: #1e1e2e;
@@ -352,12 +428,12 @@ body.solarized-light #theme-btn {
 .theme-option {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: 5px;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 0px;
   cursor: pointer;
   font-family: monospace;
-  font-size: 12px;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.7);
   border: none;
   background: transparent;

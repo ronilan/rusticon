@@ -48,37 +48,44 @@
     </button>
 
     <div id="theme-menu" role="menu">
+      <!-- Basic -->
       <button class="theme-option active" data-theme="" role="menuitem">
-        <span class="theme-swatch" style="background:#eeeeee;"></span>
         Basic Dark
       </button>
       <button class="theme-option" data-theme="basic-light" role="menuitem">
-        <span class="theme-swatch" style="background:#eeeeee;"></span>
         Basic Light
       </button>
-      <button class="theme-option" data-theme="solarized-light" role="menuitem">
-        <span class="theme-swatch" style="background:#268bd2; outline: 1px solid rgba(0,0,0,0.15);"></span>
-        Solarized Light
-      </button>
+
+      <!-- Solarized -->
       <button class="theme-option" data-theme="solarized-dark" role="menuitem">
-        <span class="theme-swatch" style="background:#268bd2;"></span>
         Solarized Dark
       </button>
-      <button class="theme-option" data-theme="dracula" role="menuitem">
-        <span class="theme-swatch" style="background:#bd93f9;"></span>
-        Dracula
+      <button class="theme-option" data-theme="solarized-light" role="menuitem">
+        Solarized Light
       </button>
-      <button class="theme-option" data-theme="nord" role="menuitem">
-        <span class="theme-swatch" style="background:#81a1c1;"></span>
-        Nord
+
+      <!-- Catppuccin -->
+      <button class="theme-option" data-theme="catppuccin-frappe" role="menuitem">
+        Catppuccin Frappe
       </button>
+      <button class="theme-option" data-theme="catppuccin-latte" role="menuitem">
+        Catppuccin Latte
+      </button>
+
+      <!-- Gruvbox -->
       <button class="theme-option" data-theme="gruvbox-dark" role="menuitem">
-        <span class="theme-swatch" style="background:#d79921;"></span>
         Gruvbox Dark
       </button>
-      <button class="theme-option" data-theme="tokyo-night" role="menuitem">
-        <span class="theme-swatch" style="background:#7aa2f7;"></span>
-        Tokyo Night
+      <button class="theme-option" data-theme="gruvbox-light" role="menuitem">
+        Gruvbox Light
+      </button>
+
+      <!-- Other -->
+      <button class="theme-option" data-theme="nord" role="menuitem">
+        Nord
+      </button>
+      <button class="theme-option" data-theme="dracula" role="menuitem">
+        Dracula
       </button>
     </div>
 
@@ -90,29 +97,18 @@
       const options = menu.querySelectorAll('.theme-option');
       const STORAGE_KEY = 'terminal-theme';
 
-      const themes = ['basic-light', 'dracula', 'nord', 'solarized-dark', 'solarized-light', 'gruvbox-dark', 'tokyo-night'];
+      const themes = ['solarized-dark', 'catppuccin-frappe', 'gruvbox-dark', 'basic-light', 'solarized-light', 'catppuccin-latte', 'gruvbox-light', 'nord', 'dracula'];
 
       function applyTheme(name) {
-        // Mirror class on #surface, #probes, and body.
-        // #surface -> fg/bg colors (read by Rust via getComputedStyle)
-        // #probes  -> palette probes scoped to active theme
-        // body     -> theme-btn color override for light themes
-        surface.classList.remove(...themes);
-        probes.classList.remove(...themes);
-        document.body.classList.remove(...themes);
-        if (name) {
-          surface.classList.add(name);
-          probes.classList.add(name);
-          document.body.classList.add(name);
-        }
+        surface.className = name;
+        probes.className = name;
+        document.body.className = name;
 
         options.forEach(opt => {
           opt.classList.toggle('active', opt.dataset.theme === name);
         });
 
         localStorage.setItem(STORAGE_KEY, name);
-
-        // Notify WASM to re-read CSS palette and repaint.
         window.dispatchEvent(new CustomEvent('terminal', { detail: { type: 'theme' } }));
       }
 
@@ -127,7 +123,6 @@
       });
       menu.addEventListener('click', e => e.stopPropagation());
 
-      // Restore before WASM loads - no flash.
       const saved = localStorage.getItem(STORAGE_KEY) || '';
       if (saved) applyTheme(saved);
     </script>
