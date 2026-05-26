@@ -66,7 +66,8 @@ pub fn build<'a>() -> Element<State> {
                                 false,
                                 None,
                                 Some(Color::Ansi(ansi_code)),
-                            );                        }
+                            );
+                        }
 
                         let content = if active {
                             '+'

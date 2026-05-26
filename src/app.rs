@@ -24,12 +24,27 @@ pub fn build() -> App<State> {
         Globals::set_tick_rate(10.0);
     }
 
-    let app = App::new(AppOptions {
+    pub fn with_windows(mut options: AppOptions) -> AppOptions {
+        #[cfg(all(
+            target_os = "windows",
+            not(target_arch = "wasm32"),
+            not(feature = "macos-native")
+        ))]
+        {
+            options.input_provider = || Box::new(CrosstermInput::new());
+            options.output_provider =
+                |_| Box::new(TerminalOutput::new(Box::new(CrosstermInput::new())));
+        }
+
+        options
+    }
+
+    let app = App::new(with_windows(AppOptions {
         height: None,
         draw_on_window_resize: false,
         draw_on_initialization: false,
         ..Default::default()
-    });
+    }));
 
     app.on_window(|el: &App<State>, state: &mut State, event: &EventWindow| {
         if event.window == Window::Resize {
@@ -43,9 +58,7 @@ pub fn build() -> App<State> {
         platform::setup_macos_hooks();
         let io = platform::get_io();
 
-        if io.launch_drop_ready()
-            && state.flow.phase != AppPhase::Launch
-        {
+        if io.launch_drop_ready() && state.flow.phase != AppPhase::Launch {
             state.flow.phase = AppPhase::Launch;
         }
 
@@ -136,7 +149,7 @@ pub fn build() -> App<State> {
 
         if state.flow.phase != AppPhase::Splash {
             if state.flow.phase == AppPhase::Message {
-                // messages can be cleared by clicking or after timeout, 
+                // messages can be cleared by clicking or after timeout,
                 // but for now we just let them stay or be handled by specific logic.
                 // Minimal change: just return for now.
             }

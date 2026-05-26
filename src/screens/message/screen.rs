@@ -1,7 +1,7 @@
 use crate::{
     core::model::{AppPhase, State},
-    ui::{APP_HEIGHT, APP_WIDTH},
     platform,
+    ui::{APP_HEIGHT, APP_WIDTH},
 };
 use incredible::*;
 use incredible_elements::Rectangle;
@@ -22,7 +22,7 @@ pub fn build() -> Rectangle<State> {
         if event.mouse == Mouse::Click && state.flow.phase == AppPhase::Message {
             let io = platform::get_io();
             let initial_phase = io.initial_phase();
-            
+
             // Clear the broken path and reset to default
             state.editor.file_path = "favicon.svg".to_string();
 
@@ -30,7 +30,7 @@ pub fn build() -> Rectangle<State> {
                 state.flow.splash_started_ms = None;
                 io.start_import(state.editor.file_path.clone());
             }
-            
+
             state.flow.phase = initial_phase;
         }
     });
