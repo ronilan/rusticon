@@ -34,25 +34,25 @@ macos-native = [
 
 [dependencies]
 image = "0.25.6"
-incredible = { path = "../incredible/packages/incredible" }
-incredible_elements = { path = "../incredible/packages/incredible_elements" }
-incredible_helpers_layout = { path = "../incredible/packages/incredible_helpers_layout" }
+incredible = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_elements = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_helpers_layout = { git = "https://github.com/ronilan/incredible-alpha" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 crossterm = { version = "0.29", features = ["event-stream"] }
 futures = "0.3.31"
 futures-timer = "3.0.3"
-incredible_event_loop_terminal = { path = "../incredible/packages/incredible_event_loop_terminal" }
-incredible_output_terminal = { path = "../incredible/packages/incredible_output_terminal" }
-incredible_input_crossterm = { path = "../incredible/packages/incredible_input_crossterm" }
+incredible_event_loop_terminal = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_output_terminal = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_input_crossterm = { git = "https://github.com/ronilan/incredible-alpha" }
 objc2 = { version = "0.6.4", features = ["std"] }
 objc2-foundation = { version = "0.3.2", features = ["NSArray", "NSString", "NSURL", "NSPathUtilities"] }
 objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSWindow", "NSView", "NSSavePanel", "NSDragging", "NSPasteboard"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
-incredible_window_macos = { path = "../incredible/packages/incredible_window_macos", optional = true }
-incredible_output_html = { path = "../incredible/packages/incredible_output_html" }
-incredible_input_browser = { path = "../incredible/packages/incredible_input_browser" }
+incredible_window_macos = { git = "https://github.com/ronilan/incredible-alpha", optional = true }
+incredible_output_html = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_input_browser = { git = "https://github.com/ronilan/incredible-alpha" }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
@@ -91,9 +91,9 @@ lto = "thin"
 codegen-units = 1
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-incredible_event_loop_browser = { path = "../incredible/packages/incredible_event_loop_browser" }
-incredible_output_html = { path = "../incredible/packages/incredible_output_html" }
-incredible_input_browser = { path = "../incredible/packages/incredible_input_browser" }
+incredible_event_loop_browser = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_output_html = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_input_browser = { git = "https://github.com/ronilan/incredible-alpha" }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
