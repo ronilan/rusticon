@@ -45,36 +45,12 @@ futures-timer = "3.0.3"
 incredible_event_loop_terminal = { git = "https://github.com/ronilan/incredible-alpha" }
 incredible_output_terminal = { git = "https://github.com/ronilan/incredible-alpha" }
 incredible_input_crossterm = { git = "https://github.com/ronilan/incredible-alpha" }
-objc2 = { version = "0.6.4", features = ["std"] }
-objc2-foundation = { version = "0.3.2", features = ["NSArray", "NSString", "NSURL", "NSPathUtilities"] }
-objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSWindow", "NSView", "NSSavePanel", "NSDragging", "NSPasteboard"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 incredible_window_macos = { git = "https://github.com/ronilan/incredible-alpha", optional = true }
-incredible_output_html = { git = "https://github.com/ronilan/incredible-alpha" }
-incredible_input_browser = { git = "https://github.com/ronilan/incredible-alpha" }
-wasm-bindgen = "0.2"
-wasm-bindgen-futures = "0.4"
-js-sys = "0.3"
-console_error_panic_hook = "0.1"
-web-sys = { version = "0.3", features = [
-    "Window",
-    "Document",
-    "HtmlElement",
-    "HtmlAnchorElement",
-    "Location",
-    "Url",
-    "UrlSearchParams",
-    "Blob",
-    "DragEvent",
-    "DataTransfer",
-    "DataTransferItem",
-    "DataTransferItemList",
-    "FileList",
-    "File",
-    "FileSystemFileHandle",
-    "FileSystemWritableFileStream",
-] }
+objc2 = { version = "0.6.4", features = ["std"] }
+objc2-foundation = { version = "0.3.2", features = ["NSArray", "NSString", "NSURL", "NSPathUtilities"] }
+objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSWindow", "NSView", "NSSavePanel", "NSDragging", "NSPasteboard"] }
 
 [[bin]]
 name = "rusticon"

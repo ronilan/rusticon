@@ -6,7 +6,7 @@ mod runtime;
 mod screens;
 mod ui;
 
-#[cfg(all(not(target_arch = "wasm32"), not(feature = "macos-native")))]
+#[cfg(not(target_arch = "wasm32"))]
 fn main() {
     platform::init();
     runtime::run();
