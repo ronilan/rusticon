@@ -132,7 +132,7 @@ jobs:
           chmod +x "dist/${BIN_NAME}-${{ matrix.arch }}"
 
       - name: Build DMG
-        run: node build.js --arch ${{ matrix.arch }}
+        run: node scripts/bundle.js --arch ${{ matrix.arch }}
 
       - name: Upload DMG Release
         if: github.event_name == 'release'
