@@ -59,7 +59,7 @@ jobs:
       - name: Package CLI
         shell: bash
         run: |
-          BIN_NAME=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[0].targets[0].name')
+          BIN_NAME="rusticon"
           DIRNAME="${BIN_NAME}-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$DIRNAME"
 
@@ -74,9 +74,17 @@ jobs:
           fi
 
       - name: Upload CLI Release Assets
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.ASSET }}
+
+      - name: Upload CLI Artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ASSET }}
+          path: ${{ env.ASSET }}
 
   build-dmg:
     name: Build macOS DMG (${{ matrix.target }})
@@ -99,7 +107,7 @@ jobs:
 
       - name: Set version
         shell: bash
-        run: echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+        run: echo "VERSION=${GITHUB_REF_NAME:-manual-build}" >> $GITHUB_ENV
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -119,14 +127,22 @@ jobs:
       - name: Prepare DMG input
         run: |
           mkdir -p dist
-          BIN_NAME=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[0].targets[0].name')
+          BIN_NAME="rusticon"
           cp "target/${{ matrix.target }}/release/$BIN_NAME" "dist/${BIN_NAME}-${{ matrix.arch }}"
           chmod +x "dist/${BIN_NAME}-${{ matrix.arch }}"
 
       - name: Build DMG
         run: node build.js --arch ${{ matrix.arch }}
 
-      - name: Upload DMG
+      - name: Upload DMG Release
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.dmg
+
+      - name: Upload DMG Artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rusticon-dmg-${{ matrix.arch }}
+          path: dist/*.dmg
