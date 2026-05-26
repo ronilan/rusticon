@@ -51,6 +51,8 @@ jobs:
 
       - name: Build
         shell: bash
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: cargo build --release --target ${{ matrix.target }}
 
       - name: Package CLI
@@ -100,6 +102,8 @@ jobs:
           npm install
 
       - name: Build macOS ARM binary (for DMG)
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: cargo build --release --target aarch64-apple-darwin
 
       - name: Prepare DMG input
