@@ -24,27 +24,12 @@ pub fn build() -> App<State> {
         Globals::set_tick_rate(10.0);
     }
 
-    pub fn with_windows(mut options: AppOptions) -> AppOptions {
-        #[cfg(all(
-            target_os = "windows",
-            not(target_arch = "wasm32"),
-            not(feature = "macos-native")
-        ))]
-        {
-            options.input_provider = || Box::new(CrosstermInput::new());
-            options.output_provider =
-                |_| Box::new(TerminalOutput::new(Box::new(CrosstermInput::new())));
-        }
-
-        options
-    }
-
-    let app = App::new(with_windows(AppOptions {
+    let app = App::new(AppOptions {
         height: None,
         draw_on_window_resize: false,
         draw_on_initialization: false,
         ..Default::default()
-    }));
+    });
 
     app.on_window(|el: &App<State>, state: &mut State, event: &EventWindow| {
         if event.window == Window::Resize {
