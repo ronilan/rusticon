@@ -128,11 +128,15 @@ jobs:
         run: |
           mkdir -p dist
           BIN_NAME="rusticon"
-          cp "target/${{ matrix.target }}/release/$BIN_NAME" "dist/${BIN_NAME}-${{ matrix.arch }}"
-          chmod +x "dist/${BIN_NAME}-${{ matrix.arch }}"
+          # bundle.js expects 'rusticon_macos' in dist/
+          cp "target/${{ matrix.target }}/release/$BIN_NAME" "dist/rusticon_macos"
+          chmod +x "dist/rusticon_macos"
 
       - name: Build DMG
         run: node scripts/bundle.js --arch ${{ matrix.arch }}
+
+      - name: Rename DMG for upload
+        run: mv dist/Rusticon.dmg dist/rusticon-${{ matrix.arch }}.dmg
 
       - name: Upload DMG Release
         if: github.event_name == 'release'
@@ -145,4 +149,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: rusticon-dmg-${{ matrix.arch }}
-          path: dist/*.dmg
+          path: dist/rusticon-${{ matrix.arch }}.dmg
