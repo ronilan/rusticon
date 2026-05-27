@@ -127,9 +127,8 @@ jobs:
       - name: Prepare DMG input
         run: |
           mkdir -p dist
-          BIN_NAME="rusticon"
           # bundle.js expects 'rusticon_macos' in dist/
-          cp "target/${{ matrix.target }}/release/$BIN_NAME" "dist/rusticon_macos"
+          cp "target/${{ matrix.target }}/release/rusticon_macos" "dist/rusticon_macos"
           chmod +x "dist/rusticon_macos"
 
       - name: Build DMG
