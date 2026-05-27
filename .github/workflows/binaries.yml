@@ -122,7 +122,7 @@ jobs:
       - name: Build macOS binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
-        run: cargo build --release --target ${{ matrix.target }}
+        run: cargo build --release --target ${{ matrix.target }} --bin rusticon_macos --features macos-native
 
       - name: Prepare DMG input
         run: |
