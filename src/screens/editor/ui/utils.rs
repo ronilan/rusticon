@@ -37,6 +37,7 @@ pub(crate) fn canvas_look_from_data(size: usize, data: &[Option<u8>]) -> Look {
                                 None,
                                 false,
                                 false,
+                                false,
                                 None,
                                 Some(Color::Ansi(ansi_code)),
                             );

@@ -64,6 +64,7 @@ pub fn build<'a>() -> Element<State> {
                                 None,
                                 false,
                                 false,
+                                false,
                                 None,
                                 Some(Color::Ansi(ansi_code)),
                             );

@@ -127,46 +127,46 @@ body {
    inside #surface.
    ---------------------------------------- */
 
-#surface                      { color: #eeeeee; background-color: #111111; }
-#probes .ansi-0               { color: #1C1C1C; }
-#probes .ansi-1               { color: #AF0000; }
-#probes .ansi-2               { color: #5FAF5F; }
-#probes .ansi-3               { color: #FFAF00; }
-#probes .ansi-4               { color: #005FAF; }
-#probes .ansi-5               { color: #AF5FAF; }
-#probes .ansi-6               { color: #00AFAF; }
-#probes .ansi-7               { color: #E4E4E4; }
-#probes .ansi-8               { color: #6C6C6C; }
-#probes .ansi-9               { color: #FF8787; }
-#probes .ansi-10              { color: #87FF87; }
-#probes .ansi-11              { color: #FFD75F; }
-#probes .ansi-12              { color: #00AFFF; }
-#probes .ansi-13              { color: #D7AFFF; }
-#probes .ansi-14              { color: #00FFFF; }
-#probes .ansi-15              { color: #FFFFFF; }
+#surface                      { color: #EEEEEE; background-color: #080808; }
+#probes .ansi-0               { color: #000000; } /* ANSI 16   / black */
+#probes .ansi-1               { color: #AF0000; } /* ANSI 124 / red3 */
+#probes .ansi-2               { color: #5FAF5F; } /* ANSI 71  / darkseagreen4 */
+#probes .ansi-3               { color: #FFAF00; } /* ANSI 214 / orange1 */
+#probes .ansi-4               { color: #005FAF; } /* ANSI 25  / deepskyblue4 */
+#probes .ansi-5               { color: #AF5FAF; } /* ANSI 133 / mediumorchid3 */
+#probes .ansi-6               { color: #00AFAF; } /* ANSI 37  / lightseagreen */
+#probes .ansi-7               { color: #A8A8A8; } /* ANSI 248 / grey82 */
+#probes .ansi-8               { color: #585858; } /* ANSI 240 / grey35 */
+#probes .ansi-9               { color: #FF8787; } /* ANSI 210 / lightcoral */
+#probes .ansi-10              { color: #87FF87; } /* ANSI 120 / lightgreen */
+#probes .ansi-11              { color: #FFD75F; } /* ANSI 221 / light goldenrod2 */
+#probes .ansi-12              { color: #00AFFF; } /* ANSI 39  / deepskyblue1 */
+#probes .ansi-13              { color: #D7AFFF; } /* ANSI 183 / plum2 */
+#probes .ansi-14              { color: #00FFFF; } /* ANSI 51  / cyan1 */
+#probes .ansi-15              { color: #FFFFFF; } /* ANSI 231  / bright white */
 
 /* ----------------------------------------
-   Basic light
+   Basic light (inverse)
    fg/bg on #surface; ansi 0–15 on probes
    ---------------------------------------- */
 
-#surface.basic-light          { color: #111111; background-color: #eeeeee; }
-#probes.basic-light .ansi-0   { color: #FFFFFF; }
-#probes.basic-light .ansi-1   { color: #AF0000; }
-#probes.basic-light .ansi-2   { color: #5FAF5F; }
-#probes.basic-light .ansi-3   { color: #FFAF00; }
-#probes.basic-light .ansi-4   { color: #005FAF; }
-#probes.basic-light .ansi-5   { color: #AF5FAF; }
-#probes.basic-light .ansi-6   { color: #00AFAF; }
-#probes.basic-light .ansi-7   { color: #6C6C6C; }
-#probes.basic-light .ansi-8   { color: #E4E4E4; }
-#probes.basic-light .ansi-9   { color: #FF8787; }
-#probes.basic-light .ansi-10  { color: #87FF87; }
-#probes.basic-light .ansi-11  { color: #FFD75F; }
-#probes.basic-light .ansi-12  { color: #00AFFF; }
-#probes.basic-light .ansi-13  { color: #D7AFFF; }
-#probes.basic-light .ansi-14  { color: #00FFFF; }
-#probes.basic-light .ansi-15  { color: #1C1C1C; }
+#surface.basic-light          { color: #080808; background-color: #EEEEEE; }
+#probes.basic-light  .ansi-15              { color: #000000; } /* ANSI 16  / black */
+#probes.basic-light  .ansi-9               { color: #AF0000; } /* ANSI 124 / red */
+#probes.basic-light  .ansi-10              { color: #5FAF5F; } /* ANSI 71  / green */
+#probes.basic-light  .ansi-11              { color: #FFAF00; } /* ANSI 214 / yellow */
+#probes.basic-light  .ansi-12              { color: #005FAF; } /* ANSI 25  / blue */
+#probes.basic-light  .ansi-13              { color: #AF5FAF; } /* ANSI 133 / magenta */
+#probes.basic-light  .ansi-14              { color: #00AFAF; } /* ANSI 37  / cyan */
+#probes.basic-light  .ansi-8               { color: #A8A8A8; } /* ANSI 248 / lightgrey */
+#probes.basic-light  .ansi-7               { color: #585858; } /* ANSI 240 / darkgrey */
+#probes.basic-light  .ansi-6               { color: #00FFFF; } /* ANSI 51  / lightcyan */
+#probes.basic-light  .ansi-5               { color: #D7AFFF; } /* ANSI 183 / light magenta */
+#probes.basic-light  .ansi-4               { color: #00AFFF; } /* ANSI 39  / lightblue */
+#probes.basic-light  .ansi-3               { color: #FFD75F; } /* ANSI 221 / lightyellow */
+#probes.basic-light  .ansi-2               { color: #87FF87; } /* ANSI 120 / lightgreen */
+#probes.basic-light  .ansi-1               { color: #FF8787; } /* ANSI 210 / light red */
+#probes.basic-light  .ansi-0               { color: #FFFFFF; } /* ANSI 231 / white */
 
 /* ----------------------------------------
    Dracula

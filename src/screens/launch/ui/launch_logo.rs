@@ -29,7 +29,7 @@ pub fn build() -> Element<State> {
         art_line(4, "|  _ <| |_| \\__ \\ |_| | (_| (_) | | | |"),
         art_line(1, "|_| \\_\\___,_|___/\\__|_|\\___\\___/|_| |_| "),
         vec![],
-        text_line("An icon editor for the terminal"),
+        text_line("An icon editor for the terminal (and the web)"),
     ];
 
     launch_logo.look(Look::from(art_cells));
