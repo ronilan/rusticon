@@ -2,8 +2,9 @@
 name = "rusticon"
 version = "0.3.0"
 edition = "2024"
+default-run = "rusticon"
 
-description = "Rusticon is a mouse driven SVG favicon editor for your terminal that works on the web also."
+description = "Rusticon is a mouse driven SVG favicon editor for your terminal (as well as the web, native macos and native windows)."
 license = "CC-BY-NC-ND-4.0"
 authors = ["Yaron (Ron) Ilan"]
 homepage = "https://github.com/ronilan/rusticon"
@@ -15,8 +16,10 @@ exclude = ["examples", "media"]
 
 [package.metadata.html]
 title = "Rusticon"
-description = "Rusticon is a mouse driven SVG favicon editor for your terminal."
+description = "Rusticon is a mouse driven SVG favicon editor for your terminal (as well as the web, native macos and native windows)."
 keywords = "favicon, icon, svg, terminal, image"
+mobile-min-width = 80
+mobile-min-height = 24
 
 [package.metadata.bundle]
 app_name = "Rusticon"
@@ -24,32 +27,7 @@ binary_name = "rusticon_macos"
 icon_source = "web/favicon.svg"
 
 [lib]
-name = "rusticon_lib"
-crate-type = ["cdylib", "rlib"]
-[features]
-default = []
-macos-native = [
-    "incredible_elements/macos-native",
-    "incredible_window_macos",
-]
-
-[dependencies]
-image = "0.25.6"
-incredible = { git = "https://github.com/ronilan/incredible-alpha" }
-incredible_elements = { git = "https://github.com/ronilan/incredible-alpha" }
-incredible_helpers_layout = { git = "https://github.com/ronilan/incredible-alpha" }
-
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-futures = "0.3.31"
-futures-timer = "3.0.3"
-[target.'cfg(all(not(target_arch = "wasm32"), target_os = "windows"))'.dependencies]
-crossterm = { version = "0.29", features = ["event-stream"] }
-
-[target.'cfg(target_os = "macos")'.dependencies]
-incredible_window_macos = { git = "https://github.com/ronilan/incredible-alpha", optional = true }
-objc2 = { version = "0.6.4", features = ["std"] }
-objc2-foundation = { version = "0.3.2", features = ["NSArray", "NSString", "NSURL", "NSPathUtilities"] }
-objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSWindow", "NSView", "NSSavePanel", "NSDragging", "NSPasteboard"] }
+crate-type = ["cdylib"]
 
 [[bin]]
 name = "rusticon"
@@ -58,12 +36,27 @@ path = "src/main.rs"
 [[bin]]
 name = "rusticon_macos"
 path = "src/macos.rs"
-required-features = ["macos-native"]
 
-[profile.release]
-opt-level = 3
-lto = "thin"
-codegen-units = 1
+[[bin]]
+name = "rusticon_windows"
+path = "src/windows.rs"
+
+[features]
+default = []
+macos-native = [
+    "incredible_elements/macos-native",
+    "incredible_window_macos",
+]
+windows-native = [
+    "incredible_elements/windows-native",
+    "incredible_window_windows",
+]
+
+[dependencies]
+image = "0.25.6"
+incredible = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_elements = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_helpers_layout = { git = "https://github.com/ronilan/incredible-alpha" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = "0.2"
@@ -88,3 +81,23 @@ web-sys = { version = "0.3", features = [
     "FileSystemFileHandle",
     "FileSystemWritableFileStream",
 ] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+incredible_window_macos = { git = "https://github.com/ronilan/incredible-alpha", optional = true }
+objc2 = { version = "0.6.4", features = ["std"] }
+objc2-foundation = { version = "0.3.2", features = ["NSArray", "NSString", "NSURL", "NSPathUtilities"] }
+objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSWindow", "NSView", "NSSavePanel", "NSDragging", "NSPasteboard"] }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+incredible_window_windows = { git = "https://github.com/ronilan/incredible-alpha", optional = true }
+windows = { version = "0.62", features = [
+    "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_UI_Shell",
+] }
+
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1

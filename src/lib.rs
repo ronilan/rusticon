@@ -6,7 +6,7 @@ pub mod runtime;
 pub mod screens;
 pub mod ui;
 
-pub use core::model::{AppPhase, State, MIN_SPLASH_MS};
+pub use core::model::{AppPhase, MIN_SPLASH_MS, State};
 
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen::prelude::wasm_bindgen]

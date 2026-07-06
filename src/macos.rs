@@ -15,7 +15,7 @@ mod ui;
 
 pub use crate::core::io::RusticonIo;
 #[cfg(feature = "macos-native")]
-pub use crate::core::model::{AppPhase, State, MIN_SPLASH_MS};
+pub use crate::core::model::{AppPhase, MIN_SPLASH_MS, State};
 
 #[cfg(feature = "macos-native")]
 fn main() {

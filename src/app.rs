@@ -4,7 +4,7 @@ use incredible_helpers_layout::arrangers::Arrangers;
 
 pub use crate::core::{
     io::RusticonIo,
-    model::{AppPhase, ExitFlow, State, MIN_SPLASH_MS},
+    model::{AppPhase, ExitFlow, MIN_SPLASH_MS, State},
 };
 
 use crate::platform;
@@ -41,6 +41,7 @@ pub fn build() -> App<State> {
     })
     .on_loop(move |el, state, _event| {
         platform::setup_macos_hooks();
+        platform::setup_windows_drop();
         let io = platform::get_io();
 
         if io.launch_drop_ready() && state.flow.phase != AppPhase::Launch {

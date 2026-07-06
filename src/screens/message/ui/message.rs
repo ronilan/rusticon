@@ -29,7 +29,7 @@ pub fn build() -> Rectangle<State> {
             .clone()
             .unwrap_or_else(|| "App Terminated".to_string());
 
-        if let Some(text_el) = el.elements().collect_of_type::<Text<State>>().first() {
+        if let Some(text_el) = el.elements().cot::<Text<State>>().first() {
             text_el
                 .text(&text_value)
                 .bold(true)

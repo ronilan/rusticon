@@ -1,16 +1,16 @@
 use std::sync::{Arc, LazyLock, Mutex, Once};
 
 use crate::{
+    State,
     core::{
         io::RusticonIo,
         model::AppPhase,
         shared::{ImportOutcome, RESULT_HOLDER},
     },
     features::{export::build_svg, import::import_bytes, message::draw_message},
-    State,
 };
-use wasm_bindgen::{closure::Closure, JsCast, JsValue};
-use wasm_bindgen_futures::{spawn_local, JsFuture};
+use wasm_bindgen::{JsCast, JsValue, closure::Closure};
+use wasm_bindgen_futures::{JsFuture, spawn_local};
 use web_sys::{DragEvent, FileSystemFileHandle, FileSystemWritableFileStream};
 
 pub type FileHandle = JsValue;

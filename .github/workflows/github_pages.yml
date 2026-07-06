@@ -1,0 +1,124 @@
+name: Deploy to GitHub Pages
+
+# Builds the WASM/web version and deploy to pages.
+# Sibling to "Create Downloadable Binaries" — that builds native downloadable binaries.
+
+on:
+  # Triggers the workflow on push events but only for the main branch
+  push:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Private repos can't use GitHub Pages unless the org is on a paid plan
+  # (Pro/Team/Enterprise) or the repo is public. Rather than let
+  # configure-pages fail the deploy job outright with a 404/403 partway
+  # through the build, probe availability first in its own job so `deploy`
+  # can just be skipped cleanly via `needs`/`if` below.
+  check:
+    name: Check if Pages is available
+    runs-on: ubuntu-latest
+    outputs:
+      available: ${{ steps.pages_check.outcome == 'success' }}
+    steps:
+      - name: Check if Pages is available
+        id: pages_check
+        continue-on-error: true
+        uses: actions/configure-pages@v6
+        with:
+          enablement: true
+
+      - name: Skip notice
+        if: steps.pages_check.outcome == 'failure'
+        run: echo "::notice::GitHub Pages is not available for this repo (private repo without a paid plan, or Pages disabled). Skipping deploy."
+
+  # Deployment job
+  deploy:
+    needs: check
+    if: needs.check.outputs.available == 'true'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      # Standard checkout — pulls the repo contents onto the runner so
+      # later steps have something to build from.
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
+      # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
+      # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
+      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
+      # (Settings > Secrets and variables > Actions). If this step is ever
+      # removed, the WASM build step below will fail with an auth/404-style
+      # error on the private dependency, not an obvious "auth failed" message.
+      - name: Configure Git for Private Dependency
+        run: |
+          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
+
+      # Installs the pnpm CLI on the runner (pnpm isn't preinstalled like npm is).
+      # Needed before any `pnpm install` / `pnpm run` calls below.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      # Prepares the runner for a GitHub Pages deployment (sets up Pages-specific
+      # env/config) and ensures Node.js is available. This does NOT install project
+      # dependencies — that's the separate "Install dependencies" step below.
+      - name: Setup Pages & Node
+        uses: actions/configure-pages@v6 
+
+      # wasm-pack compiles Rust -> WebAssembly and packages it for JS consumption.
+      # It's not bundled with the Rust toolchain, so it has to be installed
+      # explicitly via its installer script.
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      # Installs JS dependencies declared in package.json (via pnpm-lock.yaml).
+      # Required before running any pnpm scripts, including build:wasm below.
+      - name: Install dependencies
+        run: pnpm install
+
+      # Runs the project's pnpm run build:web script (defined in package.json), which
+      # invokes wasm-pack/cargo to compile the Rust code to WASM.
+      #
+      # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
+      # `git` binary instead of using its built-in libgit2 fetcher. This matters
+      # because only the system git picks up the credential rewrite configured
+      # above (`git config --global url...insteadOf`) — libgit2 ignores it and
+      # will fail to fetch the private incredible-alpha dependency without this.
+      - name: Build WASM assets
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
+        run: pnpm run build:web
+
+      # Packages the contents of the 'docs' folder (the build output directory
+      # for this project) into an artifact that GitHub Pages can serve.
+      # If the build output ever moves to a different folder, this path must
+      # be updated too, or Pages will deploy stale/empty content.
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs' 
+
+      # Publishes the uploaded artifact to GitHub Pages. The resulting live
+      # URL is exposed as steps.deployment.outputs.page_url, which is what
+      # populates the `environment.url` field at the top of this job.
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

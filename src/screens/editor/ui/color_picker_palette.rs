@@ -73,11 +73,7 @@ pub fn build<'a>() -> Element<State> {
                         let content = if active {
                             '+'
                         } else {
-                            if coloring.is_none() {
-                                ':'
-                            } else {
-                                ' '
-                            }
+                            if coloring.is_none() { ':' } else { ' ' }
                         };
 
                         *col = Block::new(content, decor);

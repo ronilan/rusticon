@@ -4,7 +4,7 @@ use crate::{
     core::{
         io::RusticonIo,
         model::{AppPhase, State},
-        shared::{ImportOutcome, DROP_HOLDER, RESULT_HOLDER},
+        shared::{DROP_HOLDER, ImportOutcome, RESULT_HOLDER},
     },
     features::{export::export_svg, import::import_file, message::draw_message},
 };
@@ -13,7 +13,7 @@ use crate::{
 use {
     objc2::rc::Retained,
     objc2::runtime::{AnyClass, AnyObject, Imp, Sel},
-    objc2::{ffi, msg_send, sel, MainThreadMarker},
+    objc2::{MainThreadMarker, ffi, msg_send, sel},
     objc2_app_kit::{NSApplication, NSWindow},
     objc2_foundation::{NSArray, NSString},
 };
@@ -91,6 +91,77 @@ impl RusticonIo for NativeIo {
             self.report_message(&err_msg, 196);
         }
     }
+}
+
+#[cfg(target_os = "windows")]
+pub fn setup_windows_drop() {
+    use std::sync::atomic::{AtomicBool, AtomicPtr, Ordering};
+    use windows::Win32::Foundation::{HWND, LPARAM, LRESULT, WPARAM};
+    use windows::Win32::UI::Shell::{DragAcceptFiles, DragFinish, DragQueryFileW, HDROP};
+    use windows::Win32::UI::WindowsAndMessaging::{
+        CallWindowProcW, GWLP_WNDPROC, SetWindowLongPtrW,
+    };
+
+    static HOOKED: AtomicBool = AtomicBool::new(false);
+    static ORIG_WNDPROC: AtomicPtr<std::ffi::c_void> = AtomicPtr::new(std::ptr::null_mut());
+
+    if HOOKED.load(Ordering::Relaxed) {
+        return;
+    }
+
+    let Some(win_arc) = incredible_window_windows::try_window() else {
+        return;
+    };
+    let Ok(win) = win_arc.lock() else {
+        return;
+    };
+    let hwnd = win.hwnd();
+
+    unsafe extern "system" fn drop_subclass_proc(
+        hwnd: HWND,
+        msg: u32,
+        wparam: WPARAM,
+        lparam: LPARAM,
+    ) -> LRESULT {
+        const WM_DROPFILES: u32 = 0x0233;
+        unsafe {
+            if msg == WM_DROPFILES {
+                let hdrop = HDROP(wparam.0 as isize);
+                let file_count = DragQueryFileW(hdrop, 0xFFFFFFFF, std::ptr::null_mut::<u16>(), 0);
+                if file_count > 0 {
+                    let len = DragQueryFileW(hdrop, 0, std::ptr::null_mut::<u16>(), 0);
+                    if len > 0 {
+                        let mut buf = vec![0u16; (len + 1) as usize];
+                        DragQueryFileW(hdrop, 0, buf.as_mut_ptr(), len + 1);
+                        let path = String::from_utf16_lossy(&buf[..len as usize]);
+                        if let Ok(mut guard) = DROP_HOLDER.lock() {
+                            *guard = Some(path);
+                        }
+                    }
+                }
+                DragFinish(hdrop);
+                return LRESULT(0);
+            }
+
+            let orig = ORIG_WNDPROC.load(Ordering::SeqCst);
+            let orig_proc: Option<unsafe extern "system" fn(HWND, u32, WPARAM, LPARAM) -> LRESULT> =
+                std::mem::transmute(orig);
+            CallWindowProcW(orig_proc, hwnd, msg, wparam, lparam)
+        }
+    }
+
+    unsafe {
+        let _ = DragAcceptFiles(hwnd, true);
+        let orig = SetWindowLongPtrW(
+            hwnd,
+            GWLP_WNDPROC,
+            drop_subclass_proc as unsafe extern "system" fn(HWND, u32, WPARAM, LPARAM) -> LRESULT
+                as isize,
+        );
+        ORIG_WNDPROC.store(orig as *mut std::ffi::c_void, Ordering::SeqCst);
+    }
+
+    HOOKED.store(true, Ordering::Relaxed);
 }
 
 #[cfg(target_os = "macos")]

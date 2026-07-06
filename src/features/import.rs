@@ -1,4 +1,4 @@
-use image::{imageops::FilterType, DynamicImage, GenericImageView};
+use image::{DynamicImage, GenericImageView, imageops::FilterType};
 use incredible::*;
 use std::path::Path;
 

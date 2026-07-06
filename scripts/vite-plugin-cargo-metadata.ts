@@ -1,7 +1,8 @@
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { parse } from 'toml';
 import type { IndexHtmlTransformHook } from 'vite';
+import type { Plugin } from 'vite';
 
 export function cargoMetadata() {
   return {
@@ -22,6 +23,22 @@ export function cargoMetadata() {
         const version = cargoToml.package?.version;
         
         let transformedHtml = html;
+
+        // Inject mobile-min-width into the viewport meta tag's data-min-width
+        if (metadata['mobile-min-width']) {
+          transformedHtml = transformedHtml.replace(
+            /data-min-width="[^"]*"/,
+            `data-min-width="${metadata['mobile-min-width']}"`
+          );
+        }
+
+        // Inject mobile-min-height into the viewport meta tag's data-min-height
+        if (metadata['mobile-min-height']) {
+          transformedHtml = transformedHtml.replace(
+            /data-min-height="[^"]*"/,
+            `data-min-height="${metadata['mobile-min-height']}"`
+          );
+        }
 
         // Replace <title>
         if (metadata.title) {
@@ -58,6 +75,25 @@ export function cargoMetadata() {
 
         return transformedHtml;
       }
-    } as { order: 'pre', handler: IndexHtmlTransformHook }
-  };
+    } as { order: 'pre', handler: IndexHtmlTransformHook },
+
+    writeBundle() {
+      const cargoTomlPath = resolve(process.cwd(), 'Cargo.toml');
+      let cargoToml;
+      try {
+        cargoToml = parse(readFileSync(cargoTomlPath, 'utf-8'));
+      } catch (e) {
+        console.error(`Failed to parse Cargo.toml at ${cargoTomlPath}:`, e);
+        return;
+      }
+
+      const metadata = cargoToml.package?.metadata?.html || {};
+      const cname = metadata.cname;
+      if (!cname) return;
+
+      const cnamePath = resolve(process.cwd(), 'docs', 'CNAME');
+      writeFileSync(cnamePath, cname + '\n', 'utf-8');
+      console.log(`Wrote ${cnamePath}`);
+    }
+  } satisfies Plugin;
 }
