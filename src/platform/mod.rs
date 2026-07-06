@@ -49,6 +49,10 @@ pub fn setup_macos_hooks() {
 }
 
 pub fn setup_windows_drop() {
-    #[cfg(all(not(target_arch = "wasm32"), target_os = "windows"))]
+    #[cfg(all(
+        not(target_arch = "wasm32"),
+        target_os = "windows",
+        feature = "windows-native"
+    ))]
     native::setup_windows_drop();
 }

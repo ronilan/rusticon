@@ -93,7 +93,7 @@ impl RusticonIo for NativeIo {
     }
 }
 
-#[cfg(target_os = "windows")]
+#[cfg(all(target_os = "windows", feature = "windows-native"))]
 pub fn setup_windows_drop() {
     use std::sync::atomic::{AtomicBool, AtomicPtr, Ordering};
     use windows::Win32::Foundation::{HWND, LPARAM, LRESULT, WPARAM};
@@ -126,13 +126,13 @@ pub fn setup_windows_drop() {
         const WM_DROPFILES: u32 = 0x0233;
         unsafe {
             if msg == WM_DROPFILES {
-                let hdrop = HDROP(wparam.0 as isize);
-                let file_count = DragQueryFileW(hdrop, 0xFFFFFFFF, std::ptr::null_mut::<u16>(), 0);
+                let hdrop = HDROP(wparam.0 as *mut std::ffi::c_void);
+                let file_count = DragQueryFileW(hdrop, 0xFFFFFFFF, None);
                 if file_count > 0 {
-                    let len = DragQueryFileW(hdrop, 0, std::ptr::null_mut::<u16>(), 0);
+                    let len = DragQueryFileW(hdrop, 0, None);
                     if len > 0 {
                         let mut buf = vec![0u16; (len + 1) as usize];
-                        DragQueryFileW(hdrop, 0, buf.as_mut_ptr(), len + 1);
+                        DragQueryFileW(hdrop, 0, Some(&mut buf));
                         let path = String::from_utf16_lossy(&buf[..len as usize]);
                         if let Ok(mut guard) = DROP_HOLDER.lock() {
                             *guard = Some(path);
