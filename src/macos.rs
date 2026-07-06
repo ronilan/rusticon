@@ -13,6 +13,7 @@ mod screens;
 #[cfg(feature = "macos-native")]
 mod ui;
 
+#[cfg(feature = "macos-native")]
 pub use crate::core::io::RusticonIo;
 #[cfg(feature = "macos-native")]
 pub use crate::core::model::{AppPhase, MIN_SPLASH_MS, State};

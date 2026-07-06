@@ -11,7 +11,7 @@ console.log(`Building Windows version for "${appName}"...`);
 process.env.APP_NAME = appName;
 
 try {
-    execSync('cargo build --release --bin rusticon_windows', { stdio: 'inherit' });
+    execSync('cargo build --release --bin rusticon_windows --features windows-native', { stdio: 'inherit' });
     fs.mkdirSync('dist', { recursive: true });
     fs.copyFileSync(
         path.join('target', 'release', 'rusticon_windows.exe'),

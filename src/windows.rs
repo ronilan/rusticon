@@ -18,6 +18,7 @@ mod screens;
 #[cfg(feature = "windows-native")]
 mod ui;
 
+#[cfg(feature = "windows-native")]
 pub use crate::core::io::RusticonIo;
 #[cfg(feature = "windows-native")]
 pub use crate::core::model::{AppPhase, MIN_SPLASH_MS, State};
