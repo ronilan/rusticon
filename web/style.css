@@ -1,17 +1,52 @@
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/JetBrainsMono-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+}
+
 /* ========================================
    PAGE LAYOUT
    ======================================== */
 
-html {
-  overflow: hidden;
+html, body {
+  width: 100%;
+  height: 100%;
+  -webkit-text-size-adjust: 100%; /* For iOS Safari and older legacy WebKit engines */
+  text-size-adjust: 100%;         /* Standard property for modern Chromium browsers */
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #fefefe;
   overflow: hidden;
   position: relative;
+  font-family: 'JetBrains Mono', monospace;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 #terminal {
@@ -19,7 +54,32 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  width: 100vw;
   overflow: hidden;
+  position: relative;
+}
+
+/* ========================================
+   SPINNER
+   ======================================== */
+
+#spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border: 2px solid rgba(128, 128, 128, 0.3);
+  border-top-color: rgba(128, 128, 128, 0.8);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* ========================================
@@ -29,6 +89,7 @@ body {
 /* #surface is a plain div — backend-agnostic container.
    Each backend injects its own child on init. */
 #surface {
+  position: relative;
   margin: 0;
   padding: 0;
   user-select: none;
@@ -47,9 +108,8 @@ body {
   overflow: hidden;
 }
 
-#surface > pre > span {
-  display: block;
-  white-space: pre;
+#surface > pre span {
+  display: inline-block;
   text-align: left;
 }
 
@@ -83,8 +143,8 @@ body {
 #surface,
 #surface > pre,
 #char-probe {
-  font-family: monospace;
-  font-size: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
   line-height: 18px;
 }
 
@@ -94,52 +154,52 @@ body {
    inside #surface.
    ---------------------------------------- */
 
-#surface                      { color: #eeeeee; background-color: #111111; }
-#probes .ansi-0               { color: #1C1C1C; }
-#probes .ansi-1               { color: #AF0000; }
-#probes .ansi-2               { color: #5FAF5F; }
-#probes .ansi-3               { color: #FFAF00; }
-#probes .ansi-4               { color: #005FAF; }
-#probes .ansi-5               { color: #AF5FAF; }
-#probes .ansi-6               { color: #00AFAF; }
-#probes .ansi-7               { color: #E4E4E4; }
-#probes .ansi-8               { color: #6C6C6C; }
-#probes .ansi-9               { color: #FF8787; }
-#probes .ansi-10              { color: #87FF87; }
-#probes .ansi-11              { color: #FFD75F; }
-#probes .ansi-12              { color: #00AFFF; }
-#probes .ansi-13              { color: #D7AFFF; }
-#probes .ansi-14              { color: #00FFFF; }
-#probes .ansi-15              { color: #FFFFFF; }
+#surface, #terminal                { color: #EEEEEE; background-color: #080808; }
+#probes .ansi-0               { color: #000000; } /* ANSI 16   / black */
+#probes .ansi-1               { color: #AF0000; } /* ANSI 124 / red3 */
+#probes .ansi-2               { color: #5FAF5F; } /* ANSI 71  / darkseagreen4 */
+#probes .ansi-3               { color: #FFAF00; } /* ANSI 214 / orange1 */
+#probes .ansi-4               { color: #005FAF; } /* ANSI 25  / deepskyblue4 */
+#probes .ansi-5               { color: #AF5FAF; } /* ANSI 133 / mediumorchid3 */
+#probes .ansi-6               { color: #00AFAF; } /* ANSI 37  / lightseagreen */
+#probes .ansi-7               { color: #A8A8A8; } /* ANSI 248 / grey82 */
+#probes .ansi-8               { color: #585858; } /* ANSI 240 / grey35 */
+#probes .ansi-9               { color: #FF8787; } /* ANSI 210 / lightcoral */
+#probes .ansi-10              { color: #87FF87; } /* ANSI 120 / lightgreen */
+#probes .ansi-11              { color: #FFD75F; } /* ANSI 221 / light goldenrod2 */
+#probes .ansi-12              { color: #00AFFF; } /* ANSI 39  / deepskyblue1 */
+#probes .ansi-13              { color: #D7AFFF; } /* ANSI 183 / plum2 */
+#probes .ansi-14              { color: #00FFFF; } /* ANSI 51  / cyan1 */
+#probes .ansi-15              { color: #FFFFFF; } /* ANSI 231  / bright white */
 
 /* ----------------------------------------
-   Basic light
+   Basic light (inverse)
    fg/bg on #surface; ansi 0–15 on probes
    ---------------------------------------- */
 
-#surface.basic-light          { color: #111111; background-color: #eeeeee; }
-#probes.basic-light .ansi-0   { color: #FFFFFF; }
-#probes.basic-light .ansi-1   { color: #AF0000; }
-#probes.basic-light .ansi-2   { color: #5FAF5F; }
-#probes.basic-light .ansi-3   { color: #FFAF00; }
-#probes.basic-light .ansi-4   { color: #005FAF; }
-#probes.basic-light .ansi-5   { color: #AF5FAF; }
-#probes.basic-light .ansi-6   { color: #00AFAF; }
-#probes.basic-light .ansi-7   { color: #6C6C6C; }
-#probes.basic-light .ansi-8   { color: #E4E4E4; }
-#probes.basic-light .ansi-9   { color: #FF8787; }
-#probes.basic-light .ansi-10  { color: #87FF87; }
-#probes.basic-light .ansi-11  { color: #FFD75F; }
-#probes.basic-light .ansi-12  { color: #00AFFF; }
-#probes.basic-light .ansi-13  { color: #D7AFFF; }
-#probes.basic-light .ansi-14  { color: #00FFFF; }
-#probes.basic-light .ansi-15  { color: #1C1C1C; }
+#surface.basic-light, #terminal.basic-light          { color: #080808; background-color: #EEEEEE; }
+#probes.basic-light  .ansi-15              { color: #000000; } /* ANSI 16  / black */
+#probes.basic-light  .ansi-9               { color: #AF0000; } /* ANSI 124 / red */
+#probes.basic-light  .ansi-10              { color: #5FAF5F; } /* ANSI 71  / green */
+#probes.basic-light  .ansi-11              { color: #FFAF00; } /* ANSI 214 / yellow */
+#probes.basic-light  .ansi-12              { color: #005FAF; } /* ANSI 25  / blue */
+#probes.basic-light  .ansi-13              { color: #AF5FAF; } /* ANSI 133 / magenta */
+#probes.basic-light  .ansi-14              { color: #00AFAF; } /* ANSI 37  / cyan */
+#probes.basic-light  .ansi-8               { color: #A8A8A8; } /* ANSI 248 / lightgrey */
+#probes.basic-light  .ansi-7               { color: #585858; } /* ANSI 240 / darkgrey */
+#probes.basic-light  .ansi-6               { color: #00FFFF; } /* ANSI 51  / lightcyan */
+#probes.basic-light  .ansi-5               { color: #D7AFFF; } /* ANSI 183 / light magenta */
+#probes.basic-light  .ansi-4               { color: #00AFFF; } /* ANSI 39  / lightblue */
+#probes.basic-light  .ansi-3               { color: #FFD75F; } /* ANSI 221 / lightyellow */
+#probes.basic-light  .ansi-2               { color: #87FF87; } /* ANSI 120 / lightgreen */
+#probes.basic-light  .ansi-1               { color: #FF8787; } /* ANSI 210 / light red */
+#probes.basic-light  .ansi-0               { color: #FFFFFF; } /* ANSI 231 / white */
 
 /* ----------------------------------------
    Dracula
    ---------------------------------------- */
 
-#surface.dracula            { color: #f8f8f2; background-color: #282a36; }
+#surface.dracula, #terminal.dracula           { color: #f8f8f2; background-color: #282a36; }
 #probes.dracula .ansi-0    { color: #282a36; }
 #probes.dracula .ansi-1    { color: #ff5555; }
 #probes.dracula .ansi-2    { color: #50fa7b; }
@@ -161,7 +221,7 @@ body {
    Nord
    ---------------------------------------- */
 
-#surface.nord            { color: #d8dee9; background-color: #2e3440; }
+#surface.nord, #terminal.nord            { color: #d8dee9; background-color: #2e3440; }
 #probes.nord .ansi-0    { color: #3b4252; }
 #probes.nord .ansi-1    { color: #bf616a; }
 #probes.nord .ansi-2    { color: #a3be8c; }
@@ -183,7 +243,7 @@ body {
    Solarized Dark
    ---------------------------------------- */
 
-#surface.solarized-dark            { color: #839496; background-color: #002b36; }
+#surface.solarized-dark, #terminal.solarized-dark            { color: #839496; background-color: #002b36; }
 #probes.solarized-dark .ansi-0    { color: #073642; }
 #probes.solarized-dark .ansi-1    { color: #dc322f; }
 #probes.solarized-dark .ansi-2    { color: #859900; }
@@ -205,7 +265,7 @@ body {
    Solarized Light
    ---------------------------------------- */
 
-#surface.solarized-light            { color: #657b83; background-color: #fdf6e3; }
+#surface.solarized-light, #terminal.solarized-light            { color: #657b83; background-color: #fdf6e3; }
 #probes.solarized-light .ansi-0    { color: #eee8d5; }
 #probes.solarized-light .ansi-1    { color: #dc322f; }
 #probes.solarized-light .ansi-2    { color: #859900; }
@@ -222,6 +282,50 @@ body {
 #probes.solarized-light .ansi-13   { color: #6c71c4; }
 #probes.solarized-light .ansi-14   { color: #93a1a1; }
 #probes.solarized-light .ansi-15   { color: #002b36; }
+
+/* ----------------------------------------
+   Catppuccin Frappe
+   ---------------------------------------- */
+
+#surface.catppuccin-frappe            { color: #c6d0f5; background-color: #303446; }
+#probes.catppuccin-frappe .ansi-0    { color: #51576d; }
+#probes.catppuccin-frappe .ansi-1    { color: #e78284; }
+#probes.catppuccin-frappe .ansi-2    { color: #a6d189; }
+#probes.catppuccin-frappe .ansi-3    { color: #e5c890; }
+#probes.catppuccin-frappe .ansi-4    { color: #8caaee; }
+#probes.catppuccin-frappe .ansi-5    { color: #f4b8e4; }
+#probes.catppuccin-frappe .ansi-6    { color: #81c8be; }
+#probes.catppuccin-frappe .ansi-7    { color: #b5bfe2; }
+#probes.catppuccin-frappe .ansi-8    { color: #626880; }
+#probes.catppuccin-frappe .ansi-9    { color: #e78284; }
+#probes.catppuccin-frappe .ansi-10   { color: #a6d189; }
+#probes.catppuccin-frappe .ansi-11   { color: #e5c890; }
+#probes.catppuccin-frappe .ansi-12   { color: #8caaee; }
+#probes.catppuccin-frappe .ansi-13   { color: #f4b8e4; }
+#probes.catppuccin-frappe .ansi-14   { color: #81c8be; }
+#probes.catppuccin-frappe .ansi-15   { color: #a5adce; }
+
+/* ----------------------------------------
+   Catppuccin Latte
+   ---------------------------------------- */
+
+#surface.catppuccin-latte            { color: #4c4f69; background-color: #eff1f5; }
+#probes.catppuccin-latte .ansi-0    { color: #5c5f77; }
+#probes.catppuccin-latte .ansi-1    { color: #d20f39; }
+#probes.catppuccin-latte .ansi-2    { color: #40a02b; }
+#probes.catppuccin-latte .ansi-3    { color: #df8e1d; }
+#probes.catppuccin-latte .ansi-4    { color: #1e66f5; }
+#probes.catppuccin-latte .ansi-5    { color: #ea76cb; }
+#probes.catppuccin-latte .ansi-6    { color: #179299; }
+#probes.catppuccin-latte .ansi-7    { color: #acb0be; }
+#probes.catppuccin-latte .ansi-8    { color: #6c6f85; }
+#probes.catppuccin-latte .ansi-9    { color: #d20f39; }
+#probes.catppuccin-latte .ansi-10   { color: #40a02b; }
+#probes.catppuccin-latte .ansi-11   { color: #df8e1d; }
+#probes.catppuccin-latte .ansi-12   { color: #1e66f5; }
+#probes.catppuccin-latte .ansi-13   { color: #ea76cb; }
+#probes.catppuccin-latte .ansi-14   { color: #179299; }
+#probes.catppuccin-latte .ansi-15   { color: #bcc0cc; }
 
 /* ----------------------------------------
    Gruvbox Dark
@@ -246,26 +350,26 @@ body {
 #probes.gruvbox-dark .ansi-15   { color: #ebdbb2; }
 
 /* ----------------------------------------
-   Tokyo Night
+   Gruvbox Light
    ---------------------------------------- */
 
-#surface.tokyo-night            { color: #a9b1d6; background-color: #1a1b26; }
-#probes.tokyo-night .ansi-0    { color: #15161e; }
-#probes.tokyo-night .ansi-1    { color: #f7768e; }
-#probes.tokyo-night .ansi-2    { color: #9ece6a; }
-#probes.tokyo-night .ansi-3    { color: #e0af68; }
-#probes.tokyo-night .ansi-4    { color: #7aa2f7; }
-#probes.tokyo-night .ansi-5    { color: #bb9af7; }
-#probes.tokyo-night .ansi-6    { color: #7dcfff; }
-#probes.tokyo-night .ansi-7    { color: #a9b1d6; }
-#probes.tokyo-night .ansi-8    { color: #414868; }
-#probes.tokyo-night .ansi-9    { color: #f7768e; }
-#probes.tokyo-night .ansi-10   { color: #9ece6a; }
-#probes.tokyo-night .ansi-11   { color: #e0af68; }
-#probes.tokyo-night .ansi-12   { color: #7aa2f7; }
-#probes.tokyo-night .ansi-13   { color: #bb9af7; }
-#probes.tokyo-night .ansi-14   { color: #7dcfff; }
-#probes.tokyo-night .ansi-15   { color: #c0caf5; }
+#surface.gruvbox-light            { color: #3c3836; background-color: #fbf1c7; }
+#probes.gruvbox-light .ansi-0    { color: #fbf1c7; }
+#probes.gruvbox-light .ansi-1    { color: #cc241d; }
+#probes.gruvbox-light .ansi-2    { color: #98971a; }
+#probes.gruvbox-light .ansi-3    { color: #d79921; }
+#probes.gruvbox-light .ansi-4    { color: #458588; }
+#probes.gruvbox-light .ansi-5    { color: #b16286; }
+#probes.gruvbox-light .ansi-6    { color: #689d6a; }
+#probes.gruvbox-light .ansi-7    { color: #7c6f64; }
+#probes.gruvbox-light .ansi-8    { color: #928374; }
+#probes.gruvbox-light .ansi-9    { color: #9d0006; }
+#probes.gruvbox-light .ansi-10   { color: #79740e; }
+#probes.gruvbox-light .ansi-11   { color: #b57614; }
+#probes.gruvbox-light .ansi-12   { color: #076678; }
+#probes.gruvbox-light .ansi-13   { color: #8f3f71; }
+#probes.gruvbox-light .ansi-14   { color: #427b58; }
+#probes.gruvbox-light .ansi-15   { color: #3c3836; }
 
 /* ========================================
    INTERNAL — do not edit below this line
@@ -294,11 +398,11 @@ body {
 /* Theme picker button */
 #theme-btn {
   position: fixed;
-  bottom: 12px;
-  right: 12px;
+  bottom: 8px;
+  right: 8px;
   z-index: 100;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border: none;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.08);
@@ -317,21 +421,20 @@ body {
 }
 
 #theme-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   pointer-events: none;
 }
 
 /*  Light themes need a dark button */
-body.basic-light #theme-btn,
-body.solarized-light #theme-btn {
+#terminal.basic-light #theme-btn, #terminal.solarized-light #theme-btn, #terminal.catppuccin-latte #theme-btn, #terminal.gruvbox-light #theme-btn {
   background: rgba(0, 0, 0, 0.08);
   color: rgba(0, 0, 0, 0.4);
 }
 
 #theme-menu {
   position: fixed;
-  bottom: 50px;
+  bottom: 40px;
   right: 12px;
   z-index: 100;
   background: #1e1e2e;
@@ -352,12 +455,12 @@ body.solarized-light #theme-btn {
 .theme-option {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: 5px;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 0px;
   cursor: pointer;
   font-family: monospace;
-  font-size: 12px;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.7);
   border: none;
   background: transparent;

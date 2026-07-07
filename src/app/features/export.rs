@@ -1,4 +1,4 @@
-use little_tui::Colors;
+use incredible::Colors;
 #[cfg(not(target_arch = "wasm32"))]
 use std::fs;
 #[cfg(not(target_arch = "wasm32"))]

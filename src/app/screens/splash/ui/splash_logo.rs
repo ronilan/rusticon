@@ -1,5 +1,5 @@
 use crate::SplashState;
-use little_tui::*;
+use incredible::*;
 
 fn bouncing_text(n: usize) -> Vec<Block> {
     let width = 40;

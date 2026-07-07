@@ -1,5 +1,6 @@
 # anything, anywhere starting with __
 __*
+~~*
 
 # Local development
 *.env
@@ -19,12 +20,17 @@ Icon
 .Trashes
 
 # Rust
+Cargo.lock
+
+# Rust build artifacts
 /target
 
-# JS / web
-/node_modules
-/pkg
+# Local build artifacts
 /dist
+/docs
+/release
 
-# the default image created
-favicon.svg
+# JavaScript / pnpm workspace
+**/node_modules
+pnpm-debug.log*
+.pnpm-store*

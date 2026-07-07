@@ -1,5 +1,5 @@
 use crate::{ui::reposition, State};
-use little_tui::*;
+use incredible::*;
 
 static X: isize = 23;
 static Y: isize = 21;
@@ -59,6 +59,9 @@ pub fn build<'a>() -> Element<State> {
                         if let Some(ansi_code) = coloring {
                             decor = Decor::new(
                                 false,
+                                false,
+                                None,
+                                None,
                                 false,
                                 false,
                                 false,

@@ -1,5 +1,5 @@
 use crate::{core::shared::RESULT_HOLDER, SplashState, MIN_SPLASH_MS};
-use little_tui::*;
+use incredible::*;
 
 pub fn build() -> Element<SplashState> {
     let splash_footer = Element::new();

@@ -1,5 +1,5 @@
 use crate::State;
-use little_tui::Element;
+use incredible::Element;
 
 pub fn build() -> Element<State> {
     let wrapper = Element::new();

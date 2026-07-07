@@ -1,5 +1,5 @@
 use crate::{ui::reposition, State};
-use little_tui::*;
+use incredible::*;
 
 static X: isize = 75;
 static Y: isize = 19;
@@ -10,7 +10,6 @@ pub fn build() -> Element<State> {
         .x(X)
         .y(Y)
         .look(Look::from("Save"))
-        .underline(true)
         .on_loop(|_el, state, _event| {
             if state.save_flag {
                 // wait till next loop to exit

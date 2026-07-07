@@ -1,22 +1,22 @@
-use little_tui::{run as tui_run, setup, Globals, Providers};
+use incredible::{run as tui_run, setup, Globals, Providers};
 
 #[cfg(not(target_arch = "wasm32"))]
-use little_tui_event_loop_terminal::run_event_loop as looper;
+use incredible_event_loop_terminal::run_event_loop as looper;
 #[cfg(not(target_arch = "wasm32"))]
-use little_tui_input_crossterm::CrosstermInput;
+use incredible_input_crossterm::CrosstermInput;
 #[cfg(not(target_arch = "wasm32"))]
-use little_tui_output_terminal::TerminalOutput;
+use incredible_output_terminal::TerminalOutput;
 #[cfg(not(target_arch = "wasm32"))]
-use little_tui_clipboard_terminal::NativeClipboard;
+use incredible_clipboard_terminal::TerminalClipboard;
 
 #[cfg(target_arch = "wasm32")]
-use little_tui_event_loop_browser::run_event_loop as looper;
+use incredible_event_loop_browser::run_event_loop as looper;
 #[cfg(target_arch = "wasm32")]
-use little_tui_input_browser::BrowserInput;
+use incredible_input_browser::BrowserInput;
 #[cfg(target_arch = "wasm32")]
-use little_tui_output_html::HtmlOutput;
+use incredible_output_html::HtmlOutput;
 #[cfg(target_arch = "wasm32")]
-use little_tui_clipboard_browser::BrowserClipboard;
+use incredible_clipboard_browser::BrowserClipboard;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::Closure, JsCast};
 
@@ -27,7 +27,7 @@ fn setup_runtime<S: Clone + PartialEq + 'static>() {
     setup(Providers {
         input: Box::new(CrosstermInput::new()),
         output: Box::new(TerminalOutput::new(Box::new(CrosstermInput::new()))),
-        clipboard: Box::new(NativeClipboard),
+        clipboard: Box::new(TerminalClipboard),
     });
 }
 

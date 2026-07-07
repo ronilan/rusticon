@@ -1,5 +1,5 @@
 use image::{imageops::FilterType, DynamicImage, GenericImageView, ImageFormat};
-use little_tui::Colors;
+use incredible::Colors;
 use std::fs;
 use std::path::Path;
 

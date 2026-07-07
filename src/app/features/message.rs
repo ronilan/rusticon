@@ -1,4 +1,4 @@
-use little_tui::*;
+use incredible::*;
 
 /// Draws a full-screen message centered in the terminal
 pub fn draw_message(msg: &str, color_code: u8) {

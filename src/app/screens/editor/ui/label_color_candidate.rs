@@ -1,5 +1,5 @@
 use crate::{ui::reposition, State};
-use little_tui::*;
+use incredible::*;
 
 static X: isize = 62;
 static Y: isize = 13;

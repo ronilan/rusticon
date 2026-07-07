@@ -1,5 +1,5 @@
 use crate::State;
-use little_tui::*;
+use incredible::*;
 
 // Palette helpers
 pub(crate) fn ideal_palette_index(curr: usize, palette: &Vec<Option<u8>>) -> usize {
@@ -32,6 +32,9 @@ pub(crate) fn canvas_look_from_data(size: usize, data: &[Option<u8>]) -> Look {
                         Some(ansi_code) => {
                             let decor = Decor::new(
                                 false,
+                                false,
+                                None,
+                                None,
                                 false,
                                 false,
                                 false,

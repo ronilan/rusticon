@@ -1,6 +1,6 @@
 use crate::ui::{APP_HEIGHT, APP_WIDTH};
 use crate::State;
-use little_tui::*;
+use incredible::*;
 
 pub fn build() -> Element<State> {
     let centered_modal: Element<State> = Element::new();

@@ -333,7 +333,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -455,9 +455,9 @@ checksum = "037711b3d59c33004d3856fbdc83b99d4ff37a24768fa1be9ce3538a1cde4393"
 
 [[package]]
 name = "futures-timer"
-version = "3.0.3"
+version = "3.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f288b0a4f20f9a56b5d1da57e2227c661b7b16168e2f72365f57b63326e29b24"
+checksum = "af43fadb8a98512d547e37b4e92e0ced13e205c061b87b4623eff01d918d6968"
 
 [[package]]
 name = "futures-util"
@@ -550,6 +550,99 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e7c5cedc30da3a610cac6b4ba17597bdf7152cf974e8aab3afb3d54455e371c8"
 
 [[package]]
+name = "incredible"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#39c626d75f25df1dfe042fb7d93b7500b783e75d"
+dependencies = [
+ "futures",
+ "unicode-segmentation",
+ "unicode-width",
+]
+
+[[package]]
+name = "incredible_clipboard_browser"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#39c626d75f25df1dfe042fb7d93b7500b783e75d"
+dependencies = [
+ "incredible",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "incredible_clipboard_terminal"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#39c626d75f25df1dfe042fb7d93b7500b783e75d"
+dependencies = [
+ "incredible",
+ "libc",
+]
+
+[[package]]
+name = "incredible_event_loop_browser"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#39c626d75f25df1dfe042fb7d93b7500b783e75d"
+dependencies = [
+ "incredible",
+ "js-sys",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
+name = "incredible_event_loop_terminal"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#39c626d75f25df1dfe042fb7d93b7500b783e75d"
+dependencies = [
+ "futures",
+ "incredible",
+]
+
+[[package]]
+name = "incredible_input_browser"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#39c626d75f25df1dfe042fb7d93b7500b783e75d"
+dependencies = [
+ "incredible",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
+name = "incredible_input_crossterm"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#39c626d75f25df1dfe042fb7d93b7500b783e75d"
+dependencies = [
+ "crossterm",
+ "futures",
+ "incredible",
+ "libc",
+]
+
+[[package]]
+name = "incredible_output_html"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#39c626d75f25df1dfe042fb7d93b7500b783e75d"
+dependencies = [
+ "incredible",
+ "js-sys",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "incredible_output_terminal"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#39c626d75f25df1dfe042fb7d93b7500b783e75d"
+dependencies = [
+ "incredible",
+ "libc",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "interpolate_name"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -626,88 +719,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "11d3d7f243d5c5a8b9bb5d6dd2b1602c0cb0b9db1621bafc7ed66e35ff9fe092"
 
 [[package]]
-name = "little_tui"
-version = "0.1.0"
-dependencies = [
- "futures",
- "unicode-width",
-]
-
-[[package]]
-name = "little_tui_clipboard_browser"
-version = "0.1.0"
-dependencies = [
- "little_tui",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
-]
-
-[[package]]
-name = "little_tui_clipboard_terminal"
-version = "0.1.0"
-dependencies = [
- "libc",
- "little_tui",
-]
-
-[[package]]
-name = "little_tui_event_loop_browser"
-version = "0.1.0"
-dependencies = [
- "js-sys",
- "little_tui",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
-name = "little_tui_event_loop_terminal"
-version = "0.1.0"
-dependencies = [
- "futures",
- "little_tui",
-]
-
-[[package]]
-name = "little_tui_input_browser"
-version = "0.1.0"
-dependencies = [
- "little_tui",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
-name = "little_tui_input_crossterm"
-version = "0.1.0"
-dependencies = [
- "crossterm",
- "futures",
- "libc",
- "little_tui",
-]
-
-[[package]]
-name = "little_tui_output_html"
-version = "0.1.0"
-dependencies = [
- "js-sys",
- "little_tui",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
-name = "little_tui_output_terminal"
-version = "0.1.0"
-dependencies = [
- "libc",
- "little_tui",
- "windows-sys 0.52.0",
-]
-
-[[package]]
 name = "lock_api"
 version = "0.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -759,9 +770,9 @@ dependencies = [
 
 [[package]]
 name = "mio"
-version = "1.2.0"
+version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50b7e5b27aa02a74bac8c3f23f448f8d87ff11f92d3aac1a6ed369ee08cc56c1"
+checksum = "02bd0af71c67b473010cbbc60715ee815645a4dc942899111f494b4b737d6fda"
 dependencies = [
  "libc",
  "log",
@@ -1124,16 +1135,16 @@ dependencies = [
  "futures",
  "futures-timer",
  "image",
+ "incredible",
+ "incredible_clipboard_browser",
+ "incredible_clipboard_terminal",
+ "incredible_event_loop_browser",
+ "incredible_event_loop_terminal",
+ "incredible_input_browser",
+ "incredible_input_crossterm",
+ "incredible_output_html",
+ "incredible_output_terminal",
  "js-sys",
- "little_tui",
- "little_tui_clipboard_browser",
- "little_tui_clipboard_terminal",
- "little_tui_event_loop_browser",
- "little_tui_event_loop_terminal",
- "little_tui_input_browser",
- "little_tui_input_crossterm",
- "little_tui_output_html",
- "little_tui_output_terminal",
  "wasm-bindgen",
  "web-sys",
 ]
@@ -1148,7 +1159,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -1432,6 +1443,15 @@ name = "windows-sys"
 version = "0.52.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "282be5f36a8ce781fad8c8ae18fa3f9beff57ec1b52cb3de0789201425d9a33d"
+dependencies = [
+ "windows-targets",
+]
+
+[[package]]
+name = "windows-sys"
+version = "0.59.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e38bc4d79ed67fd075bcc251a1c39b32a1776bbe92e5bef1f0bf1f8c531853b"
 dependencies = [
  "windows-targets",
 ]

@@ -1,5 +1,5 @@
 use crate::{ui::reposition, State};
-use little_tui::*;
+use incredible::*;
 
 static X: isize = 67;
 static Y: isize = 2;
@@ -10,7 +10,6 @@ pub fn build() -> Element<State> {
         .x(X)
         .y(Y)
         .look(Look::from("8x8"))
-        .underline(true)
         .on_mouse(|_el, state, event| {
             if event.mouse == Mouse::Click {
                 state.size = 8;

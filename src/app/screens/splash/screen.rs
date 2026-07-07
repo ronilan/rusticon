@@ -1,5 +1,5 @@
 use crate::SplashState;
-use little_tui::Element;
+use incredible::Element;
 
 pub fn build() -> Element<SplashState> {
     let wrapper = Element::new();

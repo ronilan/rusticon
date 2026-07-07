@@ -25,7 +25,7 @@ pub(crate) use crate::screens::splash::ui::splash_footer;
 pub(crate) use crate::screens::splash::ui::splash_logo;
 
 use crate::State;
-use little_tui::*;
+use incredible::*;
 
 pub(crate) static APP_WIDTH: usize = 80;
 pub(crate) static APP_HEIGHT: usize = 24;

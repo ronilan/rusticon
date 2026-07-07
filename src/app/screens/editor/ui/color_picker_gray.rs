@@ -1,6 +1,6 @@
 use crate::ui::utils::*;
 use crate::{ui::reposition, State};
-use little_tui::*;
+use incredible::*;
 
 static X: isize = 16;
 static Y: isize = 2;
@@ -18,6 +18,9 @@ pub fn build() -> Element<State> {
                             let ansi_code: u8 = (row * 2 + col + 232).try_into().unwrap();
                             let decor = Decor::new(
                                 false,
+                                false,
+                                None,
+                                None,
                                 false,
                                 false,
                                 false,

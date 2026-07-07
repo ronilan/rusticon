@@ -4,19 +4,27 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:wasm": "wasm-pack build --target web",
-    "build:ts": "tsc",
+    "clean": "node scripts/clean.js",
+    "build:wasm:dev": "wasm-pack build --target web --dev",
+    "build:wasm": "wasm-pack build --target web --release",
     "build:site": "vite build",
-    "build": "cargo update && pnpm run build:wasm && pnpm run build:site",
-    "dev": "cargo update && pnpm run build:wasm && vite",
-    "dev:watch": "cargo watch -s 'pnpm run build:wasm' & vite",
+    "build:web": "node scripts/build_web.js",
+    "build:terminal": "node scripts/build_terminal.js",
+    "build:macos": "node scripts/build_macos.js",
+    "build:windows": "node scripts/build_windows.js",
+    "build:all": "node scripts/build_all.js",
+    "build:release": "node scripts/build_release.js",
+    "build:clean": "node scripts/clean.js && node scripts/build_all.js",
+    "build:publish": "node scripts/clean.js && node scripts/build_release.js && node scripts/publish.js",
+    "publish": "node scripts/publish.js",
+    "dev": "node scripts/dev.js",
     "preview": "vite preview"
   },
   "devDependencies": {
     "toml": "^4.1.1",
-    "typescript": "^5.0.0",
-    "vite": "^5.0.0",
-    "vite-plugin-wasm": "^3.3.0",
-    "vite-plugin-top-level-await": "^1.4.0"
-  }
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14",
+    "vite-plugin-wasm": "^3.6.0"
+  },
+  "packageManager": "pnpm@11.3.0+sha512.2c403d6594527287672b1f7056343a1f7c3634036a67ffabfcc2b3d7595d843768f8787148d1b57cf7956c90606bbd192857c363af19e96d2d0ec9ec5741d215"
 }
