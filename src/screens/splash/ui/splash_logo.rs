@@ -1,9 +1,8 @@
 use crate::{core::model::AppPhase, core::model::State};
 use incredible::*;
 
-fn bouncing_text(n: usize) -> Vec<Block> {
+fn bouncing_text(n: usize, text: &str) -> Vec<Block> {
     let width = 40;
-    let text = "An icon editor for the terminal";
     let text_len = text.len();
 
     let s = if text_len >= width {
@@ -59,7 +58,8 @@ pub fn build() -> Element<State> {
             art_line(n + 5, "|  _ <| |_| \\__ \\ |_| | (_| (_) | | | |"),
             art_line(n + 2, "|_| \\_\\___,_|___/\\__|_|\\___\\___/|_| |_| "),
             vec![],
-            bouncing_text(n),
+            bouncing_text(n, "An icon editor for the terminal"),
+            bouncing_text(n, "            (and elsewhere too)"),
         ];
 
         el.look(Look::from(art_cells));

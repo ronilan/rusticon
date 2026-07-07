@@ -19,7 +19,7 @@ fn art_line(n: usize, s: &str) -> Vec<Block> {
 
 pub fn build() -> Element<State> {
     let launch_logo = Element::new();
-    launch_logo.look(Look::from((40, 7)));
+    launch_logo.look(Look::from((40, 8)));
 
     #[rustfmt::skip]
     let art_cells: Vec<Vec<Block>> = vec![
@@ -29,7 +29,8 @@ pub fn build() -> Element<State> {
         art_line(4, "|  _ <| |_| \\__ \\ |_| | (_| (_) | | | |"),
         art_line(1, "|_| \\_\\___,_|___/\\__|_|\\___\\___/|_| |_| "),
         vec![],
-        text_line("An icon editor for the terminal (and the web)"),
+        text_line("An icon editor for the terminal"),
+        text_line("         (but also for the web)"),
     ];
 
     launch_logo.look(Look::from(art_cells));
