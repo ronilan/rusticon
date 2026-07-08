@@ -11,7 +11,7 @@ pub fn build() -> TextButton<State> {
         .x(X)
         .y(Y)
         .text("8x8")
-        .underline(true)
+        .underline(Some(UnderlineKind::Dotted))
         .on_mouse(|_el, state, event| {
             if event.mouse == Mouse::Click {
                 state.editor.size = 8;
