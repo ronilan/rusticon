@@ -1,39 +1,62 @@
-use crate::core::model::State;
+use crate::{core::model::State, ui::APP_WIDTH};
 use incredible::*;
+use incredible_elements::{Label, Rectangle};
+use incredible_elements_text_fonts::{FigletStr, FontSize};
+use incredible_helpers_effects::{GradientDirection, gradient_color};
+use incredible_helpers_layout::{Flowers, arrangers::Arrangers};
 
-fn text_line(s: &str) -> Vec<Block> {
-    s.chars().map(|c| Block::new(c, Decor::default())).collect()
-}
+// Gradient decorate function for launch logo (static)
+fn logo_gradient_decorate(el: &FigletStr<State>) {
+    // FigletStr composes sub elements.
+    // Create a look that is fully composited and decorated, ready for further processing.
+    let flattened = flatten_composite(el, decorate, logo_gradient_decorate);
 
-fn art_line(n: usize, s: &str) -> Vec<Block> {
-    let color = (n % 5) as u8;
-
-    s.chars()
-        .map(|c| {
-            let d = Decor::default();
-            d.color.replace(Some(color.into()));
-            Block::new(c, d)
-        })
-        .collect()
-}
-
-pub fn build() -> Element<State> {
-    let launch_logo = Element::new();
-    launch_logo.look(Look::from((40, 8)));
-
-    #[rustfmt::skip]
-    let art_cells: Vec<Vec<Block>> = vec![
-        art_line(1, " ____            _   _                 "),
-        art_line(2, "|  _ \\ _   _ ___| |_(_) ___ ___  _ __  "),
-        art_line(3, "| |_) | | | / __| __| |/ __/ _ \\| '_ \\ "),
-        art_line(4, "|  _ <| |_| \\__ \\ |_| | (_| (_) | | | |"),
-        art_line(1, "|_| \\_\\___,_|___/\\__|_|\\___\\___/|_| |_| "),
-        vec![],
-        text_line("An icon editor for the terminal"),
-        text_line("         (but also for the web)"),
+    // Define gradient and create look.
+    let stops: [[u8; 3]; 6] = [
+        [255, 0, 0],
+        [0, 255, 0],
+        [0, 0, 255],
+        [255, 255, 0],
+        [0, 255, 255],
+        [255, 0, 255],
     ];
+    let look = gradient_color(&stops, GradientDirection::Vertical, &flattened, 0.0);
+    el.look(look);
 
-    launch_logo.look(Look::from(art_cells));
+    // Resolve and store the current decoration based on element style and status.
+    el.decoration()
+        .active_decor
+        .replace(el.decoration().style.resolve(el.status()));
+}
+
+pub fn build() -> Rectangle<State> {
+    let launch_logo = Rectangle::new();
+    launch_logo.width(APP_WIDTH).height(8);
+
+    // Build the main FigletStr logo (static)
+    let logo = FigletStr::default();
+    logo.text("Rusticon").font_size(FontSize::Medium);
+
+    // Set up static gradient decoration
+    logo.draw_override(Some(DrawOverride {
+        auto_render: None,
+        flatten_override: true,
+    }));
+    logo.renderer.decorate.set(logo_gradient_decorate);
+
+    // Build static subtitle text
+    let subtitle = Label::default();
+    subtitle
+        .text("An icon editor for the terminal (and elsewhere too)")
+        .wrap_at(34)
+        .faint(true);
+
+    launch_logo.add(logo);
+    launch_logo.add(subtitle);
+
+    // Center the logo vertically in the wrapper
+    launch_logo.elements_flow_down(0);
+    launch_logo.elements_to_center();
 
     launch_logo
 }

@@ -1,70 +1,89 @@
-use crate::{core::model::AppPhase, core::model::State};
+use crate::{core::model::AppPhase, core::model::State, ui::APP_WIDTH};
 use incredible::*;
+use incredible_elements::{Bouncer, Rectangle};
+use incredible_elements_text_fonts::{FigletStr, FontSize};
+use incredible_helpers_effects::{GradientDirection, gradient_color};
+use incredible_helpers_layout::{Flowers, arrangers::Arrangers};
 
-fn bouncing_text(n: usize, text: &str) -> Vec<Block> {
-    let width = 40;
-    let text_len = text.len();
+// Gradient decorate function for splash logo (following pattern from website/main.rs)
+fn logo_gradient_decorate(el: &FigletStr<State>) {
+    // FigletStr composes sub elements.
+    // Create a look that is fully composited and decorated, ready for further processing.
+    let flattened = flatten_composite(el, decorate, logo_gradient_decorate);
 
-    let s = if text_len >= width {
-        text.chars().take(width).collect::<String>()
+    // Use animation progress as gradient offset if animation has ticked,
+    // otherwise fall back to the last known progress, then 0.0.
+    let progress = if let Some(anim) = el.get_animation() {
+        if let Some(p) = anim.progress {
+            p
+        } else if let Some(p) = anim.last_progress {
+            p
+        } else {
+            0.0
+        }
     } else {
-        let max_pad = width - text_len;
-        let cycle = max_pad * 2;
-        let pos = n % cycle;
-        let pad = if pos <= max_pad { pos } else { cycle - pos };
-        let right_pad = width - text_len - pad;
-
-        format!(
-            "{:pad$}{}{:right_pad$}",
-            "",
-            text,
-            "",
-            pad = pad,
-            right_pad = right_pad
-        )
+        0.0
     };
 
-    s.chars().map(|c| Block::new(c, Decor::default())).collect()
+    // Define gradient and create look.
+    let stops: [[u8; 3]; 6] = [
+        [255, 0, 0],
+        [0, 255, 0],
+        [0, 0, 255],
+        [255, 255, 0],
+        [0, 255, 255],
+        [255, 0, 255],
+    ];
+    let look = gradient_color(&stops, GradientDirection::Vertical, &flattened, progress);
+    el.look(look);
+
+    // Resolve and store the current decoration based on element style and status.
+    el.decoration()
+        .active_decor
+        .replace(el.decoration().style.resolve(el.status()));
 }
 
-fn art_line(n: usize, s: &str) -> Vec<Block> {
-    let color = (n % 5) as u8;
+pub fn build() -> Rectangle<State> {
+    let splash_logo = Rectangle::new();
+    splash_logo.width(APP_WIDTH).height(8);
 
-    s.chars()
-        .map(|c| {
-            let d = Decor::default();
-            d.color.replace(Some(color.into()));
-            Block::new(c, d)
-        })
-        .collect()
-}
+    // Build the main FigletStr logo
+    let logo = FigletStr::default();
+    logo.text("Rusticon").font_size(FontSize::Medium);
 
-pub fn build() -> Element<State> {
-    let splash_logo = Element::new();
-    splash_logo.look(Look::from((40, 7)));
+    // Set up gradient decoration with animation (following website/main.rs pattern)
+    logo.draw_override(Some(DrawOverride {
+        auto_render: None,
+        flatten_override: true,
+    }));
+    logo.animation(Some(Animation::new(1000.0, 8.0, 10.0)));
+    logo.renderer.decorate.set(logo_gradient_decorate);
 
-    splash_logo.on_loop(|el, state: &mut State, event| {
+    // Animate gradient on loop - trigger draw when animation has progress
+    logo.on_loop(|el, state: &mut State, _event| {
         if state.flow.phase != AppPhase::Splash {
             return;
         }
-
-        let n = event.loop_count;
-
-        #[rustfmt::skip]
-        let art_cells: Vec<Vec<Block>> = vec![
-            art_line(n + 2, " ____            _   _                 "),
-            art_line(n + 3, "|  _ \\ _   _ ___| |_(_) ___ ___  _ __  "),
-            art_line(n + 4, "| |_) | | | / __| __| |/ __/ _ \\| '_ \\ "),
-            art_line(n + 5, "|  _ <| |_| \\__ \\ |_| | (_| (_) | | | |"),
-            art_line(n + 2, "|_| \\_\\___,_|___/\\__|_|\\___\\___/|_| |_| "),
-            vec![],
-            bouncing_text(n, "An icon editor for the terminal"),
-            bouncing_text(n, "            (and elsewhere too)"),
-        ];
-
-        el.look(Look::from(art_cells));
-        el.draw();
+        if let Some(anim) = el.get_animation() {
+            if let Some(_) = anim.progress {
+                el.draw();
+            }
+        }
     });
+
+    // Build bouncing subtitle text
+    let subtitle = Bouncer::default();
+    subtitle
+        .text("An icon editor for the terminal (and elsewhere too)")
+        .wrap_at(34)
+        .faint(true);
+
+    splash_logo.add(logo);
+    splash_logo.add(subtitle);
+
+    // Center the logo vertically in the wrapper
+    splash_logo.elements_flow_down(0);
+    splash_logo.elements_to_center();
 
     splash_logo
 }
