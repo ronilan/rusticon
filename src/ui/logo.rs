@@ -1,11 +1,9 @@
-use crate::{core::model::AppPhase, core::model::State, ui::APP_WIDTH};
+use crate::{core::model::AppPhase, core::model::State};
 use incredible::*;
-use incredible_elements::{Bouncer, Rectangle};
-use incredible_elements_text_fonts::{FigletStr, FontSize};
+use incredible_elements_text_fonts::FigletStr;
 use incredible_helpers_effects::{GradientDirection, gradient_color};
-use incredible_helpers_layout::{Flowers, arrangers::Arrangers};
 
-// Gradient decorate function for splash logo (following pattern from website/main.rs)
+// Gradient decorate function for splash logo
 fn logo_gradient_decorate(el: &FigletStr<State>) {
     // FigletStr composes sub elements.
     // Create a look that is fully composited and decorated, ready for further processing.
@@ -31,8 +29,8 @@ fn logo_gradient_decorate(el: &FigletStr<State>) {
         [0, 255, 0],
         [0, 0, 255],
         [255, 255, 0],
-        [0, 255, 255],
-        [255, 0, 255],
+        [255, 0, 0],
+        [0, 255, 0],
     ];
     let look = gradient_color(&stops, GradientDirection::Vertical, &flattened, progress);
     el.look(look);
@@ -43,20 +41,14 @@ fn logo_gradient_decorate(el: &FigletStr<State>) {
         .replace(el.decoration().style.resolve(el.status()));
 }
 
-pub fn build() -> Rectangle<State> {
-    let splash_logo = Rectangle::new();
-    splash_logo.width(APP_WIDTH).height(8);
-
-    // Build the main FigletStr logo
+pub fn build() -> FigletStr<State> {
     let logo = FigletStr::default();
-    logo.text("Rusticon").font_size(FontSize::Medium);
-
-    // Set up gradient decoration with animation (following website/main.rs pattern)
-    logo.draw_override(Some(DrawOverride {
-        auto_render: None,
-        flatten_override: true,
-    }));
-    logo.animation(Some(Animation::new(1000.0, 8.0, 10.0)));
+    logo.text("Rusticon")
+        // Set up gradient decoration
+        .draw_override(Some(DrawOverride {
+            auto_render: None,
+            flatten_override: true,
+        }));
     logo.renderer.decorate.set(logo_gradient_decorate);
 
     // Animate gradient on loop - trigger draw when animation has progress
@@ -71,19 +63,5 @@ pub fn build() -> Rectangle<State> {
         }
     });
 
-    // Build bouncing subtitle text
-    let subtitle = Bouncer::default();
-    subtitle
-        .text("An icon editor for the terminal (and elsewhere too)")
-        .wrap_at(34)
-        .faint(true);
-
-    splash_logo.add(logo);
-    splash_logo.add(subtitle);
-
-    // Center the logo vertically in the wrapper
-    splash_logo.elements_flow_down(0);
-    splash_logo.elements_to_center();
-
-    splash_logo
+    logo
 }

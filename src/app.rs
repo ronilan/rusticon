@@ -1,6 +1,6 @@
 use incredible::*;
 use incredible_elements::{App, AppOptions};
-use incredible_helpers_layout::arrangers::Arrangers;
+use incredible_helpers_layout::Arrangers;
 
 pub use crate::core::{
     io::RusticonIo,

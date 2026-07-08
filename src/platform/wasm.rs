@@ -22,7 +22,7 @@ pub struct WasmIo;
 #[derive(Default)]
 struct LaunchState {
     drop_ready: bool,
-    pending_outcome: Option<(ImportOutcome, Option<JsValue>)>,
+    pending_drop_data: Option<(Vec<u8>, String, JsValue)>, // (bytes, name, handle) - raw data
     pending_handle: Option<JsValue>,
 }
 
@@ -89,6 +89,12 @@ fn setup_drop_listeners() {
             return;
         };
 
+        // Signal drop IMMEDIATELY - the splash will show on next loop tick
+        let mut launch = LAUNCH_STATE.lock().unwrap();
+        launch.drop_ready = true;
+
+        // Spawn async task to read the file
+        // Don't process yet - just store raw data
         spawn_local(async move {
             let items = data_transfer.items();
             if items.length() > 0 {
@@ -115,11 +121,9 @@ fn setup_drop_listeners() {
                     let buffer = JsFuture::from(file.array_buffer()).await.unwrap();
                     let bytes = js_sys::Uint8Array::new(&buffer).to_vec();
 
-                    let outcome = import_bytes(&file_name, &bytes);
-
+                    // Store raw file data - splash should already be showing
                     let mut launch = LAUNCH_STATE.lock().unwrap();
-                    launch.pending_outcome = Some((outcome, Some(handle)));
-                    launch.drop_ready = true;
+                    launch.pending_drop_data = Some((bytes, file_name, handle));
                 }
             }
         });
@@ -143,17 +147,57 @@ impl RusticonIo for WasmIo {
     }
 
     fn start_import(&self, path: String) {
-        let mut guard = RESULT_HOLDER.lock().unwrap();
         let mut launch = LAUNCH_STATE.lock().unwrap();
 
         if launch.drop_ready {
-            if let Some((outcome, handle)) = launch.pending_outcome.take() {
-                *guard = Some(outcome);
-                if let Some(h) = handle {
-                    launch.pending_handle = Some(h);
-                }
-            }
             launch.drop_ready = false;
+            drop(launch);
+
+            // Spawn async task to process the import when data arrives
+            spawn_local(async move {
+                // Wait for file data to become available
+                let (bytes, file_name, handle) = {
+                    let mut data = None;
+                    while data.is_none() {
+                        {
+                            let launch = LAUNCH_STATE.lock().unwrap();
+                            data = launch
+                                .pending_drop_data
+                                .as_ref()
+                                .map(|(b, n, h)| (b.clone(), n.clone(), h.clone()));
+                        }
+                        if data.is_none() {
+                            // Yield to event loop
+                            let promise = js_sys::Promise::new(&mut |resolve, _| {
+                                let cb = Closure::wrap(Box::new(move || {
+                                    let _ = resolve.call0(&JsValue::NULL);
+                                })
+                                    as Box<dyn FnMut()>);
+                                web_sys::window()
+                                    .unwrap()
+                                    .set_timeout_with_callback_and_timeout_and_arguments_0(
+                                        cb.as_ref().unchecked_ref(),
+                                        0,
+                                    )
+                                    .unwrap();
+                                cb.forget();
+                            });
+                            let _ = JsFuture::from(promise).await;
+                        }
+                    }
+                    data.unwrap()
+                };
+
+                // Process the import (sync operation)
+                let outcome = import_bytes(&file_name, &bytes);
+
+                // Clear the pending data and store result
+                let mut launch = LAUNCH_STATE.lock().unwrap();
+                launch.pending_drop_data.take();
+                launch.pending_handle = Some(handle);
+                let mut guard = RESULT_HOLDER.lock().unwrap();
+                *guard = Some(outcome);
+            });
             return;
         }
 
@@ -163,6 +207,7 @@ impl RusticonIo for WasmIo {
             8,
             self.normalize_svg_name(&path),
         ));
+        let mut guard = RESULT_HOLDER.lock().unwrap();
         *guard = Some(outcome);
     }
 

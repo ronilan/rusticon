@@ -4,7 +4,7 @@ use crate::{
 };
 use incredible::*;
 use incredible_elements::{Rectangle, Text};
-use incredible_helpers_layout::arrangers::Arrangers;
+use incredible_helpers_layout::Arrangers;
 
 pub fn build() -> Rectangle<State> {
     let message: Rectangle<State> = Rectangle::new();

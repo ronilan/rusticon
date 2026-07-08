@@ -4,7 +4,7 @@ use crate::{
 };
 use incredible::*;
 use incredible_elements::Rectangle;
-use incredible_helpers_layout::arrangers::Arrangers;
+use incredible_helpers_layout::{Arrangers, Flowers};
 
 pub fn build() -> Rectangle<State> {
     let wrapper: Rectangle<State> = Rectangle::new();
@@ -14,10 +14,18 @@ pub fn build() -> Rectangle<State> {
     });
 
     // Launch uses a static logo.
-    wrapper.add(super::ui::launch_logo::build());
-    wrapper.elements_snap_center_y();
+    let logo = crate::ui::logo::build();
+    wrapper.add(logo);
 
-    wrapper.add(crate::screens::splash::ui::splash_footer::build());
+    // Launch uses a static bouncer.
+    let tagline = crate::ui::tagline::build();
+    tagline.animation(None);
+    wrapper.add(tagline);
+    wrapper.elements_flow_down(0);
+
+    wrapper.elements_to_center();
+
+    wrapper.add(crate::ui::made_with::build());
     wrapper.add(super::ui::launch_hint::build());
     wrapper.add(super::ui::start_new::build());
     wrapper.elements_snap_center_x();
