@@ -13,6 +13,7 @@
     "build:macos": "node scripts/build_macos.js",
     "bundle:macos": "node scripts/bundle.js",
     "build:windows": "node scripts/build_windows.js",
+    "bundle:windows": "node scripts/bundle_windows.js",
     "build:all": "node scripts/build_all.js",
     "build:release": "node scripts/build_release.js",
     "build:clean": "node scripts/clean.js && node scripts/build_all.js",
@@ -22,6 +23,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "png-to-ico": "^3.0.2",
+    "rcedit": "^5.0.2",
+    "sharp": "^0.35.3",
     "toml": "^4.1.1",
     "typescript": "^6.0.3",
     "vite": "^8.0.14",

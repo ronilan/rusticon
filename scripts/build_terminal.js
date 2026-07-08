@@ -10,11 +10,11 @@ const exe =
         ? 'rusticon.exe'
         : 'rusticon';
 
-fs.mkdirSync('dist', {
+fs.mkdirSync(path.join('dist', 'cli'), {
     recursive: true
 });
 
 fs.copyFileSync(
     path.join('target', 'release', exe),
-    path.join('dist', exe)
+    path.join('dist', 'cli', exe)
 );

@@ -12,4 +12,5 @@ if (process.platform === 'darwin') {
 
 if (process.platform === 'win32') {
     run('pnpm run build:windows');
+    run('pnpm run bundle:windows');
 }

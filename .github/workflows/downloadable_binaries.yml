@@ -1,7 +1,7 @@
 name: Create Downloadable Binaries
 
 # Builds native downloadable binaries.
-# Sibling to "Deploy to GitHub Pages" â€” that  builds the WASM/web version.
+# Sibling to "Deploy to GitHub Pages" — that  builds the WASM/web version.
 on:
   # Triggers the workflow on push events but only for the main branch
   push:
@@ -9,7 +9,7 @@ on:
       - main
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  # Runs automatically whenever a GitHub Release is published â€” builds and
+  # Runs automatically whenever a GitHub Release is published — builds and
   # attaches binaries to that release.
   release:
     types: [published]
@@ -18,7 +18,7 @@ permissions:
   contents: write
 
 jobs:
-  # Builds the plain terminal binary (fixed name: "incredible") on all
+  # Builds the plain terminal binary (fixed name: "rusticon") on all
   # four target platforms. build_terminal.js has no --target flag, so
   # this can only cross four OS *runners*, not cross-compile from one.
   build-terminal:
@@ -29,7 +29,7 @@ jobs:
       matrix:
         include:
           - name: macos-arm
-            os: macos-latest      # Apple Silicon (M-series) â€” currently macOS 15+
+            os: macos-latest      # Apple Silicon (M-series) — currently macOS 15+
           - name: macos-intel
             os: macos-15-intel    # last supported Intel image; retires ~Fall 2027
           - name: windows
@@ -41,16 +41,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
+      # This repo depends on a PRIVATE repo (rusticon-alpha) via Cargo.toml.
       # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
       # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
-      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
+      # tries to fetch it. The token lives in repo secret rusticon_ALPHA
       # (Settings > Secrets and variables > Actions). If this step is ever
       # removed, the WASM build step below will fail with an auth/404-style
       # error on the private dependency, not an obvious "auth failed" message.
       - name: Configure Git for Private Dependency
         run: |
-          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.rusticon_ALPHA }}@github.com/".insteadOf "https://github.com/"
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -66,7 +66,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Ensure a clean dist/ before building â€” dist/ has been committed to
+      # Ensure a clean dist/ before building — dist/ has been committed to
       # this repo before (like docs/ was), so a checkout can restore stale
       # binaries from git history. Don't rely on the working tree being
       # spotless; wipe it explicitly before every build.
@@ -80,21 +80,21 @@ jobs:
         shell: pwsh
         run: Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue
 
-      # Runs `cargo build --release --bin incredible` (or whatever
+      # Runs `cargo build --release --bin rusticon` (or whatever
       # set_name.js has renamed it to), then copies the result into
       # dist/<name> (dist/<name>.exe on Windows).
       #
       # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
       # `git` binary instead of using its built-in libgit2 fetcher. This matters
       # because only the system git picks up the credential rewrite configured
-      # above (`git config --global url...insteadOf`) â€” libgit2 ignores it and
-      # will fail to fetch the private incredible-alpha dependency without this.
+      # above (`git config --global url...insteadOf`) — libgit2 ignores it and
+      # will fail to fetch the private rusticon-alpha dependency without this.
       - name: Build terminal binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: pnpm run build:terminal
 
-      # Zip immediately, in this job, right after building â€” BEFORE the
+      # Zip immediately, in this job, right after building — BEFORE the
       # binary ever goes through upload-artifact. upload-artifact does not
       # preserve Unix file permissions (all files become 644 on upload),
       # which silently strips the executable bit from macOS/Linux binaries.
@@ -103,13 +103,13 @@ jobs:
       # unzip a binary that's still actually runnable.
       #
       # Split into two steps because the Windows runner's Git Bash doesn't
-      # ship a `zip` binary â€” only macOS/Linux runners have it preinstalled.
+      # ship a `zip` binary — only macOS/Linux runners have it preinstalled.
       # Windows uses PowerShell's built-in Compress-Archive instead.
       - name: Zip terminal binary (Unix)
         if: matrix.name != 'windows'
         shell: bash
         run: |
-          cd dist
+          cd dist/cli
           base=$(ls | head -n 1)
           zip -r "../${base}-terminal-${{ matrix.name }}.zip" "$base"
 
@@ -117,7 +117,7 @@ jobs:
         if: matrix.name == 'windows'
         shell: pwsh
         run: |
-          Push-Location dist
+          Push-Location dist/cli
           $file = (Get-ChildItem | Select-Object -First 1).Name
           $base = [System.IO.Path]::GetFileNameWithoutExtension($file)
           Compress-Archive -Path $file -DestinationPath "..\$base-terminal-windows.zip"
@@ -129,7 +129,7 @@ jobs:
           name: terminal-${{ matrix.name }}
           path: "*-terminal-${{ matrix.name }}.zip"
 
-  # Builds the macOS-native binary (incredible_macos, built with the
+  # Builds the macOS-native binary (rusticon_macos, built with the
   # macos-native feature) and wraps it into a .app + .dmg via bundle.js.
   build-macos-native:
     name: Build macOS Native (${{ matrix.name }})
@@ -139,7 +139,7 @@ jobs:
       matrix:
         include:
           - name: macos-arm
-            os: macos-latest      # Apple Silicon (M-series) â€” currently macOS 15+
+            os: macos-latest      # Apple Silicon (M-series) — currently macOS 15+
           - name: macos-intel
             os: macos-15-intel    # last supported Intel image; retires ~Fall 2027
 
@@ -147,16 +147,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
+      # This repo depends on a PRIVATE repo (rusticon-alpha) via Cargo.toml.
       # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
       # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
-      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
+      # tries to fetch it. The token lives in repo secret rusticon_ALPHA
       # (Settings > Secrets and variables > Actions). If this step is ever
       # removed, the WASM build step below will fail with an auth/404-style
       # error on the private dependency, not an obvious "auth failed" message.
       - name: Configure Git for Private Dependency
         run: |
-          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.rusticon_ALPHA }}@github.com/".insteadOf "https://github.com/"
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -184,27 +184,27 @@ jobs:
         shell: bash
         run: rm -rf dist
 
-      # cargo build --release --bin incredible_macos --features macos-native,
-      # then copies the result to dist/incredible_macos.
+      # cargo build --release --bin rusticon_macos --features macos-native,
+      # then copies the result to dist/rusticon_macos.
       #
       # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
       # `git` binary instead of using its built-in libgit2 fetcher. This matters
       # because only the system git picks up the credential rewrite configured
-      # above (`git config --global url...insteadOf`) â€” libgit2 ignores it and
-      # will fail to fetch the private incredible-alpha dependency without this.
+      # above (`git config --global url...insteadOf`) — libgit2 ignores it and
+      # will fail to fetch the private rusticon-alpha dependency without this.
       - name: Build macOS native binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: pnpm run build:macos
 
-      # Wraps dist/incredible_macos into dist/<AppName>.app, using
+      # Wraps dist/rusticon_macos into dist/<AppName>.app, using
       # app_name/binary_name/icon_source from Cargo.toml's
       # [package.metadata.bundle] and Info.plist at the repo root, then
       # produces dist/<AppName>.dmg.
       - name: Bundle macOS app
         run: pnpm run bundle:macos
 
-      # Zip the .dmg here, right after bundling â€” same permission-loss
+      # Zip the .dmg here, right after bundling — same permission-loss
       # reasoning as build-terminal above. A .dmg itself doesn't carry a
       # meaningful Unix executable bit, but zipping here keeps every job's
       # output handled identically for publish-release downstream. macOS
@@ -212,7 +212,7 @@ jobs:
       - name: Zip macOS native artifact
         shell: bash
         run: |
-          cd dist
+          cd dist/native
           dmg=$(ls *.dmg | head -n 1)
           base="${dmg%.dmg}"
           base="${base,,}"
@@ -224,8 +224,8 @@ jobs:
           name: macos-native-${{ matrix.name }}
           path: "*-macos-native-${{ matrix.name }}.zip"
 
-  # Builds the Windows-native binary (incredible_windows). Output filename
-  # is dynamic â€” dist/<AppName>.exe, where <AppName> comes from Cargo.toml's
+  # Builds the Windows-native binary (rusticon_windows). Output filename
+  # is dynamic — dist/<AppName>.exe, where <AppName> comes from Cargo.toml's
   # [package.metadata.bundle] app_name.
   build-windows-native:
     name: Build Windows Native
@@ -234,16 +234,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
+      # This repo depends on a PRIVATE repo (rusticon-alpha) via Cargo.toml.
       # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
       # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
-      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
+      # tries to fetch it. The token lives in repo secret rusticon_ALPHA
       # (Settings > Secrets and variables > Actions). If this step is ever
       # removed, the WASM build step below will fail with an auth/404-style
       # error on the private dependency, not an obvious "auth failed" message.
       - name: Configure Git for Private Dependency
         run: |
-          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.rusticon_ALPHA }}@github.com/".insteadOf "https://github.com/"
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -265,29 +265,29 @@ jobs:
         shell: pwsh
         run: Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue
 
-      # cargo build --release --bin incredible_windows --features windows-native,
-      # then copies the result to dist/incredible_windows.
+      # cargo build --release --bin rusticon_windows --features windows-native,
+      # then copies the result to dist/rusticon_windows.
       #
       # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
       # `git` binary instead of using its built-in libgit2 fetcher. This matters
       # because only the system git picks up the credential rewrite configured
-      # above (`git config --global url...insteadOf`) â€” libgit2 ignores it and
-      # will fail to fetch the private incredible-alpha dependency without this.
+      # above (`git config --global url...insteadOf`) — libgit2 ignores it and
+      # will fail to fetch the private rusticon-alpha dependency without this.
       - name: Build Windows native binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: pnpm run build:windows
 
-      # Windows runners don't ship `zip` in their Git Bash â€” use
+      # Windows runners don't ship `zip` in their Git Bash — use
       # PowerShell's built-in Compress-Archive instead. .exe files don't
       # carry a Unix executable bit to lose, but zipping here keeps this
       # job's output handled the same way as the other two.
       - name: Zip Windows native artifact
         shell: pwsh
         run: |
-          $exe = (Get-ChildItem dist -Filter *.exe | Select-Object -First 1).Name
+          $exe = (Get-ChildItem dist\native -Filter *.exe | Select-Object -First 1).Name
           $base = [System.IO.Path]::GetFileNameWithoutExtension($exe).ToLowerInvariant()
-          Compress-Archive -Path "dist\$exe" -DestinationPath "$base-windows-native.zip"
+          Compress-Archive -Path "dist\native\$exe" -DestinationPath "$base-windows-native.zip"
 
       - name: Upload Windows native artifact
         uses: actions/upload-artifact@v7
@@ -306,7 +306,7 @@ jobs:
           path: artifacts
 
       # Every artifact is already a ready-made zip (created in its own
-      # build job, before upload-artifact could strip permissions) â€” just
+      # build job, before upload-artifact could strip permissions) — just
       # collect them, nothing left to build or rename here.
       - name: Collect zips for release
         shell: bash
@@ -316,7 +316,7 @@ jobs:
           ls -la release-assets
 
       # When triggered by an actual published Release, attach the zips to
-      # that release (versioned, permanent â€” no tag_name needed, the
+      # that release (versioned, permanent — no tag_name needed, the
       # action attaches to the release that triggered the run). When
       # triggered by push/workflow_dispatch, fall back to the rolling
       # "latest" tag so there's always a stable link even between releases.
@@ -327,3 +327,5 @@ jobs:
           name: ${{ github.event_name != 'release' && 'Latest Build' || '' }}
           prerelease: ${{ github.event_name != 'release' }}
           files: release-assets/*.zip
+
+
