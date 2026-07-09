@@ -12,6 +12,10 @@ pub fn build() -> Element<State> {
         .x(X)
         .y(Y)
         .on_mouse(|el, state, event| {
+            // If mouse moves, it will not be a double click fill.
+            if event.mouse == Mouse::Move {
+               state.editor.prev_color_on_canvas = None;
+            }
             let is_paint = event.mouse == Mouse::Down || event.mouse == Mouse::Drag;
             let is_fill = event.mouse == Mouse::DoubleClick;
             if !(is_paint || is_fill) {
