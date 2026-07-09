@@ -60,6 +60,7 @@ fn build_initial_state(
         app_y: 0,
         candidate: None,
         paintbrush: palette[0],
+        prev_color_on_canvas: None,
         palette_index: 0,
         palette_colors: palette,
         picker_mode: false,

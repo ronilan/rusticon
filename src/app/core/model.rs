@@ -9,6 +9,9 @@ pub struct State {
     pub app_y: isize,
     pub candidate: Option<u8>,
     pub paintbrush: Option<u8>,
+    /// Color under the cursor before the last paint stroke (used to undo the
+    /// second click of a double-click before flood fill).
+    pub prev_color_on_canvas: Option<u8>,
     pub palette_index: usize,
     pub palette_colors: Vec<Option<u8>>,
     pub picker_mode: bool,
