@@ -97,20 +97,31 @@ pub(crate) fn canvas_data_from_click(
     paintbrush: Option<u8>,
     mouse_x: isize,
     mouse_y: isize,
+    prev_color_on_canvas: &mut Option<u8>,
     fill: bool,
 ) {
     let row = mouse_y.saturating_sub(el.visual.y.get()) as usize;
     let col = mouse_x.saturating_sub(el.visual.x.get()) as usize / 2;
     if row < size && col < size {
+        let idx = row * size + col;
         if fill {
-            // Flood fill starting at (row, col)
-            let target = data[row * size + col];
+            // Double-click: the second Down already painted this cell. Restore
+            // the color from before the paint stroke, then flood-fill that region.
+            data[idx] = *prev_color_on_canvas;
+            let target = data[idx];
             if target != paintbrush {
                 flood_fill(data, size, row, col, target, paintbrush);
             }
         } else {
-            // Single cell paint
-            data[row * size + col] = paintbrush;
+            // Remember the cell color before paint so a following double-click
+            // can undo the stroke and flood-fill. Skip when the cell is already
+            // the paintbrush color so the second click of a double-click does
+            // not overwrite the original color with the brush.
+            let old = data[idx];
+            if old != paintbrush {
+                *prev_color_on_canvas = old;
+            }
+            data[idx] = paintbrush;
         }
     }
 }

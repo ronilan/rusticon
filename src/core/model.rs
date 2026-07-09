@@ -28,6 +28,9 @@ pub struct FlowState {
 pub struct EditorState {
     pub candidate: Option<u8>,
     pub paintbrush: Option<u8>,
+    /// Color under the cursor before the last paint stroke (used to undo the
+    /// second click of a double-click before flood fill).
+    pub prev_color_on_canvas: Option<u8>,
     pub palette_index: usize,
     pub palette_colors: Vec<Option<u8>>,
     pub picker_mode: bool,
@@ -62,6 +65,7 @@ impl Default for State {
             editor: EditorState {
                 candidate: None,
                 paintbrush: None,
+                prev_color_on_canvas: None,
                 palette_index: 0,
                 palette_colors: vec![None; 8],
                 picker_mode: false,

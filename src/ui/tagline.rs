@@ -10,7 +10,7 @@ pub fn build() -> Bouncer<State> {
         .wrap_at(35)
         .width(47)
         .height(2)
-        .interval(8)
+        .interval(50)
         .faint(true);
 
     subtitle
