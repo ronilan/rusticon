@@ -57,6 +57,10 @@ pub fn build() -> App<State> {
             state.editor.file_handle = Some(handle);
         }
 
+        if let Some(pending_path) = io.take_pending_file_path() {
+            state.editor.file_path = pending_path;
+        }
+
         let phase_before = state.flow.phase.clone();
 
         if state.flow.viewport_too_small {

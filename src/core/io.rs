@@ -21,4 +21,7 @@ pub trait RusticonIo {
     fn take_pending_handle(&self) -> Option<crate::platform::FileHandle> {
         None
     }
+    fn take_pending_file_path(&self) -> Option<String> {
+        None
+    }
 }

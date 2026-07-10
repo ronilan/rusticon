@@ -24,6 +24,7 @@ struct LaunchState {
     drop_ready: bool,
     pending_drop_data: Option<(Vec<u8>, String, JsValue)>, // (bytes, name, handle) - raw data
     pending_handle: Option<JsValue>,
+    pending_file_path: Option<String>, // Updated file_path from Save As dialog
 }
 
 static LAUNCH_STATE: LazyLock<Arc<Mutex<LaunchState>>> =
@@ -54,12 +55,16 @@ impl WasmIo {
         Ok(())
     }
 
-    async fn save_as_wasm(&self, content: String) -> Result<(JsValue, String), JsValue> {
+    async fn save_as_wasm(&self, content: String, suggested_name: &str) -> Result<(JsValue, String), JsValue> {
         let window = web_sys::window().unwrap();
         let picker_fn = js_sys::Reflect::get(&window, &JsValue::from_str("showSaveFilePicker"))?
             .dyn_into::<js_sys::Function>()?;
 
-        let promise = picker_fn.call0(&window)?;
+        // Build options with suggestedName
+        let opts = js_sys::Object::new();
+        js_sys::Reflect::set(&opts, &JsValue::from_str("suggestedName"), &JsValue::from_str(suggested_name))?;
+
+        let promise = picker_fn.call1(&window, &opts)?;
         let handle_js = JsFuture::from(promise.unchecked_into::<js_sys::Promise>()).await?;
         let handle: FileSystemFileHandle = handle_js.clone().unchecked_into();
         let name = handle.name();
@@ -191,10 +196,25 @@ impl RusticonIo for WasmIo {
                 // Process the import (sync operation)
                 let outcome = import_bytes(&file_name, &bytes);
 
+                // Decide whether the original file handle may be reused on save.
+                //
+                // For non-SVG drops (e.g. `photo.png`) we deliberately rewrite the
+                // path to `.svg` inside `import_bytes`, but the handle still points
+                // at the original file. If we kept that handle, a Save would
+                // silently overwrite `photo.png` with SVG content and never show a
+                // permission prompt. Clearing the handle makes Save fall back to the
+                // Save As flow, which pre-fills the browser prompt with the corrected
+                // `.svg` name (state.editor.file_path). We only keep the handle when
+                // the file name was unchanged (already an SVG/Crumbicon).
+                let keep_handle = match &outcome {
+                    Ok((_, _, _, returned_path)) => returned_path.eq_ignore_ascii_case(&file_name),
+                    Err(_) => false,
+                };
+
                 // Clear the pending data and store result
                 let mut launch = LAUNCH_STATE.lock().unwrap();
                 launch.pending_drop_data.take();
-                launch.pending_handle = Some(handle);
+                launch.pending_handle = if keep_handle { Some(handle) } else { None };
                 let mut guard = RESULT_HOLDER.lock().unwrap();
                 *guard = Some(outcome);
             });
@@ -234,6 +254,7 @@ impl RusticonIo for WasmIo {
 
         let io = self.clone();
         let handle = state.editor.file_handle.clone();
+        let suggested_name = state.editor.file_path.clone();
 
         spawn_local(async move {
             if let Some(h) = handle {
@@ -242,10 +263,11 @@ impl RusticonIo for WasmIo {
                 }
             } else {
                 // Save As flow
-                match io.save_as_wasm(svg).await {
-                    Ok((new_handle, _new_name)) => {
+                match io.save_as_wasm(svg, &suggested_name).await {
+                    Ok((new_handle, new_name)) => {
                         let mut launch = LAUNCH_STATE.lock().unwrap();
                         launch.pending_handle = Some(new_handle);
+                        launch.pending_file_path = Some(new_name);
                     }
                     Err(_) => io.report_message("Save cancelled.", 196),
                 }
@@ -255,5 +277,9 @@ impl RusticonIo for WasmIo {
 
     fn take_pending_handle(&self) -> Option<crate::platform::FileHandle> {
         LAUNCH_STATE.lock().unwrap().pending_handle.take()
+    }
+
+    fn take_pending_file_path(&self) -> Option<String> {
+        LAUNCH_STATE.lock().unwrap().pending_file_path.take()
     }
 }
