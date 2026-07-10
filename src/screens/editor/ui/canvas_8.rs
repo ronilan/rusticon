@@ -11,10 +11,11 @@ pub fn build() -> Element<State> {
     canvas_8
         .x(X)
         .y(Y)
+        .pointer_shape(Some(PointerShape::Crosshair))
         .on_mouse(|el, state, event| {
             // If mouse moves, it will not be a double click fill.
             if event.mouse == Mouse::Move {
-               state.editor.prev_color_on_canvas = None;
+                state.editor.prev_color_on_canvas = None;
             }
             let is_paint = event.mouse == Mouse::Down || event.mouse == Mouse::Drag;
             let is_fill = event.mouse == Mouse::DoubleClick;

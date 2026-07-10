@@ -10,6 +10,7 @@ pub fn build() -> TextButton<State> {
     button_save
         .x(X)
         .y(Y)
+        .pointer_shape(Some(PointerShape::Pointer))
         .text("Save")
         .underline(Some(UnderlineKind::Dotted))
         .on_mouse(|_el, state, event| {
