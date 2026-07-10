@@ -1,3 +1,5 @@
+use crate::platform::FileHandle;
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct SplashState {
     pub started_ms: Option<f64>,
@@ -20,6 +22,10 @@ pub struct State {
     pub size: u8,
     pub save_flag: bool,
     pub file_path: String,
+    /// Handle of the file this icon was opened from (WASM drag-and-drop only).
+    /// When `Some`, a save overwrites that exact file; when `None`, a save
+    /// falls back to the browser's Save-As prompt.
+    pub file_handle: Option<FileHandle>,
 }
 
 pub const MIN_SPLASH_MS: f64 = 2000.0;

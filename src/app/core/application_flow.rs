@@ -20,7 +20,7 @@ use incredible_clipboard_browser::BrowserClipboard;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::Closure, JsCast};
 
-use crate::{core::io::RusticonIo, rusticon_screen, splash_screen, SplashState, State};
+use crate::{core::io::RusticonIo, platform::FileHandle, rusticon_screen, splash_screen, SplashState, State};
 
 #[cfg(not(target_arch = "wasm32"))]
 fn setup_runtime<S: Clone + PartialEq + 'static>() {
@@ -45,6 +45,7 @@ fn build_initial_state(
     palette: Vec<Option<u8>>,
     size: u8,
     returned_path: String,
+    file_handle: Option<FileHandle>,
 ) -> State {
     let mut canvas16_data = vec![None; 16 * 16];
     let mut canvas8_data = vec![None; 8 * 8];
@@ -69,6 +70,7 @@ fn build_initial_state(
         size,
         save_flag: false,
         file_path: returned_path,
+        file_handle,
     }
 }
 
@@ -101,7 +103,7 @@ pub fn run_flow(io: &impl RusticonIo) {
 
     match io.take_import_result() {
         Some(Ok((data, palette, icon_size, returned_path))) => {
-            let ui_state = build_initial_state(data, palette, icon_size, returned_path);
+            let ui_state = build_initial_state(data, palette, icon_size, returned_path, None);
             let root = rusticon_screen::build();
 
             Globals::set_tick_rate(33.0);
@@ -118,10 +120,22 @@ pub fn run_flow(io: &impl RusticonIo) {
 
 #[cfg(target_arch = "wasm32")]
 pub fn run_flow(io: impl RusticonIo + Clone + 'static) {
-    let file_path = io.initial_file_path();
+    do_flow(io, false);
+}
 
-    io.reset_import_result();
-    io.load_file_in_background(file_path);
+/// Runs one splash → main → save session.
+///
+/// `reopen` is `true` when re-running after a file was dropped while the main
+/// screen was already open: in that case the import result is already sitting
+/// in the shared `RESULT_HOLDER` (written by the drop handler), so we must not
+/// reset/overwrite it with the default bootstrap import.
+#[cfg(target_arch = "wasm32")]
+fn do_flow(io: impl RusticonIo + Clone + 'static, reopen: bool) {
+    if !reopen {
+        let file_path = io.initial_file_path();
+        io.reset_import_result();
+        io.load_file_in_background(file_path);
+    }
 
     let splash_state = SplashState { started_ms: None };
     let splash_root = splash_screen::build();
@@ -135,6 +149,12 @@ pub fn run_flow(io: impl RusticonIo + Clone + 'static) {
     splash_handle.on_set(
         move |_final_splash_state| match io_after_splash.take_import_result() {
             Some(Ok((data, palette, icon_size, returned_path))) => {
+                // Capture the handle that was dropped with the file (if any) and
+                // clear the drop-ready flag so a later drop can re-trigger a
+                // re-open of the main screen.
+                let file_handle = io_after_splash.take_pending_handle();
+                io_after_splash.consume_drop();
+
                 let io_for_main = io_after_splash.clone();
                 let callback = Closure::<dyn FnMut()>::new(move || {
                     let ui_state = build_initial_state(
@@ -142,6 +162,7 @@ pub fn run_flow(io: impl RusticonIo + Clone + 'static) {
                         palette.clone(),
                         icon_size,
                         returned_path.clone(),
+                        file_handle.clone(),
                     );
                     let root = rusticon_screen::build();
 
@@ -152,7 +173,13 @@ pub fn run_flow(io: impl RusticonIo + Clone + 'static) {
                     let io_after_main = io_for_main.clone();
                     main_handle.on_set(move |final_ui_state| {
                         io_after_main.handle_final_save(&final_ui_state);
-                        show_app_terminated();
+                        // A file dropped during the main screen re-opens it.
+                        if io_after_main.launch_drop_ready() {
+                            io_after_main.consume_drop();
+                            do_flow(io_after_main, true);
+                        } else {
+                            show_app_terminated();
+                        }
                     });
                 });
 
