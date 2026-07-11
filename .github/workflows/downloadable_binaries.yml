@@ -109,19 +109,17 @@ jobs:
         if: matrix.name != 'windows'
         shell: bash
         run: |
-          cd dist/cli
-          base=$(ls | head -n 1)
-          zip -r "../${base}-terminal-${{ matrix.name }}.zip" "$base"
+          # Find the binary filename inside dist/cli without changing directories
+          file=$(ls dist/cli | head -n 1)
+          zip -j "${file}-terminal-${{ matrix.name }}.zip" "dist/cli/$file"
 
       - name: Zip terminal binary (Windows)
         if: matrix.name == 'windows'
         shell: pwsh
         run: |
-          Push-Location dist/cli
-          $file = (Get-ChildItem | Select-Object -First 1).Name
+          $file = (Get-ChildItem dist/cli | Select-Object -First 1).Name
           $base = [System.IO.Path]::GetFileNameWithoutExtension($file)
-          Compress-Archive -Path $file -DestinationPath "..\$base-terminal-windows.zip"
-          Pop-Location
+          Compress-Archive -Path "dist\cli\$file" -DestinationPath "$base-terminal-windows.zip"
 
       - name: Upload terminal binary artifact
         uses: actions/upload-artifact@v7
@@ -212,11 +210,9 @@ jobs:
       - name: Zip macOS native artifact
         shell: bash
         run: |
-          cd dist/native
-          dmg=$(ls *.dmg | head -n 1)
-          base="${dmg%.dmg}"
-          base=$(echo "$base" | tr '[:upper:]' '[:lower:]')
-          zip -r "../${base}-macos-native-${{ matrix.name }}.zip" "$dmg"
+          dmg=$(ls dist/native/*.dmg | head -n 1)
+          base=$(basename "$dmg" .dmg | tr '[:upper:]' '[:lower:]')
+          zip -j "${base}-macos-native-${{ matrix.name }}.zip" "$dmg"
 
       - name: Upload macOS native artifact
         uses: actions/upload-artifact@v7
