@@ -1,7 +1,7 @@
 name: Create Downloadable Binaries
 
 # Builds native downloadable binaries.
-# Sibling to "Deploy to GitHub Pages" — that  builds the WASM/web version.
+# Sibling to "Deploy to GitHub Pages" - that  builds the WASM/web version.
 on:
   # Triggers the workflow on push events but only for the main branch
   push:
@@ -9,7 +9,7 @@ on:
       - main
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  # Runs automatically whenever a GitHub Release is published — builds and
+  # Runs automatically whenever a GitHub Release is published - builds and
   # attaches binaries to that release.
   release:
     types: [published]
@@ -29,7 +29,7 @@ jobs:
       matrix:
         include:
           - name: macos-arm
-            os: macos-latest      # Apple Silicon (M-series) — currently macOS 15+
+            os: macos-latest      # Apple Silicon (M-series) - currently macOS 15+
           - name: macos-intel
             os: macos-15-intel    # last supported Intel image; retires ~Fall 2027
           - name: windows
@@ -66,7 +66,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Ensure a clean dist/ before building — dist/ has been committed to
+      # Ensure a clean dist/ before building - dist/ has been committed to
       # this repo before (like docs/ was), so a checkout can restore stale
       # binaries from git history. Don't rely on the working tree being
       # spotless; wipe it explicitly before every build.
@@ -87,14 +87,14 @@ jobs:
       # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
       # `git` binary instead of using its built-in libgit2 fetcher. This matters
       # because only the system git picks up the credential rewrite configured
-      # above (`git config --global url...insteadOf`) — libgit2 ignores it and
+      # above (`git config --global url...insteadOf`) - libgit2 ignores it and
       # will fail to fetch the private rusticon-alpha dependency without this.
       - name: Build terminal binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: pnpm run build:terminal
 
-      # Zip immediately, in this job, right after building — BEFORE the
+      # Zip immediately, in this job, right after building - BEFORE the
       # binary ever goes through upload-artifact. upload-artifact does not
       # preserve Unix file permissions (all files become 644 on upload),
       # which silently strips the executable bit from macOS/Linux binaries.
@@ -103,7 +103,7 @@ jobs:
       # unzip a binary that's still actually runnable.
       #
       # Split into two steps because the Windows runner's Git Bash doesn't
-      # ship a `zip` binary — only macOS/Linux runners have it preinstalled.
+      # ship a `zip` binary - only macOS/Linux runners have it preinstalled.
       # Windows uses PowerShell's built-in Compress-Archive instead.
       - name: Zip terminal binary (Unix)
         if: matrix.name != 'windows'
@@ -139,7 +139,7 @@ jobs:
       matrix:
         include:
           - name: macos-arm
-            os: macos-latest      # Apple Silicon (M-series) — currently macOS 15+
+            os: macos-latest      # Apple Silicon (M-series) - currently macOS 15+
           - name: macos-intel
             os: macos-15-intel    # last supported Intel image; retires ~Fall 2027
 
@@ -190,7 +190,7 @@ jobs:
       # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
       # `git` binary instead of using its built-in libgit2 fetcher. This matters
       # because only the system git picks up the credential rewrite configured
-      # above (`git config --global url...insteadOf`) — libgit2 ignores it and
+      # above (`git config --global url...insteadOf`) - libgit2 ignores it and
       # will fail to fetch the private rusticon-alpha dependency without this.
       - name: Build macOS native binary
         env:
@@ -204,7 +204,7 @@ jobs:
       - name: Bundle macOS app
         run: pnpm run bundle:macos
 
-      # Zip the .dmg here, right after bundling — same permission-loss
+      # Zip the .dmg here, right after bundling - same permission-loss
       # reasoning as build-terminal above. A .dmg itself doesn't carry a
       # meaningful Unix executable bit, but zipping here keeps every job's
       # output handled identically for publish-release downstream. macOS
@@ -225,7 +225,7 @@ jobs:
           path: "*-macos-native-${{ matrix.name }}.zip"
 
   # Builds the Windows-native binary (rusticon_windows). Output filename
-  # is dynamic — dist/<AppName>.exe, where <AppName> comes from Cargo.toml's
+  # is dynamic - dist/<AppName>.exe, where <AppName> comes from Cargo.toml's
   # [package.metadata.bundle] app_name.
   build-windows-native:
     name: Build Windows Native
@@ -271,14 +271,14 @@ jobs:
       # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
       # `git` binary instead of using its built-in libgit2 fetcher. This matters
       # because only the system git picks up the credential rewrite configured
-      # above (`git config --global url...insteadOf`) — libgit2 ignores it and
+      # above (`git config --global url...insteadOf`) - libgit2 ignores it and
       # will fail to fetch the private rusticon-alpha dependency without this.
       - name: Build Windows native binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: pnpm run build:windows
 
-      # Windows runners don't ship `zip` in their Git Bash — use
+      # Windows runners don't ship `zip` in their Git Bash - use
       # PowerShell's built-in Compress-Archive instead. .exe files don't
       # carry a Unix executable bit to lose, but zipping here keeps this
       # job's output handled the same way as the other two.
@@ -306,7 +306,7 @@ jobs:
           path: artifacts
 
       # Every artifact is already a ready-made zip (created in its own
-      # build job, before upload-artifact could strip permissions) — just
+      # build job, before upload-artifact could strip permissions) - just
       # collect them, nothing left to build or rename here.
       - name: Collect zips for release
         shell: bash
@@ -316,7 +316,7 @@ jobs:
           ls -la release-assets
 
       # When triggered by an actual published Release, attach the zips to
-      # that release (versioned, permanent — no tag_name needed, the
+      # that release (versioned, permanent - no tag_name needed, the
       # action attaches to the release that triggered the run). When
       # triggered by push/workflow_dispatch, fall back to the rolling
       # "latest" tag so there's always a stable link even between releases.

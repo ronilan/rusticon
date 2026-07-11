@@ -75,7 +75,7 @@ const releaseAssets = [];
 console.log(\n=== Building for  ===\n);
 
 // Clean, matching the workflow's explicit "don't trust the working tree"
-// step � dist/ has previously been committed to this repo's history.
+// step - dist/ has previously been committed to this repo's history.
 fs.rmSync('dist', { recursive: true, force: true });
 fs.rmSync('release', { recursive: true, force: true });
 

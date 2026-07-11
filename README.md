@@ -1,11 +1,10 @@
 # Rusticon
 
-Rusticon is a mouse driven SVG favicon editor for your terminal.
+Rusticon is a mouse driven SVG favicon editor for your terminal (that also works on the web: [Try it out!](https://ronilan.github.io/rusticon/)). 
 
 It creates, and then edits svg images that can be used as website favicons (i.e. the little icons that appear at the top tabs etc.). Icons can be 8 pixels by 8 pixels, or 16 pixels by 16 pixels, utilizing 256 colors. 
 
-It's written in [Rust](https://www.rust-lang.org/).
-
+It's written in [Rust](https://www.rust-lang.org/) using the [Incredible](https://www.incredible.rs/) TUI framework.
 
 <p align=center><img src="./media/social.png" alt="banner" width="640" style="border: 1px solid #999; border-radius: 5px"/></p>
 
@@ -15,67 +14,9 @@ It's written in [Rust](https://www.rust-lang.org/).
 
 Pre built binaries are provided for each [release](https://github.com/ronilan/rusticon/releases).
 
-## From crates.io
-Rusticon is published as a crate on [crates.io](https://crates.io/crates/rusticon). If you have Cargo, you can install it with
-```sh
-cargo install rusticon
-```
+## WASM version
 
-You will be able to invoke the binary as `rusticon`.
-```sh
-rusticon
-```
-
-## From Source
-If you don't want to install a Rust crate, but do have Rust installed, you can build and run Rusticon directly from source.
-
-Clone this repository,
-```sh
-git clone https://github.com/ronilan/rusticon.git
-```
-
-```sh
-cargo run --release
-```
-
-# WASM (experimental)
-
-Rusticon also has an experimental browser build. This is not publicly available yet.
-
-## Setup
-
-From this repository root:
-```sh
-pnpm install
-```
-
-## Run (dev)
-
-```sh
-pnpm run dev
-```
-
-This builds the wasm package and starts Vite (served from `web/`).
-
-## URL params
-
-Browser mode supports hash params:
-- `#name=icon.svg` sets the export file name (default `favicon.svg`)
-- `#size=8` or `#size=16` sets initial canvas size (default `8`)
-
-Example:
-- `http://localhost:3000/#name=my_icon.svg&size=16`
-
-## Save behavior in browser
-
-- Native app: Save writes to filesystem.
-- WASM app: Save triggers a browser download of the generated SVG.
-
-## Current limitations
-
-- WASM currently bootstraps with an empty canvas (no local file import pipeline yet).
-- The web build is experimental and may change.
-- Dependencies are not publicly available for build.
+Available on web at: https://ronilan.github.io/rusticon/
 
 # Use
 
@@ -90,8 +31,8 @@ Example:
 - Palette at bottom allows to "collect colors". Click to choose where to place selected.
 - Save to save and exit.
 - Exit to exit without save.
-- 16x16 to start new icon.
-- 8x8 to start new icon.
+- 16x16 to clear and start at 16x16.
+- 8x8 to clear and start at 8x8.
 
 ## Files
 - Command line argument to provide file name `rusticon ./icons/favicon.svg` 
@@ -99,6 +40,7 @@ Example:
 - Can open image files. Will resize and resample to 16x16 and then save as `.svg` in own format.
 - When provided with a path to non existing file, will create it with `.svg` extension.
 - Will abort when file is not a workable image.
+- One web - open file by drag and drop.
 
 # Gallery
 
