@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta id="viewport-meta" name="viewport" data-min-width="0" data-min-height="0" content="width=device-width, initial-scale=1.0">
+    <script>
+      // Runs before any body content is parsed or painted. Sets the initial
+      // viewport scale so the terminal grid fits the device from the first frame.
+      (function() {
+        var meta = document.getElementById('viewport-meta');
+        if (!meta) return;
+        var cols = parseInt(meta.dataset.minWidth, 10);
+        var rows = parseInt(meta.dataset.minHeight, 10);
+        var LINE_HEIGHT = 18;
+        var CHAR_WIDTH = LINE_HEIGHT * 600 / 1000;
+        var isLand = window.matchMedia('(orientation: landscape)').matches;
+        var devW = isLand
+          ? Math.max(window.screen.width, window.screen.height)
+          : Math.min(window.screen.width, window.screen.height);
+        var s = 1;
+        if (cols) {
+          var cw = cols * CHAR_WIDTH;
+          if (cw > devW) s = Math.min(s, devW / cw);
+        }
+        if (rows) {
+          var ch = rows * LINE_HEIGHT;
+          var dh = window.screen.height;
+          if (ch > dh) s = Math.min(s, dh / ch);
+        }
+        meta.setAttribute('content',
+          'width=device-width, initial-scale=' + s +
+          ', minimum-scale=' + s +
+          ', maximum-scale=' + s +
+          ', user-scalable=no');
+      })();
+    </script>
+    <title>Rusticon</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Probes: permanently outside #surface so set_inner_html on #surface
+         never wipes them. #probes mirrors the theme class of #surface so
+         scoped palette selectors (#probes.dracula .ansi-N) still work. -->
+    <div id="probes">
+      <span id="char-probe"></span>
+      <span class="ansi-probe ansi-0"></span>
+      <span class="ansi-probe ansi-1"></span>
+      <span class="ansi-probe ansi-2"></span>
+      <span class="ansi-probe ansi-3"></span>
+      <span class="ansi-probe ansi-4"></span>
+      <span class="ansi-probe ansi-5"></span>
+      <span class="ansi-probe ansi-6"></span>
+      <span class="ansi-probe ansi-7"></span>
+      <span class="ansi-probe ansi-8"></span>
+      <span class="ansi-probe ansi-9"></span>
+      <span class="ansi-probe ansi-10"></span>
+      <span class="ansi-probe ansi-11"></span>
+      <span class="ansi-probe ansi-12"></span>
+      <span class="ansi-probe ansi-13"></span>
+      <span class="ansi-probe ansi-14"></span>
+      <span class="ansi-probe ansi-15"></span>
+    </div>
+
+    <div id="terminal">
+      <script>
+        // Runs synchronously as the parser hits this element, before any paint.
+        // Sets the theme class on #terminal immediately from localStorage so the
+        // correct background color is visible from the very first frame — before
+        // the bottom-of-body script runs and before WASM initializes.
+        // parentElement is #terminal, which already exists at this point.
+        document.currentScript.parentElement.className = localStorage.getItem('terminal-theme') || '';
+      </script>
+      <!-- #surface is a plain div. Each backend's new() injects its own
+           child element: <pre> for HTML backend, <canvas> for canvas backend.
+           CSS handles both via #surface > pre and #surface > canvas rules. -->
+      <div id="surface"></div>
+      <div id="spinner"></div>
+      <!-- Theme picker -->
+      <button id="theme-btn" title="Choose theme" aria-label="Choose theme">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="8" r="2.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15"/>
+          <path d="M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"/>
+        </svg>
+      </button>
+      <div id="theme-menu" role="menu">
+        <!-- Basic -->
+        <button class="theme-option active" data-theme="" role="menuitem">
+          Basic Dark
+        </button>
+        <button class="theme-option" data-theme="basic-light" role="menuitem">
+          Basic Light
+        </button>
+
+        <!-- Solarized -->
+        <button class="theme-option" data-theme="solarized-dark" role="menuitem">
+          Solarized Dark
+        </button>
+        <button class="theme-option" data-theme="solarized-light" role="menuitem">
+          Solarized Light
+        </button>
+
+        <!-- Catppuccin -->
+        <button class="theme-option" data-theme="catppuccin-frappe" role="menuitem">
+          Catppuccin Frappe
+        </button>
+        <button class="theme-option" data-theme="catppuccin-latte" role="menuitem">
+          Catppuccin Latte
+        </button>
+
+        <!-- Gruvbox -->
+        <button class="theme-option" data-theme="gruvbox-dark" role="menuitem">
+          Gruvbox Dark
+        </button>
+        <button class="theme-option" data-theme="gruvbox-light" role="menuitem">
+          Gruvbox Light
+        </button>
+
+        <!-- Other -->
+        <button class="theme-option" data-theme="nord" role="menuitem">
+          Nord
+        </button>
+        <button class="theme-option" data-theme="dracula" role="menuitem">
+          Dracula
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const btn     = document.getElementById('theme-btn');
+      const menu    = document.getElementById('theme-menu');
+      const terminal  = document.getElementById('terminal');
+      const surface = document.getElementById('surface');
+      const probes  = document.getElementById('probes');
+      const options = menu.querySelectorAll('.theme-option');
+      const STORAGE_KEY = 'terminal-theme';
+
+      const themes = ['solarized-dark', 'catppuccin-frappe', 'gruvbox-dark', 'basic-light', 'solarized-light', 'catppuccin-latte', 'gruvbox-light', 'nord', 'dracula'];
+
+      function applyTheme(name) {
+        // Keep all three elements in sync — surface drives the CSS palette probes,
+        // probes drive the Rust color reads, terminal drives the background visible
+        // during spinner/font-load phase when surface is opacity:0.
+        surface.className = name;
+        probes.className = name;
+        terminal.className = name;
+
+        // Mark the active option in the menu.
+        options.forEach(opt => {
+          opt.classList.toggle('active', opt.dataset.theme === name);
+        });
+
+        // Persist so the inline script above can restore on next page load.
+        localStorage.setItem(STORAGE_KEY, name);
+
+        // Tell the Rust/WASM layer to re-read CSS palette and repaint.
+        window.dispatchEvent(new CustomEvent('terminal', { detail: { type: 'theme' } }));
+      }
+
+      btn.addEventListener('pointerup', e => { 
+        e.stopPropagation(); 
+        menu.classList.toggle('open'); 
+      });
+      options.forEach(opt => { opt.addEventListener('pointerup', () => { applyTheme(opt.dataset.theme); menu.classList.remove('open'); }); });
+      
+      document.addEventListener('pointerup', () => {
+        menu.classList.remove('open');
+      });
+      menu.addEventListener('pointerup', e => e.stopPropagation());
+
+      // applyTheme() is called here (after DOM is ready) to sync surface, probes,
+      // and menu state. #terminal's class is already set by the inline script above,
+      // so there's no flash — this just catches up the other elements.
+      const saved = localStorage.getItem(STORAGE_KEY) || '';
+      if (saved) applyTheme(saved);
+    </script>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+use crate::core::model::State;
+use incredible::*;
+use incredible_elements::TextButton;
+
+static X: isize = 75;
+static Y: isize = 19;
+
+pub fn build() -> TextButton<State> {
+    let button_save: TextButton<State> = TextButton::default();
+    button_save
+        .x(X)
+        .y(Y)
+        .pointer_shape(Some(PointerShape::Pointer))
+        .text("Save")
+        .underline(Some(UnderlineKind::Dotted))
+        .on_mouse(|_el, state, event| {
+            if event.mouse == Mouse::Click {
+                state.editor.save_requested = true;
+            }
+        });
+
+    button_save
+}

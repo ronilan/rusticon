@@ -1,5 +1,7 @@
 # From Crumbicon to Rusticon
 
+> Note: this writeup related to the initial versions of Rusticon found in the original branch. The current version of Rusticon is based on Incredible framework. 
+
 Rusticon is a Rust-based port of [Crumbicon](https://github.com/ronilan/crumbicon), originally written in the [Crumb programming language](https://github.com/liam-ilan/crumb). It replicates the same functionality and user experience (and then extends it a little). 
 
 <p align=center><img src="./media/crumbicon-to-rusticon.png" alt="banner" width="640" style="border: 1px solid #999; border-radius: 5px"/></p>
@@ -17,7 +19,7 @@ The two programming languages, Crumb and Rust, are not very much alike.
 
 One distinction stands out: Crumb is **dynamically scoped**, a rarity among programming languages. It is also purely functional and forbids side effects (other than I/O). These two attributes make writing Crumb programs “different from normal.” While Crumb is a very simple language, working with it requires carefully crafting the code. Writing the original Crumbicon application in Crumb was therefore quite a laboring task.
 
-The idea behind this porting project was to take something hand-crafted for one very specific, somewhat obscure world, and see if it could be adapted to a completely new one—while maintaining an identical look-and-feel and keeping the internals as similar as possible.
+The idea behind this porting project was to take something hand-crafted for one very specific, somewhat obscure world, and see if it could be adapted to a completely new one—while maintaining an identical look-and-feel and keeping the elements as similar as possible.
 
 ## Architecture
 
@@ -134,13 +136,13 @@ Same box displaying the selected color as implemented in Rust:
 
 ```rust
 use crate::tui_engine::*;
-use crate::AppState;
+use crate::State;
 
 static X: u16 = 61;
 static Y: u16 = 9;
 
-pub fn build<'a>() -> Element<'a, AppState> {
-    let mut color_selected: Element<AppState> =
+pub fn build<'a>() -> Element<'a, State> {
+    let mut color_selected: Element<State> =
         Element::new(X, Y, Look::from(vec![vec![" ".to_string(); 15]; 2]));
 
     color_selected.on_state = Some(Box::new(|el, state| {
@@ -148,9 +150,9 @@ pub fn build<'a>() -> Element<'a, AppState> {
 
         if let Some(pb) = state.paintbrush {
             let styled = terminal_style::format::background(pb, look).unwrap();
-            el.look.update(styled);
+            el.look.set(styled);
         } else {
-            el.look.update(look);
+            el.look.set(look);
         }
 
         crate::elements::draw_relative(el, X, Y, state);

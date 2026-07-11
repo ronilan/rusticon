@@ -38,6 +38,45 @@ git clone https://github.com/ronilan/rusticon.git
 cargo run --release
 ```
 
+# WASM (experimental)
+
+Rusticon also has an experimental browser build. This is not publicly available yet.
+
+## Setup
+
+From this repository root:
+```sh
+pnpm install
+```
+
+## Run (dev)
+
+```sh
+pnpm run dev
+```
+
+This builds the wasm package and starts Vite (served from `web/`).
+
+## URL params
+
+Browser mode supports hash params:
+- `#name=icon.svg` sets the export file name (default `favicon.svg`)
+- `#size=8` or `#size=16` sets initial canvas size (default `8`)
+
+Example:
+- `http://localhost:3000/#name=my_icon.svg&size=16`
+
+## Save behavior in browser
+
+- Native app: Save writes to filesystem.
+- WASM app: Save triggers a browser download of the generated SVG.
+
+## Current limitations
+
+- WASM currently bootstraps with an empty canvas (no local file import pipeline yet).
+- The web build is experimental and may change.
+- Dependencies are not publicly available for build.
+
 # Use
 
 ## Drawing
@@ -46,7 +85,7 @@ cargo run --release
 - Click to pick color.
 - Click to place them on the canvas.
 - Drag to draw multiple pixels.
-- Shift + Click for flood fill.
+- Double-click for flood fill.
 - Ctrl + Click to pick color from canvas.
 - Palette at bottom allows to "collect colors". Click to choose where to place selected.
 - Save to save and exit.
@@ -65,6 +104,6 @@ cargo run --release
 
 > Made something cool? Make a pull request!
 
-<img src="./gallery/selfie.svg" width="64"><img src="./gallery/selfie-crumbicon.svg" width="64"><img src="./gallery/mondrian.svg" width="64"><img src="./gallery/luffy.svg" width="64"><img src="./gallery/pinky.svg" width="64"><img src="./gallery/lake.svg" width="64"><img src="./gallery/ronilan.svg" width="64"><img src="./gallery/canada.svg" width="64"><img src="./gallery/rust.svg" width="64"><img src="./gallery/1972_BlueMarble.svg" width="64">
+<img src="./gallery/selfie.svg" width="64"><img src="./gallery/selfie-crumbicon.svg" width="64"><img src="./gallery/mondrian.svg" width="64"><img src="./gallery/luffy.svg" width="64"><img src="./gallery/pinky.svg" width="64"><img src="./gallery/lake.svg" width="64"><img src="./gallery/ronilan.svg" width="64"><img src="./gallery/canada.svg" width="64"><img src="./gallery/rust.svg" width="64"><img src="./gallery/1972_BlueMarble.svg" width="64"><img src="./gallery/albert-einstein.svg" width="64">
 
 ###### Fabriqué au Canada : Made in Canada 🇨🇦

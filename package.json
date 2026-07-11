@@ -1,0 +1,35 @@
+{
+  "name": "rusticon",
+  "version": "0.2.3",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "node scripts/clean.js",
+    "build:wasm:dev": "wasm-pack build --target web --dev",
+    "build:wasm": "wasm-pack build --target web --release",
+    "build:site": "vite build",
+    "build:web": "node scripts/build_web.js",
+    "build:terminal": "node scripts/build_terminal.js",
+    "build:macos": "node scripts/build_macos.js",
+    "bundle:macos": "node scripts/bundle.js",
+    "build:windows": "node scripts/build_windows.js",
+    "bundle:windows": "node scripts/bundle_windows.js",
+    "build:all": "node scripts/build_all.js",
+    "build:release": "node scripts/build_release.js",
+    "build:clean": "node scripts/clean.js && node scripts/build_all.js",
+    "build:publish": "node scripts/clean.js && node scripts/build_release.js && node scripts/publish.js",
+    "publish": "node scripts/publish.js",
+    "dev": "node scripts/dev.js",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "png-to-ico": "^3.0.2",
+    "rcedit": "^5.0.2",
+    "sharp": "^0.35.3",
+    "toml": "^4.1.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14",
+    "vite-plugin-wasm": "^3.6.0"
+  },
+  "packageManager": "pnpm@11.3.0+sha512.2c403d6594527287672b1f7056343a1f7c3634036a67ffabfcc2b3d7595d843768f8787148d1b57cf7956c90606bbd192857c363af19e96d2d0ec9ec5741d215"
+}
