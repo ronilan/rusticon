@@ -8,7 +8,7 @@ pub fn build() -> Rectangle<State> {
     let splash_footer = Rectangle::default();
 
     let label = Label::default();
-    label.text("Made with");
+    label.text("Made with").faint(true);
 
     const COLOR_STOPS: [[u8; 3]; 4] = [[0, 95, 175], [175, 95, 175], [0, 175, 175], [0, 95, 175]];
 
