@@ -3,10 +3,10 @@ name: Create Downloadable Binaries
 # Builds native downloadable binaries.
 # Sibling to "Deploy to GitHub Pages" - that  builds the WASM/web version.
 on:
-  # Triggers the workflow on push events but only for the main branch
-  push:
-    branches:
-      - main
+  # # Triggers the workflow on push events but only for the main branch
+  # push:
+  #   branches:
+  #     - main
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   # Runs automatically whenever a GitHub Release is published - builds and
