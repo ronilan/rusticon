@@ -44,13 +44,13 @@ jobs:
       # This repo depends on a PRIVATE repo (rusticon-alpha) via Cargo.toml.
       # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
       # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
-      # tries to fetch it. The token lives in repo secret rusticon_ALPHA
+      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
       # (Settings > Secrets and variables > Actions). If this step is ever
       # removed, the WASM build step below will fail with an auth/404-style
       # error on the private dependency, not an obvious "auth failed" message.
       - name: Configure Git for Private Dependency
         run: |
-          git config --global url."https://${{ secrets.rusticon_ALPHA }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -150,13 +150,13 @@ jobs:
       # This repo depends on a PRIVATE repo (rusticon-alpha) via Cargo.toml.
       # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
       # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
-      # tries to fetch it. The token lives in repo secret rusticon_ALPHA
+      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
       # (Settings > Secrets and variables > Actions). If this step is ever
       # removed, the WASM build step below will fail with an auth/404-style
       # error on the private dependency, not an obvious "auth failed" message.
       - name: Configure Git for Private Dependency
         run: |
-          git config --global url."https://${{ secrets.rusticon_ALPHA }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -237,13 +237,13 @@ jobs:
       # This repo depends on a PRIVATE repo (rusticon-alpha) via Cargo.toml.
       # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
       # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
-      # tries to fetch it. The token lives in repo secret rusticon_ALPHA
+      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
       # (Settings > Secrets and variables > Actions). If this step is ever
       # removed, the WASM build step below will fail with an auth/404-style
       # error on the private dependency, not an obvious "auth failed" message.
       - name: Configure Git for Private Dependency
         run: |
-          git config --global url."https://${{ secrets.rusticon_ALPHA }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
