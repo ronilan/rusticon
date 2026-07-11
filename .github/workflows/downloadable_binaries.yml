@@ -18,7 +18,7 @@ permissions:
   contents: write
 
 jobs:
-  # Builds the plain terminal binary (fixed name: "rusticon") on all
+  # Builds the plain terminal binary on all
   # four target platforms. build_terminal.js has no --target flag, so
   # this can only cross four OS *runners*, not cross-compile from one.
   build-terminal:
@@ -41,7 +41,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # This repo depends on a PRIVATE repo (rusticon-alpha) via Cargo.toml.
+      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
       # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
       # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
       # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
@@ -80,15 +80,11 @@ jobs:
         shell: pwsh
         run: Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue
 
-      # Runs `cargo build --release --bin rusticon` (or whatever
-      # set_name.js has renamed it to), then copies the result into
-      # dist/<name> (dist/<name>.exe on Windows).
-      #
       # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
       # `git` binary instead of using its built-in libgit2 fetcher. This matters
       # because only the system git picks up the credential rewrite configured
       # above (`git config --global url...insteadOf`) - libgit2 ignores it and
-      # will fail to fetch the private rusticon-alpha dependency without this.
+      # will fail to fetch the private incredible-alpha dependency without this.
       - name: Build terminal binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
@@ -127,7 +123,7 @@ jobs:
           name: terminal-${{ matrix.name }}
           path: "*-terminal-${{ matrix.name }}.zip"
 
-  # Builds the macOS-native binary (rusticon_macos, built with the
+  # Builds the macOS-native binary (built with the
   # macos-native feature) and wraps it into a .app + .dmg via bundle.js.
   build-macos-native:
     name: Build macOS Native (${{ matrix.name }})
@@ -145,7 +141,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # This repo depends on a PRIVATE repo (rusticon-alpha) via Cargo.toml.
+      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
       # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
       # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
       # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
@@ -182,20 +178,17 @@ jobs:
         shell: bash
         run: rm -rf dist
 
-      # cargo build --release --bin rusticon_macos --features macos-native,
-      # then copies the result to dist/rusticon_macos.
-      #
       # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
       # `git` binary instead of using its built-in libgit2 fetcher. This matters
       # because only the system git picks up the credential rewrite configured
       # above (`git config --global url...insteadOf`) - libgit2 ignores it and
-      # will fail to fetch the private rusticon-alpha dependency without this.
+      # will fail to fetch the private incredible-alpha dependency without this.
       - name: Build macOS native binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: pnpm run build:macos
 
-      # Wraps dist/rusticon_macos into dist/<AppName>.app, using
+      # Wraps native macos into dist/<AppName>.app, using
       # app_name/binary_name/icon_source from Cargo.toml's
       # [package.metadata.bundle] and Info.plist at the repo root, then
       # produces dist/<AppName>.dmg.
@@ -220,7 +213,7 @@ jobs:
           name: macos-native-${{ matrix.name }}
           path: "*-macos-native-${{ matrix.name }}.zip"
 
-  # Builds the Windows-native binary (rusticon_windows). Output filename
+  # Builds the Windows-native binary. Output filename
   # is dynamic - dist/<AppName>.exe, where <AppName> comes from Cargo.toml's
   # [package.metadata.bundle] app_name.
   build-windows-native:
@@ -230,7 +223,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # This repo depends on a PRIVATE repo (rusticon-alpha) via Cargo.toml.
+      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
       # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
       # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
       # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
@@ -261,14 +254,11 @@ jobs:
         shell: pwsh
         run: Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue
 
-      # cargo build --release --bin rusticon_windows --features windows-native,
-      # then copies the result to dist/rusticon_windows.
-      #
       # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
       # `git` binary instead of using its built-in libgit2 fetcher. This matters
       # because only the system git picks up the credential rewrite configured
       # above (`git config --global url...insteadOf`) - libgit2 ignores it and
-      # will fail to fetch the private rusticon-alpha dependency without this.
+      # will fail to fetch the private incredible-alpha dependency without this.
       - name: Build Windows native binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
