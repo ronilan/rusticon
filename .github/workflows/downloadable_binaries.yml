@@ -215,7 +215,7 @@ jobs:
           cd dist/native
           dmg=$(ls *.dmg | head -n 1)
           base="${dmg%.dmg}"
-          base="${base,,}"
+          base=$(echo "$base" | tr '[:upper:]' '[:lower:]')
           zip -r "../${base}-macos-native-${{ matrix.name }}.zip" "$dmg"
 
       - name: Upload macOS native artifact
