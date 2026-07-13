@@ -10,7 +10,7 @@ pub fn build() -> Element<State> {
     color_picker_empty
         .x(X)
         .y(Y)
-        .pointer_shape(Some(PointerShape::Crosshair))
+        .pointer(Some(PointerShape::Crosshair))
         .look(Look::from("::\n::\n"))
         .on_mouse(|_el, state, event| {
             if event.mouse == Mouse::Move || event.mouse == Mouse::Click {

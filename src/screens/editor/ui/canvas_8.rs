@@ -11,7 +11,7 @@ pub fn build() -> Element<State> {
     canvas_8
         .x(X)
         .y(Y)
-        .pointer_shape(Some(PointerShape::Crosshair))
+        .pointer(Some(PointerShape::Crosshair))
         .on_mouse(|el, state, event| {
             // If mouse moves, it will not be a double click fill.
             if event.mouse == Mouse::Move {

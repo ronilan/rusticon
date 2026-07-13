@@ -10,7 +10,7 @@ pub fn build() -> TextButton<State> {
     button_16
         .x(X)
         .y(Y)
-        .pointer_shape(Some(PointerShape::Pointer))
+        .pointer(Some(PointerShape::Pointer))
         .text("16x16")
         .underline(Some(UnderlineKind::Dotted))
         .on_mouse(|_el, state, event| {

@@ -22,7 +22,7 @@ pub fn build() -> Rectangle<State> {
     }
 
     let link = Link::default();
-    link.pointer_shape(Some(PointerShape::Pointer))
+    link.pointer(Some(PointerShape::Pointer))
         .text("Incredible.rs")
         .width(13) // TODO: bug in Link
         .url("https://www.incredible.rs")

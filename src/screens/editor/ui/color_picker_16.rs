@@ -10,7 +10,7 @@ pub fn build() -> Element<State> {
     color_picker_16
         .x(X)
         .y(Y)
-        .pointer_shape(Some(PointerShape::Crosshair))
+        .pointer(Some(PointerShape::Crosshair))
         .look(Look::from(
             (0..16)
                 .map(|row| {

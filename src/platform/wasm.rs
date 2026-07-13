@@ -55,14 +55,22 @@ impl WasmIo {
         Ok(())
     }
 
-    async fn save_as_wasm(&self, content: String, suggested_name: &str) -> Result<(JsValue, String), JsValue> {
+    async fn save_as_wasm(
+        &self,
+        content: String,
+        suggested_name: &str,
+    ) -> Result<(JsValue, String), JsValue> {
         let window = web_sys::window().unwrap();
         let picker_fn = js_sys::Reflect::get(&window, &JsValue::from_str("showSaveFilePicker"))?
             .dyn_into::<js_sys::Function>()?;
 
         // Build options with suggestedName
         let opts = js_sys::Object::new();
-        js_sys::Reflect::set(&opts, &JsValue::from_str("suggestedName"), &JsValue::from_str(suggested_name))?;
+        js_sys::Reflect::set(
+            &opts,
+            &JsValue::from_str("suggestedName"),
+            &JsValue::from_str(suggested_name),
+        )?;
 
         let promise = picker_fn.call1(&window, &opts)?;
         let handle_js = JsFuture::from(promise.unchecked_into::<js_sys::Promise>()).await?;

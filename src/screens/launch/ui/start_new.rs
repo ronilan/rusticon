@@ -4,7 +4,11 @@ use incredible_elements::TextButton;
 
 pub fn build() -> TextButton<State> {
     let button: TextButton<State> = TextButton::default();
-    button.text("New Icon File").y(20);
+    button
+        .y(20)
+        .pointer(Some(PointerShape::Pointer))
+        .text("New Icon File")
+        .underline(Some(UnderlineKind::Dotted));
 
     button.on_mouse(|_el, state, event| {
         if event.mouse == Mouse::Click {

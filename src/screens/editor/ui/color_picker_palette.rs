@@ -9,7 +9,7 @@ pub fn build<'a>() -> Element<State> {
     color_picker_palette
         .x(X)
         .y(Y)
-        .pointer_shape(Some(PointerShape::Crosshair))
+        .pointer(Some(PointerShape::Crosshair))
         .look({
             let row: Vec<char> = (0..32)
                 .map(|index| {
