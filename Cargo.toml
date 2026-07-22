@@ -59,6 +59,7 @@ incredible_elements = { git = "https://github.com/ronilan/incredible-alpha" }
 incredible_elements_text_fonts = { git = "https://github.com/ronilan/incredible-alpha" }
 incredible_helpers_effects = { git = "https://github.com/ronilan/incredible-alpha" }
 incredible_helpers_layout = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_helpers_styling = { git = "https://github.com/ronilan/incredible-alpha" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = "0.2"

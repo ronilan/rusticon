@@ -1,4 +1,5 @@
 use incredible::*;
+use incredible_helpers_styling::*;
 
 /// Draws a full-screen message centered in the terminal
 pub fn draw_message(msg: &str, color_code: u8) {
@@ -28,7 +29,7 @@ pub fn draw_message(msg: &str, color_code: u8) {
     // Draw element
     let el: Element<()> = Element::new();
     el.look(look)
-        .bold(true)
+        .bold(Some(true))
         .color(Some(Color::Ansi(color_code)));
     decorate(&el);
     draw(&el);

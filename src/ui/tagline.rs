@@ -1,6 +1,7 @@
 use crate::core::model::State;
 use incredible::*;
 use incredible_elements::Bouncer;
+use incredible_helpers_styling::*;
 
 pub fn build() -> Bouncer<State> {
     let subtitle = Bouncer::default();
@@ -11,7 +12,7 @@ pub fn build() -> Bouncer<State> {
         .width(47)
         .height(2)
         .interval(50)
-        .faint(true);
+        .faint(Some(true));
 
     subtitle
 }

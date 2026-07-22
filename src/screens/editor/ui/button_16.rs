@@ -1,6 +1,7 @@
 use crate::core::model::State;
 use incredible::*;
 use incredible_elements::TextButton;
+use incredible_helpers_styling::*;
 
 static X: isize = 74;
 static Y: isize = 2;
@@ -10,6 +11,7 @@ pub fn build() -> TextButton<State> {
     button_16
         .x(X)
         .y(Y)
+        .focused(false)
         .pointer(Some(PointerShape::Pointer))
         .text("16x16")
         .underline(Some(UnderlineKind::Dotted))

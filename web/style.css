@@ -125,6 +125,16 @@ body {
   vertical-align: bottom;
 }
 
+/* Fixed-width 1-cell character — forces any glyph into exactly 1ch.
+   Used for CTL scripts (Devanagari, etc.) whose natural font width
+   differs from the Latin character cell. */
+.fw {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+  vertical-align: bottom;
+}
+
 /* ========================================
    USER SETTINGS
    Edit font, default colors, and themes here.

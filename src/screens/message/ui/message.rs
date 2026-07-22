@@ -5,6 +5,7 @@ use crate::{
 use incredible::*;
 use incredible_elements::{Rectangle, Text};
 use incredible_helpers_layout::Arrangers;
+use incredible_helpers_styling::*;
 
 pub fn build() -> Rectangle<State> {
     let message: Rectangle<State> = Rectangle::new();
@@ -32,7 +33,7 @@ pub fn build() -> Rectangle<State> {
         if let Some(text_el) = el.elements().cot::<Text<State>>().first() {
             text_el
                 .text(&text_value)
-                .bold(true)
+                .bold(Some(true))
                 .color(Some(Color::Ansi(state.flow.message_color)));
         }
 

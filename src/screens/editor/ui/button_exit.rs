@@ -1,6 +1,7 @@
 use crate::core::model::{ExitFlow, State};
 use incredible::*;
 use incredible_elements::TextButton;
+use incredible_helpers_styling::*;
 
 static X: isize = 67;
 static Y: isize = 19;
@@ -10,6 +11,7 @@ pub fn build() -> TextButton<State> {
     button_exit
         .x(X)
         .y(Y)
+        .focused(false)
         .pointer(Some(PointerShape::Pointer))
         .text("Exit")
         .underline(Some(UnderlineKind::Dotted))

@@ -1,6 +1,7 @@
 use super::utils::*;
 use crate::core::model::State;
 use incredible::*;
+use incredible_helpers_styling::*;
 
 static X: isize = 16;
 static Y: isize = 2;
@@ -18,13 +19,13 @@ pub fn build() -> Element<State> {
                         .map(|col| {
                             let ansi_code: u8 = (row * 2 + col + 232).try_into().unwrap();
                             let decor = Decor::new(
-                                false,
-                                false,
+                                Some(false),
+                                Some(false),
                                 None,
                                 None,
-                                false,
-                                false,
-                                false,
+                                Some(false),
+                                Some(false),
+                                Some(false),
                                 None,
                                 Some(Color::Ansi(ansi_code)),
                             );

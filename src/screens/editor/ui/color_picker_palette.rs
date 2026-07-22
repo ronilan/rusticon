@@ -1,5 +1,6 @@
 use crate::core::model::State;
 use incredible::*;
+use incredible_helpers_styling::*;
 
 static X: isize = 23;
 static Y: isize = 21;
@@ -59,13 +60,13 @@ pub fn build<'a>() -> Element<State> {
                         let mut decor = Decor::default();
                         if let Some(ansi_code) = coloring {
                             decor = Decor::new(
-                                false,
-                                false,
+                                Some(false),
+                                Some(false),
                                 None,
                                 None,
-                                false,
-                                false,
-                                false,
+                                Some(false),
+                                Some(false),
+                                Some(false),
                                 None,
                                 Some(Color::Ansi(ansi_code)),
                             );
