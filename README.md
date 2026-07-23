@@ -35,12 +35,12 @@ Available on web at: https://ronilan.github.io/rusticon/
 - 8x8 to clear and start at 8x8.
 
 ## Files
-- Command line argument to provide file name `rusticon ./icons/favicon.svg` 
+- Command line argument to provide file name `rusticon ./icons/favicon.svg` - or - open file by drag and drop.
 - Can open files created by [Rusticon](https://github.com/ronilan/rusticon) (or by [Crubmicon](https://github.com/ronilan/crumbicon)) with `.svg` extension (own format).
 - Can open image files. Will resize and resample to 16x16 and then save as `.svg` in own format.
 - When provided with a path to non existing file, will create it with `.svg` extension.
 - Will abort when file is not a workable image.
-- One web - open file by drag and drop.
+
 
 # Gallery
 

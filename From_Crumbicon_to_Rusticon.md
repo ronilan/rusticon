@@ -1,6 +1,6 @@
 # From Crumbicon to Rusticon
 
-> Note: this writeup related to the initial versions of Rusticon found in the original branch. The current version of Rusticon is based on Incredible framework. 
+> Note: this writeup related to the initial versions of Rusticon found in the original branch. The current version of Rusticon is based on the [Incredible](https://www.incredible.rs/) framework. 
 
 Rusticon is a Rust-based port of [Crumbicon](https://github.com/ronilan/crumbicon), originally written in the [Crumb programming language](https://github.com/liam-ilan/crumb). It replicates the same functionality and user experience (and then extends it a little). 
 
