@@ -1,16 +1,16 @@
 import path from 'path';
 import fs from 'fs';
-import { execSync } from 'child_process';
 import sharp from 'sharp';
 import pngToIco from 'png-to-ico';
-import { rcedit } from 'rcedit';
+import * as ResEdit from 'resedit';
+import * as PELibrary from 'pe-library';
 
 async function main() {
     // Parse Cargo.toml
     const cargoToml = fs.readFileSync('Cargo.toml', 'utf8');
     const metadataBlock = cargoToml.split('[package.metadata.bundle]')[1].split('[')[0];
     const appNameMatch = metadataBlock.match(/app_name\s*=\s\"(.*)\"/);
-    const appName = appNameMatch ? appNameMatch[1] : 'Rusticon';
+    const appName = appNameMatch ? appNameMatch[1] : 'Incredible Template';
     const iconSourceMatch = metadataBlock.match(/icon_source\s*=\s\"(.*)\"/);
     const iconSource = iconSourceMatch ? iconSourceMatch[1] : 'favicon.svg';
 
@@ -41,14 +41,26 @@ async function main() {
             // Convert PNG to ICO
             const icoBuffer = await pngToIco(pngBuffer);
             
-            const iconPath = path.join(distDir, 'icon.ico');
-            fs.writeFileSync(iconPath, icoBuffer);
-            
             console.log('Injecting icon into ' + exePath + '...');
-            await rcedit(exePath, { icon: iconPath });
+
+            // Load EXE and parse resources via resedit
+            const exeData = fs.readFileSync(exePath);
+            const exe = PELibrary.NtExecutable.from(exeData);
+            const res = ResEdit.NtExecutableResource.from(exe);
             
-            // Clean up the temporary .ico file
-            fs.unlinkSync(iconPath);
+            // Read ICO buffer and replace icon entries
+            const iconFile = ResEdit.Data.IconFile.from(icoBuffer);
+            ResEdit.Resource.IconGroupEntry.replaceIconsForResource(
+                res.entries,
+                1,      // Icon Group ID
+                1033,   // Language ID (1033 = en-US)
+                iconFile.icons
+            );
+
+            // Output modified resources back to EXE
+            res.outputResource(exe);
+            const newExeBuffer = Buffer.from(exe.generate());
+            fs.writeFileSync(exePath, newExeBuffer);
             
         } catch (e) {
             console.error('Failed to generate or inject icon:', e);
