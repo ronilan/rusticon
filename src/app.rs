@@ -38,6 +38,16 @@ pub fn build() -> App<State> {
                 Platform::columns() < ui::APP_WIDTH || Platform::rows() < ui::APP_HEIGHT;
             el.draw();
         }
+
+        // Handle paste events for file paths (only works in terminal, not WASM)
+        if let Window::Paste(text) = &event.window {
+            platform::handle_paste(text);
+            let io = platform::get_io();
+            if io.launch_drop_ready() && state.flow.phase != AppPhase::Launch {
+                state.flow.phase = AppPhase::Launch;
+                el.draw();
+            }
+        }
     })
     .on_loop(move |el, state, _event| {
         platform::setup_macos_hooks();
