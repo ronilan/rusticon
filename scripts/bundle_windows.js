@@ -54,7 +54,7 @@ async function main() {
                 res.entries,
                 1,      // Icon Group ID
                 1033,   // Language ID (1033 = en-US)
-                iconFile.icons
+                iconFile.icons.map((item) => item.data) // <--- Map items to item.data
             );
 
             // Output modified resources back to EXE
