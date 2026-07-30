@@ -3,13 +3,13 @@ use incredible::*;
 use incredible_elements_text_fonts::FigletStr;
 use incredible_helpers_effects::{GradientDirection, gradient_color_decorate};
 
-const COLOR_STOPS: [[u8; 3]; 6] = [
-    [255, 0, 0],
-    [0, 255, 0],
-    [0, 0, 255],
-    [255, 255, 0],
-    [255, 0, 255],
-    [0, 255, 255],
+const COLOR_STOPS: [Color; 6] = [
+    Color::ansi(1),
+    Color::ansi(2),
+    Color::ansi(3),
+    Color::ansi(4),
+    Color::ansi(5),
+    Color::ansi(6),
 ];
 
 fn logo_gradient_color_decorate(el: &FigletStr<State>) {
