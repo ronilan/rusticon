@@ -1,0 +1,5 @@
+[alias]
+build-config = "build --release --bin config"
+build-package = "build --release --bin package"
+build-run = "build --release --bin run"
+build-tools = "build --release --bin config --bin package --bin run"

@@ -7,8 +7,23 @@ on:
   # push:
   #   branches:
   #     - main
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      terminal:
+        description: Terminal
+        type: boolean
+        default: true
+      macos:
+        description: MacOS
+        type: boolean
+        default: false
+      windows:
+        description: Windows
+        type: boolean
+        default: false
+        
   # Runs automatically whenever a GitHub Release is published - builds and
   # attaches binaries to that release.
   release:
@@ -22,6 +37,7 @@ jobs:
   # four target platforms. build_terminal.js has no --target flag, so
   # this can only cross four OS *runners*, not cross-compile from one.
   build-terminal:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.terminal }}
     name: Build Terminal Binary (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -66,6 +82,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # Build the Rust package tool first, then use it for all subsequent builds.
+      - name: Build tools
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
+        run: cargo build --release --bin package && cp target/release/package .
+
       # Ensure a clean dist/ before building - dist/ has been committed to
       # this repo before (like docs/ was), so a checkout can restore stale
       # binaries from git history. Don't rely on the working tree being
@@ -88,7 +110,7 @@ jobs:
       - name: Build terminal binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
-        run: pnpm run build:terminal
+        run: ./package terminal
 
       # Zip immediately, in this job, right after building - BEFORE the
       # binary ever goes through upload-artifact. upload-artifact does not
@@ -126,6 +148,7 @@ jobs:
   # Builds the macOS-native binary (built with the
   # macos-native feature) and wraps it into a .app + .dmg via bundle.js.
   build-macos-native:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.macos }}
     name: Build macOS Native (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -172,8 +195,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Same reasoning as build-terminal: don't trust a checked-out dist/
-      # to be empty.
+      # Build the Rust package tool first, then use it for all subsequent builds.
+      - name: Build tools
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
+        run: cargo build --release --bin package && cp target/release/package .
+
+      # Same reasoning as build-terminal: don't trust a checked-out
+      # dist/ to be empty.
       - name: Clean previous build output
         shell: bash
         run: rm -rf dist
@@ -183,17 +212,10 @@ jobs:
       # because only the system git picks up the credential rewrite configured
       # above (`git config --global url...insteadOf`) - libgit2 ignores it and
       # will fail to fetch the private incredible-alpha dependency without this.
-      - name: Build macOS native binary
+      - name: Build & bundle macOS native binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
-        run: pnpm run build:macos
-
-      # Wraps native macos into dist/<AppName>.app, using
-      # app_name/binary_name/icon_source from Cargo.toml's
-      # [package.metadata.bundle] and Info.plist at the repo root, then
-      # produces dist/<AppName>.dmg.
-      - name: Bundle macOS app
-        run: pnpm run bundle:macos
+        run: ./package macos --bundle
 
       # Zip the .dmg here, right after bundling - same permission-loss
       # reasoning as build-terminal above. A .dmg itself doesn't carry a
@@ -204,7 +226,7 @@ jobs:
         shell: bash
         run: |
           dmg=$(ls dist/native/*.dmg | head -n 1)
-          base=$(basename "$dmg" .dmg | tr '[:upper:]' '[:lower:]')
+          base=$(basename "$dmg" .dmg | tr '[:upper:]' '[:lower:]' | tr ' ' '_')
           zip -j "${base}-macos-native-${{ matrix.name }}.zip" "$dmg"
 
       - name: Upload macOS native artifact
@@ -217,6 +239,7 @@ jobs:
   # is dynamic - dist/<AppName>.exe, where <AppName> comes from Cargo.toml's
   # [package.metadata.bundle] app_name.
   build-windows-native:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.windows }}
     name: Build Windows Native
     runs-on: windows-latest
     steps:
@@ -248,6 +271,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # Build the Rust package tool first, then use it for all subsequent builds.
+      - name: Build tools
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
+        run: cargo build --release --bin package && cp target/release/package .
+
       # Same reasoning as the other two jobs: don't trust a checked-out
       # dist/ to be empty.
       - name: Clean previous build output
@@ -259,10 +288,10 @@ jobs:
       # because only the system git picks up the credential rewrite configured
       # above (`git config --global url...insteadOf`) - libgit2 ignores it and
       # will fail to fetch the private incredible-alpha dependency without this.
-      - name: Build Windows native binary
+      - name: Build & bundle Windows native binary
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
-        run: pnpm run build:windows
+        run: ./package windows --bundle
 
       # Windows runners don't ship `zip` in their Git Bash - use
       # PowerShell's built-in Compress-Archive instead. .exe files don't
@@ -272,7 +301,7 @@ jobs:
         shell: pwsh
         run: |
           $exe = (Get-ChildItem dist\native -Filter *.exe | Select-Object -First 1).Name
-          $base = [System.IO.Path]::GetFileNameWithoutExtension($exe).ToLowerInvariant()
+          $base = [System.IO.Path]::GetFileNameWithoutExtension($exe).ToLowerInvariant().Replace(' ', '_')
           Compress-Archive -Path "dist\native\$exe" -DestinationPath "$base-windows-native.zip"
 
       - name: Upload Windows native artifact
