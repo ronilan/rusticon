@@ -1,20 +1,5 @@
-use std::path::Path;
+use std::path::PathBuf;
 use std::process::{Command, Output};
-
-fn find_zips(dir: &Path) -> Vec<std::path::PathBuf> {
-    let mut zips = Vec::new();
-    if let Ok(entries) = std::fs::read_dir(dir) {
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if path.is_dir() {
-                zips.extend(find_zips(&path));
-            } else if path.extension().map(|e| e == "zip").unwrap_or(false) {
-                zips.push(path);
-            }
-        }
-    }
-    zips
-}
 
 fn run_gh(args: &[&str]) -> Result<Output, String> {
     let output = Command::new("gh")
@@ -53,13 +38,18 @@ fn check_gh() -> bool {
         .unwrap_or(false)
 }
 
-pub fn publish() {
+pub fn publish(zips: &[PathBuf]) {
     println!("Publishing to \"latest\" release via gh CLI");
 
     if !check_gh() {
         eprintln!(
             "Error: 'gh' CLI not found. Install GitHub CLI (https://cli.github.com) and authenticate with 'gh auth login'."
         );
+        return;
+    }
+
+    if zips.is_empty() {
+        println!("No zip artifacts to publish. Nothing to do.");
         return;
     }
 
@@ -108,20 +98,7 @@ pub fn publish() {
         })
         .unwrap_or_default();
 
-    // Read dist directory for zip artifacts
-    let dist_dir = Path::new("dist");
-    if !dist_dir.exists() {
-        println!("No dist directory found. Nothing to publish.");
-        return;
-    }
-
-    let zips = find_zips(dist_dir);
-    if zips.is_empty() {
-        println!("No zip files found in dist/. Nothing to publish.");
-        return;
-    }
-
-    for path in &zips {
+    for path in zips {
         let file_name = path
             .file_name()
             .unwrap_or_default()

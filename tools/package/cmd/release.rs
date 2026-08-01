@@ -32,8 +32,8 @@ pub fn zip_file(dir: &str, filename: &str, zip_name: &str) {
     println!("Zipped: {:?}", zip_path);
 }
 
-pub fn build_release() {
-    let mut release_assets: Vec<String> = Vec::new();
+pub fn build_release() -> Vec<std::path::PathBuf> {
+    let mut release_assets: Vec<std::path::PathBuf> = Vec::new();
 
     // Clean
     fs::remove_dir_all("dist").ok();
@@ -42,26 +42,30 @@ pub fn build_release() {
     build::terminal();
 
     // Find terminal binary
-    if let Ok(files) = fs::read_dir("dist/cli") {
-        for file in files.flatten() {
-            let exe = file.file_name().to_string_lossy().to_string();
-            let base = exe.strip_suffix(".exe").unwrap_or(&exe).to_string();
-            let platform = if cfg!(target_os = "macos") {
-                if cfg!(target_arch = "aarch64") {
-                    "macos-arm"
-                } else {
-                    "macos-intel"
-                }
-            } else if cfg!(target_os = "windows") {
-                "windows"
+    let exe_name = if cfg!(target_os = "windows") {
+        format!("{}.exe", crate::cargo::package_name())
+    } else {
+        crate::cargo::package_name()
+    };
+    if std::path::Path::new("dist/cli").join(&exe_name).exists() {
+        let base = exe_name
+            .strip_suffix(".exe")
+            .unwrap_or(&exe_name)
+            .to_string();
+        let platform = if cfg!(target_os = "macos") {
+            if cfg!(target_arch = "aarch64") {
+                "macos-arm"
             } else {
-                "linux"
-            };
-            let zip_name = format!("{}-terminal-{}.zip", base, platform);
-            zip_file("dist/cli", &exe, &zip_name);
-            release_assets.push(zip_name);
-            break;
-        }
+                "macos-intel"
+            }
+        } else if cfg!(target_os = "windows") {
+            "windows"
+        } else {
+            "linux"
+        };
+        let zip_name = format!("{}-terminal-{}.zip", base, platform);
+        zip_file("dist/cli", &exe_name, &zip_name);
+        release_assets.push(std::path::Path::new("dist/cli").join(&zip_name));
     }
 
     // macOS native
@@ -88,7 +92,7 @@ pub fn build_release() {
                 };
                 let zip_name = format!("{}-macos-native-{}.zip", base, platform);
                 zip_file("dist/native", &dmg_name, &zip_name);
-                release_assets.push(zip_name);
+                release_assets.push(std::path::Path::new("dist/native").join(&zip_name));
             }
         }
     }
@@ -104,12 +108,14 @@ pub fn build_release() {
             let base = app_name.to_lowercase().replace(' ', "_");
             let zip_name = format!("{}-windows-native.zip", base);
             zip_file("dist/native", &format!("{}.exe", app_name), &zip_name);
-            release_assets.push(zip_name);
+            release_assets.push(std::path::Path::new("dist/native").join(&zip_name));
         }
     }
 
     println!("Done. Produced:");
     for asset in &release_assets {
-        println!("  {}", asset);
+        println!("  {}", asset.display());
     }
+
+    release_assets
 }
