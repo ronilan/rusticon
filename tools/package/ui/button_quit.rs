@@ -5,7 +5,13 @@ use crate::state::State;
 
 pub fn build_button_quit() -> Button<State> {
     let button: Button<State> = Button::new();
-    button.text(" Quit ").x(68).y(1).width(11).focused(false);
+    button
+        .text(" Quit ")
+        .x(68)
+        .y(1)
+        .width(11)
+        .key_combination(Some(KeyCombination::new(Key::Enter, &[])))
+        .focused(false);
 
     button
         .on_key(|_, _state, event| {

@@ -21,8 +21,8 @@ pub fn build_app() -> App<State> {
 
     frame.add(target_select);
     frame.add(options_select);
-    frame.add(button_package);
     frame.add(button_quit);
+    frame.add(button_package);
 
     // Add frame-level handlers
     frame.on_window(|el, _state, _event| {

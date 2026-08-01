@@ -10,6 +10,7 @@ pub fn build_button_package() -> Button<State> {
         .x(68)
         .y(4)
         .width(11)
+        .key_combination(Some(KeyCombination::new(Key::Enter, &[])))
         .focused(false)
         .disabled(true);
 
@@ -21,7 +22,7 @@ pub fn build_button_package() -> Button<State> {
         })
         .on_mouse(|_, state, event| {
             if event.mouse == Mouse::Click {
-                state.focused_index = 2;
+                state.focused_index = 3;
                 state.should_execute = true;
             }
         })
