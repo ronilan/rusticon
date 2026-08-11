@@ -9,6 +9,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
+name = "aho-corasick"
+version = "1.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c982642fa9e8606056828ee9a8505737230110bb1099153c79efe865c59d12ba"
+dependencies = [
+ "memchr",
+]
+
+[[package]]
 name = "aligned"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -124,6 +133,30 @@ name = "base64"
 version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
+
+[[package]]
+name = "bincode"
+version = "1.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1f45e9417d87227c7a56d22e471c6206462cba514c7590c09aff4cf6d1ddcad"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "bit-set"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "08807e080ed7f9d5433fa9b275196cfc35414f66a0c79d864dc51a0d825231a3"
+dependencies = [
+ "bit-vec",
+]
+
+[[package]]
+name = "bit-vec"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e764a1d40d510daf35e07be9eb06e75770908c27d411ee6c92109c9840eaaf7"
 
 [[package]]
 name = "bit_field"
@@ -343,6 +376,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "displaydoc"
+version = "0.2.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c6232dd377dcc64799954cbd3a9bb882e9cdc1308ccd87b1c098f1fb2eaf82a8"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 3.0.3",
+]
+
+[[package]]
 name = "either"
 version = "1.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -395,6 +439,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "fancy-regex"
+version = "0.16.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "998b056554fbe42e03ae0e152895cd1a7e1002aec800fdc6635d20270260c46f"
+dependencies = [
+ "bit-set",
+ "regex-automata",
+ "regex-syntax",
+]
+
+[[package]]
 name = "fax"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -430,6 +485,12 @@ name = "float-cmp"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "98de4bbd547a563b716d8dfa9aad1cb19bfab00f4fa09a6a4ed21dbcf44ce9c4"
+
+[[package]]
+name = "fnv"
+version = "1.0.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
 name = "fontconfig-parser"
@@ -482,10 +543,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aa9a19cbb55df58761df49b23516a86d432839add4af60fc256da840f66ed35b"
 
 [[package]]
-name = "futures"
-version = "0.3.33"
+name = "form_urlencoded"
+version = "1.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a88cf1f829d945f548cf8fec32c61b1f202b6d93b45848602fc02af4b12ad218"
+checksum = "cb4cb245038516f5f85277875cdaa4f7d2c9a0fa0468de06ed190163b1581fcf"
+dependencies = [
+ "percent-encoding",
+]
+
+[[package]]
+name = "futures"
+version = "0.3.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9a31d2a3fbaaeb2af2368bbdd904aa8e812d3c04a1ee10d3171f52d556e5d0a3"
 dependencies = [
  "futures-channel",
  "futures-core",
@@ -498,9 +568,9 @@ dependencies = [
 
 [[package]]
 name = "futures-channel"
-version = "0.3.33"
+version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "262590f4fe6afeb0bc83be1daa64e52657fe185690a958af7f3ad0e92085c5ae"
+checksum = "b1f9e3d69d39e4862ffed03ed071a76f9a13ba1d9109d355b0f0aa6b15e393c4"
 dependencies = [
  "futures-core",
  "futures-sink",
@@ -508,15 +578,15 @@ dependencies = [
 
 [[package]]
 name = "futures-core"
-version = "0.3.33"
+version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2cd50c473c80f6d7c3670a752354b8e569b1a7cbfdc0419ec88e5edad85e0dc7"
+checksum = "92d699e522242e69e3003b94ecc1f960f3a5e015aa7c5d7486e65ad01dd94f5e"
 
 [[package]]
 name = "futures-executor"
-version = "0.3.33"
+version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6754879cc9f2c66f88c6e5c35344bb0bdb0708b0352b1201815667c7eabc7458"
+checksum = "031b47cf1a3c6cc8bc2fc76cd437f521619387907d469316e7c0bc278f1f5432"
 dependencies = [
  "futures-core",
  "futures-task",
@@ -525,38 +595,38 @@ dependencies = [
 
 [[package]]
 name = "futures-io"
-version = "0.3.33"
+version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4577ecaa3c4f96589d473f679a71b596316f6641bc350038b962a5daf0085d7a"
+checksum = "53c0fa8157de1303bfffdaa1cc2a673bfffb60102f76b0ef4441659124373fed"
 
 [[package]]
 name = "futures-macro"
-version = "0.3.33"
+version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d6d3cde68c518367be28956066ddfef33813991b77a55005a69dae04bf3b10b"
+checksum = "9fb9654ba8355388abeb8dcb4fc62f511300867002afc858860463bdd9fe0c44"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.119",
+ "syn 3.0.3",
 ]
 
 [[package]]
 name = "futures-sink"
-version = "0.3.33"
+version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e34418ac499d6305c2fb5ad0ed2f6ac998c5f8ca209b4510f7f94242c647e307"
+checksum = "1944426bf7d03f1d14f708785e4b33efd750b36d48a157b836b3efc15ede8e1d"
 
 [[package]]
 name = "futures-task"
-version = "0.3.33"
+version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b231ed28831efb4a61a08580c4bc233ec56bc009f4cd8f52da2c3cb97df0c109"
+checksum = "cd417de3d1d015fc3bfd2b1ea46dfc7bab72ef86f1cc7cc9c78e728b34a6d1fd"
 
 [[package]]
 name = "futures-util"
-version = "0.3.33"
+version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a77a90a256fce34da66415271e30f94ee91c57b04b8a2c042d9cf3220179deaa"
+checksum = "0d50a92467f8ba5dd6e3ee5d4bd04d73ab2e4e1c44474a0674821dfce14b79bc"
 dependencies = [
  "futures-channel",
  "futures-core",
@@ -567,6 +637,26 @@ dependencies = [
  "memchr",
  "pin-project-lite",
  "slab",
+]
+
+[[package]]
+name = "getopts"
+version = "0.2.24"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfe4fbac503b8d1f88e6676011885f34b7174f46e59956bba534ba83abded4df"
+dependencies = [
+ "unicode-width",
+]
+
+[[package]]
+name = "getrandom"
+version = "0.2.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff2abc00be7fca6ebc474524697ae276ad847ad0a6b3faa4bcb027e9a4614ad0"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "wasi",
 ]
 
 [[package]]
@@ -621,6 +711,109 @@ dependencies = [
  "cfg-if",
  "crunchy",
  "zerocopy",
+]
+
+[[package]]
+name = "icu_collections"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2984d1cd16c883d7935b9e07e44071dca8d917fd52ecc02c04d5fa0b5a3f191c"
+dependencies = [
+ "displaydoc",
+ "potential_utf",
+ "utf8_iter",
+ "yoke",
+ "zerofrom",
+ "zerovec",
+]
+
+[[package]]
+name = "icu_locale_core"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92219b62b3e2b4d88ac5119f8904c10f8f61bf7e95b640d25ba3075e6cac2c29"
+dependencies = [
+ "displaydoc",
+ "litemap",
+ "tinystr",
+ "writeable",
+ "zerovec",
+]
+
+[[package]]
+name = "icu_normalizer"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c56e5ee99d6e3d33bd91c5d85458b6005a22140021cc324cea84dd0e72cff3b4"
+dependencies = [
+ "icu_collections",
+ "icu_normalizer_data",
+ "icu_properties",
+ "icu_provider",
+ "smallvec",
+ "zerovec",
+]
+
+[[package]]
+name = "icu_normalizer_data"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "da3be0ae77ea334f4da67c12f149704f19f81d1adf7c51cf482943e84a2bad38"
+
+[[package]]
+name = "icu_properties"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bee3b67d0ea5c2cca5003417989af8996f8604e34fb9ddf96208a033901e70de"
+dependencies = [
+ "icu_collections",
+ "icu_locale_core",
+ "icu_properties_data",
+ "icu_provider",
+ "zerotrie",
+ "zerovec",
+]
+
+[[package]]
+name = "icu_properties_data"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8e2bbb201e0c04f7b4b3e14382af113e17ba4f63e2c9d2ee626b720cbce54a14"
+
+[[package]]
+name = "icu_provider"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "139c4cf31c8b5f33d7e199446eff9c1e02decfc2f0eec2c8d71f65befa45b421"
+dependencies = [
+ "displaydoc",
+ "icu_locale_core",
+ "writeable",
+ "yoke",
+ "zerofrom",
+ "zerotrie",
+ "zerovec",
+]
+
+[[package]]
+name = "idna"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3b0875f23caa03898994f6ddc501886a45c7d3d62d04d2d90788d47be1b1e4de"
+dependencies = [
+ "idna_adapter",
+ "smallvec",
+ "utf8_iter",
+]
+
+[[package]]
+name = "idna_adapter"
+version = "1.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cb68373c0d6620ef8105e855e7745e18b0d00d3bdb07fb532e434244cdb9a714"
+dependencies = [
+ "icu_normalizer",
+ "icu_properties",
 ]
 
 [[package]]
@@ -682,7 +875,7 @@ checksum = "89194689a993ab15268672e99e7b0e19da2da3268ac682e8f02d29d4d1434cd7"
 [[package]]
 name = "incredible"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "futures",
  "unicode-segmentation",
@@ -692,7 +885,7 @@ dependencies = [
 [[package]]
 name = "incredible_clipboard_browser"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "wasm-bindgen",
@@ -703,7 +896,7 @@ dependencies = [
 [[package]]
 name = "incredible_clipboard_macos"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "incredible_window_macos",
@@ -712,7 +905,7 @@ dependencies = [
 [[package]]
 name = "incredible_clipboard_terminal"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "libc",
@@ -721,7 +914,7 @@ dependencies = [
 [[package]]
 name = "incredible_clipboard_windows"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "incredible_window_windows",
@@ -730,7 +923,7 @@ dependencies = [
 [[package]]
 name = "incredible_dev_tools"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "wasm-bindgen",
  "web-sys",
@@ -739,7 +932,7 @@ dependencies = [
 [[package]]
 name = "incredible_elements"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "incredible_clipboard_browser",
@@ -771,9 +964,56 @@ dependencies = [
 ]
 
 [[package]]
+name = "incredible_elements_extra"
+version = "0.1.0"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
+dependencies = [
+ "image",
+ "incredible",
+ "incredible_clipboard_browser",
+ "incredible_clipboard_macos",
+ "incredible_clipboard_terminal",
+ "incredible_clipboard_windows",
+ "incredible_dev_tools",
+ "incredible_elements",
+ "incredible_elements_text_fonts",
+ "incredible_event_loop_browser",
+ "incredible_event_loop_macos",
+ "incredible_event_loop_terminal",
+ "incredible_event_loop_windows",
+ "incredible_helpers_layout",
+ "incredible_input_browser",
+ "incredible_input_macos",
+ "incredible_input_terminal_nix",
+ "incredible_input_terminal_windows",
+ "incredible_input_windows",
+ "incredible_macros_decl",
+ "incredible_output_html",
+ "incredible_output_macos",
+ "incredible_output_terminal",
+ "incredible_output_windows",
+ "incredible_window_macos",
+ "incredible_window_windows",
+ "js-sys",
+ "objc2",
+ "objc2-app-kit",
+ "objc2-foundation",
+ "pulldown-cmark",
+ "syntect",
+ "unicode-normalization",
+ "unicode-segmentation",
+ "unicode-width",
+ "ureq",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+ "windows",
+]
+
+[[package]]
 name = "incredible_elements_text_fonts"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "incredible_helpers_effects",
@@ -785,7 +1025,7 @@ dependencies = [
 [[package]]
 name = "incredible_event_loop_browser"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "js-sys",
@@ -796,7 +1036,7 @@ dependencies = [
 [[package]]
 name = "incredible_event_loop_macos"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "futures",
  "futures-core",
@@ -809,7 +1049,7 @@ dependencies = [
 [[package]]
 name = "incredible_event_loop_terminal"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "futures",
  "incredible",
@@ -818,7 +1058,7 @@ dependencies = [
 [[package]]
 name = "incredible_event_loop_windows"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "futures",
  "futures-core",
@@ -829,7 +1069,7 @@ dependencies = [
 [[package]]
 name = "incredible_helpers_effects"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "incredible_helpers_layout",
@@ -838,7 +1078,7 @@ dependencies = [
 [[package]]
 name = "incredible_helpers_layout"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
 ]
@@ -846,7 +1086,7 @@ dependencies = [
 [[package]]
 name = "incredible_helpers_styling"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
 ]
@@ -854,7 +1094,7 @@ dependencies = [
 [[package]]
 name = "incredible_input_browser"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "wasm-bindgen",
@@ -864,7 +1104,7 @@ dependencies = [
 [[package]]
 name = "incredible_input_macos"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "futures",
  "incredible",
@@ -877,7 +1117,7 @@ dependencies = [
 [[package]]
 name = "incredible_input_terminal_nix"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "futures",
  "incredible",
@@ -887,7 +1127,7 @@ dependencies = [
 [[package]]
 name = "incredible_input_terminal_windows"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "futures",
  "incredible",
@@ -897,7 +1137,7 @@ dependencies = [
 [[package]]
 name = "incredible_input_windows"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "futures",
  "incredible",
@@ -908,7 +1148,7 @@ dependencies = [
 [[package]]
 name = "incredible_macros_decl"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible_macros_proc",
 ]
@@ -916,7 +1156,7 @@ dependencies = [
 [[package]]
 name = "incredible_macros_proc"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -926,7 +1166,7 @@ dependencies = [
 [[package]]
 name = "incredible_output_html"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "console_error_panic_hook",
  "incredible",
@@ -939,7 +1179,7 @@ dependencies = [
 [[package]]
 name = "incredible_output_macos"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "incredible_window_macos",
@@ -951,7 +1191,7 @@ dependencies = [
 [[package]]
 name = "incredible_output_terminal"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "libc",
@@ -964,7 +1204,7 @@ dependencies = [
 [[package]]
 name = "incredible_output_windows"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "incredible_window_windows",
@@ -974,7 +1214,7 @@ dependencies = [
 [[package]]
 name = "incredible_window_macos"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "core-foundation",
  "core-graphics",
@@ -992,7 +1232,7 @@ dependencies = [
 [[package]]
 name = "incredible_window_windows"
 version = "0.1.0"
-source = "git+https://github.com/ronilan/incredible-alpha#0b94f9625ff01a9a03abdaaaf8aac48ccd24193e"
+source = "git+https://github.com/ronilan/incredible-alpha#191425d787c0a3d28f7b3f647f8331e46678443b"
 dependencies = [
  "incredible",
  "windows",
@@ -1083,6 +1323,12 @@ name = "libm"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6d2cec3eae94f9f509c767b45932f1ada8350c4bdb85af2fcab4a3c14807981"
+
+[[package]]
+name = "litemap"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92daf443525c4cce67b150400bc2316076100ce0b3686209eb8cf3c31612e6f0"
 
 [[package]]
 name = "log"
@@ -1456,6 +1702,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35fb2e5f958ec131621fdd531e9fc186ed768cbe395337403ae56c17a74c68ec"
 
 [[package]]
+name = "percent-encoding"
+version = "2.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b4f627cb1b25917193a259e49bdad08f671f8d9708acfd5fe0a8c1455d87220"
+
+[[package]]
 name = "pico-args"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1494,6 +1746,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "potential_utf"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0103b1cef7ec0cf76490e969665504990193874ea05c85ff9bab8b911d0a0564"
+dependencies = [
+ "zerovec",
+]
+
+[[package]]
 name = "ppv-lite86"
 version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1529,6 +1790,25 @@ dependencies = [
  "quote",
  "syn 2.0.119",
 ]
+
+[[package]]
+name = "pulldown-cmark"
+version = "0.13.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9f068eba8e7071c5f9511831b44f32c740d5adf574e990f946ddb53db2f314e"
+dependencies = [
+ "bitflags 2.13.1",
+ "getopts",
+ "memchr",
+ "pulldown-cmark-escape",
+ "unicase",
+]
+
+[[package]]
+name = "pulldown-cmark-escape"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "007d8adb5ddab6f8e3f491ac63566a7d5002cc7ed73901f72057943fa71ae1ae"
 
 [[package]]
 name = "pulp"
@@ -1710,6 +1990,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "03251193000f4bd3b042892be858ee50e8b3719f2b08e5833ac4353724632430"
 
 [[package]]
+name = "regex-automata"
+version = "0.4.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ad8553b9b26413251cbf30e620595c7a41b3887f03da04579c0e6b0d6a06b4b2"
+dependencies = [
+ "aho-corasick",
+ "memchr",
+ "regex-syntax",
+]
+
+[[package]]
+name = "regex-syntax"
+version = "0.8.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
+
+[[package]]
 name = "resvg"
 version = "0.43.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1736,6 +2033,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ring"
+version = "0.17.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a4689e6c2294d81e88dc6261c768b63bc4fcdb852be6d1352498b114f61383b7"
+dependencies = [
+ "cc",
+ "cfg-if",
+ "getrandom 0.2.17",
+ "libc",
+ "untrusted",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "roxmltree"
 version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1749,6 +2060,7 @@ dependencies = [
  "image",
  "incredible",
  "incredible_elements",
+ "incredible_elements_extra",
  "incredible_elements_text_fonts",
  "incredible_helpers_effects",
  "incredible_helpers_layout",
@@ -1765,6 +2077,41 @@ dependencies = [
  "wasm-bindgen-futures",
  "web-sys",
  "windows",
+]
+
+[[package]]
+name = "rustls"
+version = "0.23.43"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0283386ce02abc0151e1761d08802dfe86c173b0b494af5cbc086574e453da06"
+dependencies = [
+ "log",
+ "once_cell",
+ "ring",
+ "rustls-pki-types",
+ "rustls-webpki",
+ "subtle",
+ "zeroize",
+]
+
+[[package]]
+name = "rustls-pki-types"
+version = "1.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2f4925028c7eb5d1fcdaf196971378ed9d2c1c4efc7dc5d011256f76c99c0a96"
+dependencies = [
+ "zeroize",
+]
+
+[[package]]
+name = "rustls-webpki"
+version = "0.103.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0527518605e68109d875e248ea259b6758801cf165e4b2c2733ae3b51f12535a"
+dependencies = [
+ "ring",
+ "rustls-pki-types",
+ "untrusted",
 ]
 
 [[package]]
@@ -1789,6 +2136,15 @@ dependencies = [
  "unicode-ccc",
  "unicode-properties",
  "unicode-script",
+]
+
+[[package]]
+name = "same-file"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
+dependencies = [
+ "winapi-util",
 ]
 
 [[package]]
@@ -1906,6 +2262,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "subtle"
+version = "2.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
+
+[[package]]
 name = "svgtypes"
 version = "0.15.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1935,6 +2297,35 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "synstructure"
+version = "0.13.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+]
+
+[[package]]
+name = "syntect"
+version = "5.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "656b45c05d95a5704399aeef6bd0ddec7b2b3531b7c9e900abbf7c4d2190c925"
+dependencies = [
+ "bincode",
+ "fancy-regex",
+ "flate2",
+ "fnv",
+ "once_cell",
+ "regex-syntax",
+ "serde",
+ "serde_derive",
+ "thiserror",
+ "walkdir",
 ]
 
 [[package]]
@@ -1998,6 +2389,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tinystr"
+version = "0.8.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c8323304221c2a851516f22236c5722a72eaa19749016521d6dff0824447d96d"
+dependencies = [
+ "displaydoc",
+ "zerovec",
+]
+
+[[package]]
 name = "tinyvec"
 version = "1.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2020,6 +2421,12 @@ checksum = "5be21190ff5d38e8b4a2d3b6a3ae57f612cc39c96e83cedeaf7abc338a8bac4a"
 dependencies = [
  "core_maths",
 ]
+
+[[package]]
+name = "unicase"
+version = "2.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dbc4bc3a9f746d862c45cb89d705aa10f187bb96c76001afab07a0d35ce60142"
 
 [[package]]
 name = "unicode-bidi"
@@ -2085,6 +2492,40 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4ac048d71ede7ee76d585517add45da530660ef4390e49b098733c6e897f254"
 
 [[package]]
+name = "untrusted"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ecb6da28b8a351d773b68d5825ac39017e680750f980f3a1a85cd8dd28a47c1"
+
+[[package]]
+name = "ureq"
+version = "2.12.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "02d1a66277ed75f640d608235660df48c8e3c19f3b4edb6a263315626cc3c01d"
+dependencies = [
+ "base64",
+ "flate2",
+ "log",
+ "once_cell",
+ "rustls",
+ "rustls-pki-types",
+ "url",
+ "webpki-roots 0.26.11",
+]
+
+[[package]]
+name = "url"
+version = "2.5.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff67a8a4397373c3ef660812acab3268222035010ab8680ec4215f38ba3d0eed"
+dependencies = [
+ "form_urlencoded",
+ "idna",
+ "percent-encoding",
+ "serde",
+]
+
+[[package]]
 name = "usvg"
 version = "0.43.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2112,6 +2553,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "utf8_iter"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6c140620e7ffbb22c2dee59cafe6084a59b5ffc27a8859a5f0d494b5d52b6be"
+
+[[package]]
 name = "v_frame"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2127,6 +2574,22 @@ name = "version_check"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
+
+[[package]]
+name = "walkdir"
+version = "2.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b"
+dependencies = [
+ "same-file",
+ "winapi-util",
+]
+
+[[package]]
+name = "wasi"
+version = "0.11.1+wasi-snapshot-preview1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ccf3ec651a847eb01de73ccad15eb7d99f80485de043efb2f370cd654f4ea44b"
 
 [[package]]
 name = "wasip2"
@@ -2203,10 +2666,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "webpki-roots"
+version = "0.26.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "521bc38abb08001b01866da9f51eb7c5d647a19260e00054a8c7fd5f9e57f7a9"
+dependencies = [
+ "webpki-roots 1.0.9",
+]
+
+[[package]]
+name = "webpki-roots"
+version = "1.0.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dcd9d09a39985f5344844e66b0c530a33843579125f23e21e9f0f220850f22a"
+dependencies = [
+ "rustls-pki-types",
+]
+
+[[package]]
 name = "weezl"
 version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a28ac98ddc8b9274cb41bb4d9d4d5c425b6020c50c46f25559911905610b4a88"
+
+[[package]]
+name = "winapi-util"
+version = "0.1.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
+dependencies = [
+ "windows-sys 0.61.2",
+]
 
 [[package]]
 name = "windows"
@@ -2328,6 +2818,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "windows-sys"
+version = "0.61.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
+dependencies = [
+ "windows-link",
+]
+
+[[package]]
 name = "windows-targets"
 version = "0.52.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2407,6 +2906,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ebf944e87a7c253233ad6766e082e3cd714b5d03812acc24c318f549614536e"
 
 [[package]]
+name = "writeable"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1ffae5123b2d3fc086436f8834ae3ab053a283cfac8fe0a0b8eaae044768a4c4"
+
+[[package]]
 name = "xmlwriter"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2417,6 +2922,29 @@ name = "y4m"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a5a4b21e1a62b67a2970e6831bc091d7b87e119e7f9791aef9702e3bef04448"
+
+[[package]]
+name = "yoke"
+version = "0.8.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "709fe23a0424b6a435d82152b1bd3fdfb0833487d5fa90d05d42762a9891fef5"
+dependencies = [
+ "stable_deref_trait",
+ "yoke-derive",
+ "zerofrom",
+]
+
+[[package]]
+name = "yoke-derive"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "de844c262c8848816172cef550288e7dc6c7b7814b4ee56b3e1553f275f1858e"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+ "synstructure",
+]
 
 [[package]]
 name = "zerocopy"
@@ -2432,6 +2960,66 @@ name = "zerocopy-derive"
 version = "0.8.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2ab42fc20575779bd240faa45f94a74256f755c0fa9e89f0ede20d91d0cdfc1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+]
+
+[[package]]
+name = "zerofrom"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0ec05a11813ea801ff6d75110ad09cd0824ddba17dfe17128ea0d5f68e6c5272"
+dependencies = [
+ "zerofrom-derive",
+]
+
+[[package]]
+name = "zerofrom-derive"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "11532158c46691caf0f2593ea8358fed6bbf68a0315e80aae9bd41fbade684a1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+ "synstructure",
+]
+
+[[package]]
+name = "zeroize"
+version = "1.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e13c156562582aa81c60cb29407084cdb54c4164760106ab78e6c5b0858cf64e"
+
+[[package]]
+name = "zerotrie"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0f9152d31db0792fa83f70fb2f83148effb5c1f5b8c7686c3459e361d9bc20bf"
+dependencies = [
+ "displaydoc",
+ "yoke",
+ "zerofrom",
+]
+
+[[package]]
+name = "zerovec"
+version = "0.11.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "90f911cbc359ab6af17377d242225f4d75119aec87ea711a880987b18cd7b239"
+dependencies = [
+ "yoke",
+ "zerofrom",
+ "zerovec-derive",
+]
+
+[[package]]
+name = "zerovec-derive"
+version = "0.11.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "625dc425cab0dca6dc3c3319506e6593dcb08a9f387ea3b284dbd52a92c40555"
 dependencies = [
  "proc-macro2",
  "quote",

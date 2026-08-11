@@ -2,6 +2,7 @@ use crate::core::{
     model::{AppPhase, State},
     shared::ImportOutcome,
 };
+use incredible_elements_extra::DroppedItem;
 
 pub trait RusticonIo {
     fn initial_file_path(&self) -> String;
@@ -12,9 +13,7 @@ pub trait RusticonIo {
         false
     }
     fn start_import(&self, path: String);
-    fn launch_drop_ready(&self) -> bool {
-        false
-    }
+    fn start_import_drop(&self, item: DroppedItem);
     fn take_import_result(&self) -> Option<ImportOutcome>;
     fn report_message(&self, msg: &str, color_code: u8);
     fn perform_save(&self, state: &State);

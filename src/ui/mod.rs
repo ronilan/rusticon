@@ -1,3 +1,4 @@
+pub mod file_drop;
 pub mod logo;
 pub mod made_with;
 pub mod tagline;

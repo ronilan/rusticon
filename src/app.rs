@@ -38,25 +38,9 @@ pub fn build() -> App<State> {
                 Platform::columns() < ui::APP_WIDTH || Platform::rows() < ui::APP_HEIGHT;
             el.draw();
         }
-
-        // Handle paste events for file paths (only works in terminal, not WASM)
-        if let Window::Paste(text) = &event.window {
-            platform::handle_paste(text);
-            let io = platform::get_io();
-            if io.launch_drop_ready() && state.flow.phase != AppPhase::Launch {
-                state.flow.phase = AppPhase::Launch;
-                el.draw();
-            }
-        }
     })
     .on_loop(move |el, state, _event| {
-        platform::setup_macos_hooks();
-        platform::setup_windows_drop();
         let io = platform::get_io();
-
-        if io.launch_drop_ready() && state.flow.phase != AppPhase::Launch {
-            state.flow.phase = AppPhase::Launch;
-        }
 
         if state.editor.save_requested {
             state.editor.save_requested = false;
@@ -90,25 +74,14 @@ pub fn build() -> App<State> {
         }
 
         if state.flow.phase == AppPhase::Launch {
-            if !(state.flow.launch_start_new || io.launch_drop_ready()) {
+            if !state.flow.launch_start_new {
                 return;
             }
 
             if !state.flow.launch_import_started {
-                let from_drop = io.launch_drop_ready();
                 state.flow.launch_start_new = false;
                 state.flow.launch_import_started = true;
                 io.start_import(state.editor.file_path.clone());
-
-                if from_drop {
-                    state.flow.phase = AppPhase::Splash;
-                    state.flow.splash_started_ms = None;
-                    Globals::set_tick_rate(10.0);
-                    if state.flow.phase != phase_before {
-                        el.draw();
-                    }
-                    return;
-                }
             }
 
             if let Some(import_result) = io.take_import_result() {
@@ -212,6 +185,7 @@ pub fn build() -> App<State> {
     app.add(screens::message::screen::build());
     app.add(ui::title_bar::build());
     app.add(ui::viewport_guard::build());
+    app.add(ui::file_drop::build());
 
     app
 }

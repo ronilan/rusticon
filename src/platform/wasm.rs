@@ -1,4 +1,4 @@
-use std::sync::{Arc, LazyLock, Mutex, Once};
+use std::sync::{Arc, LazyLock, Mutex};
 
 use crate::{
     State,
@@ -9,31 +9,27 @@ use crate::{
     },
     features::{export::build_svg, import::import_bytes, message::draw_message},
 };
-use wasm_bindgen::{JsCast, JsValue, closure::Closure};
+use incredible_elements_extra::DroppedItem;
+use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::{JsFuture, spawn_local};
-use web_sys::{DragEvent, FileSystemFileHandle, FileSystemWritableFileStream};
+use web_sys::{FileSystemFileHandle, FileSystemWritableFileStream};
 
 pub type FileHandle = JsValue;
-pub type DroppedData = (JsValue, Vec<u8>, String); // (handle, bytes, name)
 
 #[derive(Clone, Default)]
 pub struct WasmIo;
 
 #[derive(Default)]
 struct LaunchState {
-    drop_ready: bool,
-    pending_drop_data: Option<(Vec<u8>, String, JsValue)>, // (bytes, name, handle) - raw data
     pending_handle: Option<JsValue>,
     pending_file_path: Option<String>, // Updated file_path from Save As dialog
 }
 
 static LAUNCH_STATE: LazyLock<Arc<Mutex<LaunchState>>> =
     LazyLock::new(|| Arc::new(Mutex::new(LaunchState::default())));
-static LISTENERS_ONCE: Once = Once::new();
 
 impl WasmIo {
     pub fn new() -> Self {
-        LISTENERS_ONCE.call_once(setup_drop_listeners);
         Self
     }
 
@@ -82,70 +78,6 @@ impl WasmIo {
     }
 }
 
-fn setup_drop_listeners() {
-    let Some(window) = web_sys::window() else {
-        return;
-    };
-
-    // Prevent default browser behavior on the whole window
-    let prevent_default = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
-        event.prevent_default();
-    });
-    let _ = window
-        .add_event_listener_with_callback("dragover", prevent_default.as_ref().unchecked_ref());
-    prevent_default.forget();
-
-    let on_drop = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
-        event.prevent_default();
-
-        let Some(data_transfer) = event.data_transfer() else {
-            return;
-        };
-
-        // Signal drop IMMEDIATELY - the splash will show on next loop tick
-        let mut launch = LAUNCH_STATE.lock().unwrap();
-        launch.drop_ready = true;
-
-        // Spawn async task to read the file
-        // Don't process yet - just store raw data
-        spawn_local(async move {
-            let items = data_transfer.items();
-            if items.length() > 0 {
-                let item = items.get(0).unwrap();
-                if item.kind() == "file" {
-                    // Capture handle using Reflect hack
-                    let handle_promise =
-                        js_sys::Reflect::get(&item, &JsValue::from_str("getAsFileSystemHandle"))
-                            .unwrap()
-                            .dyn_into::<js_sys::Function>()
-                            .unwrap()
-                            .call0(&item)
-                            .unwrap();
-
-                    let handle: JsValue =
-                        JsFuture::from(handle_promise.unchecked_into::<js_sys::Promise>())
-                            .await
-                            .unwrap();
-                    let file_handle: FileSystemFileHandle = handle.clone().unchecked_into();
-                    let file = JsFuture::from(file_handle.get_file()).await.unwrap();
-                    let file: web_sys::File = file.unchecked_into();
-
-                    let file_name = file.name();
-                    let buffer = JsFuture::from(file.array_buffer()).await.unwrap();
-                    let bytes = js_sys::Uint8Array::new(&buffer).to_vec();
-
-                    // Store raw file data - splash should already be showing
-                    let mut launch = LAUNCH_STATE.lock().unwrap();
-                    launch.pending_drop_data = Some((bytes, file_name, handle));
-                }
-            }
-        });
-    });
-
-    let _ = window.add_event_listener_with_callback("drop", on_drop.as_ref().unchecked_ref());
-    on_drop.forget();
-}
-
 impl RusticonIo for WasmIo {
     fn initial_file_path(&self) -> String {
         "favicon.svg".to_string()
@@ -160,75 +92,6 @@ impl RusticonIo for WasmIo {
     }
 
     fn start_import(&self, path: String) {
-        let mut launch = LAUNCH_STATE.lock().unwrap();
-
-        if launch.drop_ready {
-            launch.drop_ready = false;
-            drop(launch);
-
-            // Spawn async task to process the import when data arrives
-            spawn_local(async move {
-                // Wait for file data to become available
-                let (bytes, file_name, handle) = {
-                    let mut data = None;
-                    while data.is_none() {
-                        {
-                            let launch = LAUNCH_STATE.lock().unwrap();
-                            data = launch
-                                .pending_drop_data
-                                .as_ref()
-                                .map(|(b, n, h)| (b.clone(), n.clone(), h.clone()));
-                        }
-                        if data.is_none() {
-                            // Yield to event loop
-                            let promise = js_sys::Promise::new(&mut |resolve, _| {
-                                let cb = Closure::wrap(Box::new(move || {
-                                    let _ = resolve.call0(&JsValue::NULL);
-                                })
-                                    as Box<dyn FnMut()>);
-                                web_sys::window()
-                                    .unwrap()
-                                    .set_timeout_with_callback_and_timeout_and_arguments_0(
-                                        cb.as_ref().unchecked_ref(),
-                                        0,
-                                    )
-                                    .unwrap();
-                                cb.forget();
-                            });
-                            let _ = JsFuture::from(promise).await;
-                        }
-                    }
-                    data.unwrap()
-                };
-
-                // Process the import (sync operation)
-                let outcome = import_bytes(&file_name, &bytes);
-
-                // Decide whether the original file handle may be reused on save.
-                //
-                // For non-SVG drops (e.g. `photo.png`) we deliberately rewrite the
-                // path to `.svg` inside `import_bytes`, but the handle still points
-                // at the original file. If we kept that handle, a Save would
-                // silently overwrite `photo.png` with SVG content and never show a
-                // permission prompt. Clearing the handle makes Save fall back to the
-                // Save As flow, which pre-fills the browser prompt with the corrected
-                // `.svg` name (state.editor.file_path). We only keep the handle when
-                // the file name was unchanged (already an SVG/Crumbicon).
-                let keep_handle = match &outcome {
-                    Ok((_, _, _, returned_path)) => returned_path.eq_ignore_ascii_case(&file_name),
-                    Err(_) => false,
-                };
-
-                // Clear the pending data and store result
-                let mut launch = LAUNCH_STATE.lock().unwrap();
-                launch.pending_drop_data.take();
-                launch.pending_handle = if keep_handle { Some(handle) } else { None };
-                let mut guard = RESULT_HOLDER.lock().unwrap();
-                *guard = Some(outcome);
-            });
-            return;
-        }
-
         let outcome: ImportOutcome = Ok((
             vec![None; 8 * 8],
             vec![None; 8],
@@ -239,8 +102,37 @@ impl RusticonIo for WasmIo {
         *guard = Some(outcome);
     }
 
-    fn launch_drop_ready(&self) -> bool {
-        LAUNCH_STATE.lock().unwrap().drop_ready
+    fn start_import_drop(&self, item: DroppedItem) {
+        let file_name = item.name.clone();
+        let file_handle = item.handle.clone();
+
+        let Ok(bytes) = item.read() else {
+            return;
+        };
+        if bytes.is_empty() {
+            return;
+        }
+
+        let outcome = import_bytes(&file_name, &bytes);
+
+        // Decide whether the original file handle may be reused on save.
+        //
+        // For non-SVG drops (e.g. `photo.png`) we deliberately rewrite the
+        // path to `.svg` inside `import_bytes`, but the handle still points
+        // at the original file. If we kept that handle, a Save would
+        // silently overwrite `photo.png` with SVG content and never show a
+        // permission prompt. Clearing the handle makes Save fall back to the
+        // Save As flow, which pre-fills the browser prompt with the corrected
+        // `.svg` name (state.editor.file_path). We only keep the handle when
+        // the file name was unchanged (already an SVG/Crumbicon).
+        let keep_handle = match &outcome {
+            Ok((_, _, _, returned_path)) => returned_path.eq_ignore_ascii_case(&file_name),
+            Err(_) => false,
+        };
+
+        LAUNCH_STATE.lock().unwrap().pending_handle = if keep_handle { file_handle } else { None };
+        let mut guard = RESULT_HOLDER.lock().unwrap();
+        *guard = Some(outcome);
     }
 
     fn take_import_result(&self) -> Option<ImportOutcome> {

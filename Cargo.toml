@@ -59,10 +59,12 @@ path = "tools/package/main.rs"
 default = []
 macos-native = [
     "incredible_elements/macos-native",
+    "incredible_elements_extra/macos-native",
     "incredible_window_macos",
 ]
 windows-native = [
     "incredible_elements/windows-native",
+    "incredible_elements_extra/windows-native",
     "incredible_window_windows",
 ]
 
@@ -70,6 +72,7 @@ windows-native = [
 image = "0.25.6"
 incredible = { git = "https://github.com/ronilan/incredible-alpha" }
 incredible_elements = { git = "https://github.com/ronilan/incredible-alpha" }
+incredible_elements_extra = { git = "https://github.com/ronilan/incredible-alpha" }
 incredible_elements_text_fonts = { git = "https://github.com/ronilan/incredible-alpha" }
 incredible_helpers_effects = { git = "https://github.com/ronilan/incredible-alpha" }
 incredible_helpers_layout = { git = "https://github.com/ronilan/incredible-alpha" }
