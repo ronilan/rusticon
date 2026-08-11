@@ -1,5 +1,5 @@
 use incredible::*;
-use incredible_elements::{FrameScroller, Select, SelectOptions, Selectable, SelectableItem};
+use incredible_elements::{ScrollArea, Select, SelectOptions, Selectable, SelectableItem};
 
 use crate::state::{PackageTarget, State};
 
@@ -34,7 +34,6 @@ pub fn build_select_options() -> Select<State> {
         .on_mouse(|el, state, event| {
             // In any of the possible selection gestures - update the state
             if event.mouse == Mouse::Click {
-                state.focused_index = 1;
                 let selected_indices = el.get_selected_indices();
                 state.is_clean = selected_indices.contains(&0);
                 state.is_publish = selected_indices.contains(&2);
@@ -43,17 +42,10 @@ pub fn build_select_options() -> Select<State> {
             }
         })
         .on_state(|el, state| {
-            // Target select (left) feeds state.selected_target. Options select (right)
-            // responds with two layers of control per item:
-            //
-            //   Disabled — greyed out + unclickable when option doesn't apply.
-            //   Auto-check — bundle forced checked when publish is on.
-            //
             // No target selected: all items shown (text visible), all disabled.
-            el.focused(state.focused_index == 1);
             el.disabled(state.selected_target.is_none());
 
-            if let Some(fs) = el.elements.cot::<FrameScroller<State>>().first() {
+            if let Some(fs) = el.elements.cot::<ScrollArea<State>>().first() {
                 if let Some(group) = fs.elements.cot::<Selectable<State>>().first() {
                     let items = group.elements.cot::<SelectableItem<State>>();
                     if items.len() >= 4 {

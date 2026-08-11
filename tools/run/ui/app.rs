@@ -2,14 +2,17 @@ use incredible::*;
 use incredible_elements::{App, AppOptions, Select};
 use incredible_helpers_layout::arrangers::Arrangers;
 
-use crate::state::{State, TargetPlatform};
-use crate::ui::select;
+use crate::{
+    platform::{is_macos, is_windows},
+    state::{State, TargetPlatform},
+    ui::select,
+};
 
 pub fn build_app() -> App<State> {
     // UI mode: calculate heights dynamically based on item count
     // TODO: get this out of app
     let mut item_count = 2usize;
-    if cfg!(target_os = "macos") || cfg!(target_os = "windows") {
+    if is_macos() || is_windows() {
         item_count += 1;
     }
 

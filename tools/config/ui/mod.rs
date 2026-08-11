@@ -7,6 +7,5 @@ pub(crate) mod input_description;
 pub(crate) mod input_keywords;
 pub(crate) mod input_name;
 pub(crate) mod input_tagline;
-pub(crate) mod label_heading;
 pub(crate) mod label_help;
 pub(crate) mod label_rule;

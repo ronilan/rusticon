@@ -2,6 +2,7 @@ mod cargo;
 mod cli;
 mod cmd;
 mod execute;
+mod platform;
 mod state;
 mod ui;
 

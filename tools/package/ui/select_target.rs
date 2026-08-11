@@ -1,7 +1,10 @@
 use incredible::*;
 use incredible_elements::{Select, SelectOptions};
 
-use crate::state::{PackageTarget, State};
+use crate::{
+    platform::{is_macos, is_windows},
+    state::{PackageTarget, State},
+};
 
 pub fn build_select_target() -> Select<State> {
     let select = Select::<State>::new(SelectOptions {
@@ -13,15 +16,18 @@ pub fn build_select_target() -> Select<State> {
         .y(1)
         .width(32)
         .height(6)
+        .focused(true)
         .add_item("All Targets", "all")
         .add_item("Terminal", "terminal")
         .add_item("Web", "wasm");
 
-    #[cfg(target_os = "macos")]
-    select.add_item("macOS Native", "macos");
+    if is_macos() {
+        select.add_item("macOS Native", "macos");
+    }
 
-    #[cfg(target_os = "windows")]
-    select.add_item("Windows Native", "windows");
+    if is_windows() {
+        select.add_item("Windows Native", "windows");
+    }
 
     select
         .on_key(|el, state, event| {
@@ -39,7 +45,6 @@ pub fn build_select_target() -> Select<State> {
         .on_mouse(|el, state, event| {
             // In any of the possible selection gestures - update the state
             if event.mouse == Mouse::Click {
-                state.focused_index = 0; // Set as focused (UX)
                 if let Some(idx) = el.get_selected() {
                     if let Some(val) = el.item_value(idx) {
                         state.selected_target = PackageTarget::parse(&val);
@@ -48,9 +53,6 @@ pub fn build_select_target() -> Select<State> {
                     state.selected_target = None;
                 }
             }
-        })
-        .on_state(|el, state| {
-            el.focused(state.focused_index == 0);
         });
 
     select

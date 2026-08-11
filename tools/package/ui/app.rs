@@ -25,16 +25,16 @@ pub fn build_app() -> App<State> {
     frame.add(button_package);
 
     // Add frame-level handlers
-    frame.on_window(|el, _state, _event| {
-        el.elements_to_left();
-        el.draw();
-    });
-
-    frame.on_state(|_, state| {
-        if state.should_execute {
-            exit();
-        }
-    });
+    frame
+        .on_window(|el, _state, _event| {
+            el.elements_to_left();
+            el.draw();
+        })
+        .on_state(|_, state| {
+            if state.should_execute {
+                exit();
+            }
+        });
 
     app.add(frame);
     app

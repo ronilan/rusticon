@@ -34,7 +34,6 @@ impl PackageTarget {
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct State {
-    pub focused_index: usize,
     pub selected_target: Option<PackageTarget>,
     pub is_clean: bool,
     pub is_preview: bool,

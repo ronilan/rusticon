@@ -5,7 +5,13 @@ use crate::state::State;
 
 pub fn build_label_help() -> Label<State> {
     let label_help: Label<State> = Label::default();
-    label_help.x(2).y(20).wrap_at(76).focused(false);
+    label_help
+        .x(2)
+        .y(19)
+        .wrap_at(76)
+        .focused(false)
+        .interactive(false);
+
     label_help.on_state(|el, state| {
         let text = match state.focused_index {
             0 => " App Name: Displayed in the OS, window titles, and HTML title.",

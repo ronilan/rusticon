@@ -23,9 +23,6 @@ pub fn build_button_quit() -> Button<State> {
             if event.mouse == Mouse::Click {
                 exit();
             }
-        })
-        .on_state(|el, state| {
-            el.focused(state.focused_index == 2);
         });
 
     button

@@ -1,3 +1,5 @@
+use crate::platform::{is_macos, is_windows};
+
 #[derive(Clone, PartialEq, Debug)]
 pub enum TargetPlatform {
     Terminal,
@@ -12,14 +14,14 @@ impl TargetPlatform {
             "terminal" | "t" => Some(Self::Terminal),
             "wasm" | "web" => Some(Self::Wasm),
             "macos" | "mac" | "m" => {
-                if cfg!(target_os = "macos") {
+                if is_macos() {
                     Some(Self::MacOs)
                 } else {
                     None
                 }
             }
             "windows" | "win" | "w" => {
-                if cfg!(target_os = "windows") {
+                if is_windows() {
                     Some(Self::Windows)
                 } else {
                     None

@@ -71,7 +71,7 @@ fn main() {
         ..init_state
     };
 
-    let app = ui::app::build_app(state.clone());
+    let app = ui::app::build_app();
     let final_state = app.run(state).get();
 
     if final_state.should_apply {

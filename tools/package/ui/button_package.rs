@@ -22,12 +22,10 @@ pub fn build_button_package() -> Button<State> {
         })
         .on_mouse(|_, state, event| {
             if event.mouse == Mouse::Click {
-                state.focused_index = 3;
                 state.should_execute = true;
             }
         })
         .on_state(|el, state| {
-            el.focused(state.focused_index == 3);
             el.disabled(state.selected_target.is_none());
         });
 

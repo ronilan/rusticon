@@ -11,7 +11,12 @@ pub fn build() -> Rectangle<State> {
     let label = Label::default();
     label.text("Made with").faint(Some(true));
 
-    const COLOR_STOPS: [Color; 4] = [Color::ansi(4), Color::ansi(5), Color::ansi(6), Color::ansi(4)];
+    const COLOR_STOPS: [Color; 4] = [
+        Color::ansi(4),
+        Color::ansi(5),
+        Color::ansi(6),
+        Color::ansi(4),
+    ];
 
     fn link_gradient_color_decorate(el: &Link<State>) {
         gradient_color_decorate(

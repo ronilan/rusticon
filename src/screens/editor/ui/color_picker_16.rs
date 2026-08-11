@@ -17,7 +17,8 @@ pub fn build() -> Element<State> {
                 .map(|row| {
                     (0..1)
                         .map(|_col| {
-                            let ansi_code: u8 = Colors::rgb_to_ansi8(Platform::ansi_color_default(row));
+                            let ansi_code: u8 =
+                                Colors::rgb_to_ansi8(Platform::ansi_color_default(row));
                             let decor = Decor::new(
                                 Some(false),
                                 Some(false),
