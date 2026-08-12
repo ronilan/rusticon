@@ -2,9 +2,10 @@ use incredible::*;
 use incredible_elements::{TextArea, TextAreaOptions};
 
 use crate::state::{State, validate};
+use crate::ui::configure::shortcuts;
 
 pub fn build_input_name() -> TextArea<State> {
-    let input_name: TextArea<State> = TextArea::new(TextAreaOptions {
+    let mut input_name: TextArea<State> = TextArea::new(TextAreaOptions {
         max_length: 64,
         ..TextAreaOptions::single()
     });
@@ -17,6 +18,8 @@ pub fn build_input_name() -> TextArea<State> {
         .label("Name (snake_case)")
         .focused(false)
         .paste_enabled(true);
+
+    shortcuts(&mut input_name);
 
     input_name
         .on_key(|el, state, _event| {

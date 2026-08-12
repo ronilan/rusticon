@@ -2,9 +2,10 @@ use incredible::*;
 use incredible_elements::TextArea;
 
 use crate::state::{State, validate};
+use crate::ui::configure::shortcuts;
 
 pub fn build_input_tagline() -> TextArea<State> {
-    let input_tagline: TextArea<State> = TextArea::single();
+    let mut input_tagline: TextArea<State> = TextArea::single();
     input_tagline
         .x(2)
         .y(7)
@@ -12,6 +13,8 @@ pub fn build_input_tagline() -> TextArea<State> {
         .label("Tagline (HTML title suffix)")
         .focused(false)
         .paste_enabled(true);
+
+    shortcuts(&mut input_tagline);
 
     input_tagline
         .on_key(|el, state, _event| {

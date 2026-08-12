@@ -2,9 +2,10 @@ use incredible::*;
 use incredible_elements::TextArea;
 
 use crate::state::{State, validate};
+use crate::ui::configure::shortcuts;
 
 pub fn build_input_app_name() -> TextArea<State> {
-    let input_app_name: TextArea<State> = TextArea::single();
+    let mut input_app_name: TextArea<State> = TextArea::single();
     input_app_name
         .x(2)
         .y(1)
@@ -12,6 +13,8 @@ pub fn build_input_app_name() -> TextArea<State> {
         .label("App Name (Display Name)")
         .focused(true)
         .paste_enabled(true);
+
+    shortcuts(&mut input_app_name);
 
     input_app_name
         .on_key(|el, state, _event| {

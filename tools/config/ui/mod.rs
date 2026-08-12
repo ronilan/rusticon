@@ -1,6 +1,7 @@
 pub(crate) mod app;
 pub(crate) mod button_apply;
 pub(crate) mod button_quit;
+pub(crate) mod configure;
 pub(crate) mod frame;
 pub(crate) mod input_app_name;
 pub(crate) mod input_description;
