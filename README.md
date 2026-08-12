@@ -8,17 +8,6 @@ It's written in [Rust](https://www.rust-lang.org/) using the [Incredible](https:
 
 <p align=center><img src="./media/social.png" alt="banner" width="640" style="border: 1px solid #999; border-radius: 5px"/></p>
 
-## From Source
-
-```bash
-cargo build-tools
-```
-```bash
-tools/copy.js
-```
-
-Then `./run terminal` to launch, `./package terminal` to build, or `./config` to configure.
-
 # Install
 
 ## Pre Built Binaries

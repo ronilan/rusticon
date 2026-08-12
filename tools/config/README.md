@@ -60,25 +60,16 @@ cargo run --bin config
 
 ## Files affected
 
-The tool updates all 15 source files that reference the template name, plus 2 files with `description` fields.
+The tool updates source files that reference the template name, plus description fields.
 
-### Template-name files (15 total)
+### Template-name files
 
-1. `Cargo.toml` — 8 occurrences (package name, 3 bin names, metadata title + app_name + binary_name, default-run)
-2. `src/main.rs` — 1 (error message string)
-3. `src/macos.rs` — 1 (fallback APP_NAME)
-4. `src/windows.rs` — 1 (fallback APP_NAME)
-5. `src/main.ts` — 1 (WASM import path)
-6. `Info.plist` — 2 (CFBundleExecutable, CFBundleName)
-7. `run` — 3 (bash cargo run commands)
-8. `run.bat` — 3 (Windows batch cargo run commands)
-9. `scripts/build_macos.js` — 4 (cargo build + copy paths + log)
-10. `scripts/build_terminal.js` — 3 (cargo build + exe names)
-11. `scripts/build_windows.js` — 2 (cargo build + exe name)
-12. `pkg/package.json` — 6 (npm name + wasm/js/dts filenames + main + types)
-13. `docs/index.html` — 1 (HTML `<title>`)
-14. `web/index.html` — 1 (HTML `<title>`)
-15. `package.json` — 1 (root workspace `"name": "incredible-template"`)
+1. `Cargo.toml` — package name, 3 bin names, metadata title + app_name + binary_name, default-run
+2. `Info.plist` — CFBundleExecutable, CFBundleName
+3. `src/main.ts` — WASM import path
+4. `docs/index.html` — HTML `<title>`
+5. `web/index.html` — HTML `<title>`
+6. `package.json` — root workspace package name
 
 ### Description field occurrences (2 total)
 

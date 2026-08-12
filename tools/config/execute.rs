@@ -107,7 +107,11 @@ fn transform_cargo_toml(
                     }
                 }
             } else if ts.starts_with("name ") || ts.starts_with("name=") {
-                if let Some(idx) = pending_bin_name_idx {
+                pending_bin_name_idx = Some(i);
+            }
+
+            if let Some(idx) = pending_bin_name_idx {
+                if !current_bin_path.is_empty() {
                     let new_bin_name = if current_bin_path.contains("macos.rs") {
                         Some(format!("{}_macos", name))
                     } else if current_bin_path.contains("windows.rs") {
@@ -149,28 +153,6 @@ fn transform_info_plist(content: &str, name: &str, app_name: &str) -> String {
         }
     }
     r
-}
-
-fn transform_run_script(content: &str, name: &str) -> String {
-    let mut result = String::new();
-    let mut rest = content;
-    while let Some(pos) = rest.find("--bin ") {
-        result.push_str(&rest[..pos + 6]);
-        rest = &rest[pos + 6..];
-        let end = rest.find(|c: char| c.is_whitespace()).unwrap_or(rest.len());
-        let token = &rest[..end];
-        let suffix = if token.ends_with("_macos") {
-            "_macos"
-        } else if token.ends_with("_windows") {
-            "_windows"
-        } else {
-            ""
-        };
-        result.push_str(&format!("{}{}", name, suffix));
-        rest = &rest[end..];
-    }
-    result.push_str(rest);
-    result
 }
 
 fn transform_package_json(content: &str, npm_name: &str) -> String {
@@ -294,7 +276,6 @@ pub fn apply_changes(
                 transform_cargo_toml(&original, name, app_name, desc_opt, kw_opt, &display_title)
             }
             "Info.plist" => transform_info_plist(&original, name, app_name),
-            "run" | "run.bat" => transform_run_script(&original, name),
             "package.json" => transform_package_json(&original, npm_name),
             "src/main.ts" => transform_main_ts(&original, name),
             _ => transform_html(&original, &display_title, desc_opt, kw_opt),
