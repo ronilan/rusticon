@@ -82,5 +82,4 @@ impl RusticonIo for NativeIo {
             self.report_message(&err_msg, 196);
         }
     }
-
 }

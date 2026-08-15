@@ -60,7 +60,7 @@ pub fn build_app() -> App<State> {
     })
     .on_state(|_, state| {
         if state.should_run {
-            exit();
+            exit(0);
         }
     });
 

@@ -48,6 +48,10 @@ Available on web at: https://ronilan.github.io/rusticon/
 
 <img src="./gallery/selfie.svg" width="64"><img src="./gallery/selfie-crumbicon.svg" width="64"><img src="./gallery/mondrian.svg" width="64"><img src="./gallery/luffy.svg" width="64"><img src="./gallery/pinky.svg" width="64"><img src="./gallery/lake.svg" width="64"><img src="./gallery/ronilan.svg" width="64"><img src="./gallery/canada.svg" width="64"><img src="./gallery/rust.svg" width="64"><img src="./gallery/1972_BlueMarble.svg" width="64"><img src="./gallery/albert-einstein.svg" width="64">
 
+## Development
+
+See [Development](./markdowns/DEVELOPMENT.md) and [Development Environment Prerequisites](./markdowns/DEVELOPMENT_PREREQUISITES.md)
+
 ---
 
 *Fabriqué au Canada : Made in Canada 🇨🇦*

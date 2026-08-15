@@ -6,8 +6,19 @@ fn replace_field_value(line: &str, key: &str, value: &str) -> String {
     let leading = &line[..leading_len];
     let trimmed = line.trim_start();
     if trimmed.starts_with(key) {
-        let after_key = trimmed[key.len()..].trim_start();
-        if after_key.starts_with('=') {
+        let after_key = &trimmed[key.len()..];
+        if after_key.trim_start().starts_with('=') {
+            if let Some(eq_pos) = after_key.find('=') {
+                let before_eq = &after_key[..eq_pos];
+                let after_eq = &after_key[eq_pos + 1..];
+                if let Some(quote_pos) = after_eq.find('"') {
+                    let before_value = &after_eq[..quote_pos];
+                    return format!(
+                        "{}{}{}={}\"{}\"",
+                        leading, key, before_eq, before_value, value
+                    );
+                }
+            }
             return format!("{}{}= \"{}\"", leading, key, value);
         }
     }

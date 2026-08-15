@@ -16,7 +16,7 @@ pub fn build_app() -> App<State> {
 
     app.on_state(|_, state| {
         if state.should_apply || state.should_quit {
-            exit();
+            exit(0);
         }
     });
 

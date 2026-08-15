@@ -68,7 +68,7 @@ pub fn build() -> App<State> {
                     el.draw();
                 }
             } else {
-                exit();
+                exit(0);
             }
             return;
         }

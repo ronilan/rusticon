@@ -16,12 +16,12 @@ pub fn build_button_quit() -> Button<State> {
     button
         .on_key(|_, _state, event| {
             if event.key == Key::Enter {
-                exit();
+                exit(0);
             }
         })
         .on_mouse(|_, _state, event| {
             if event.mouse == Mouse::Click {
-                exit();
+                exit(0);
             }
         });
 

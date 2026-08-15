@@ -32,7 +32,7 @@ pub fn build_app() -> App<State> {
         })
         .on_state(|_, state| {
             if state.should_execute {
-                exit();
+                exit(0);
             }
         });
 
