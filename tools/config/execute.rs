@@ -15,7 +15,11 @@ fn replace_field_value(line: &str, key: &str, value: &str) -> String {
                     let before_value = &after_eq[..quote_pos];
                     return format!(
                         "{}{}{}={}\"{}\"",
-                        leading, key, before_eq, before_value, value
+                        leading,
+                        key,
+                        before_eq,
+                        before_value,
+                        value
                     );
                 }
             }

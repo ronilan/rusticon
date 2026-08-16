@@ -84,9 +84,10 @@ jobs:
 
       # Build the Rust package tool first, then use it for all subsequent builds.
       - name: Build tools
+        shell: bash
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
-        run: cargo build --release --bin package && cp target/release/package .
+        run: cargo build --release --bin package && cp target/release/package* .
 
       # Ensure a clean dist/ before building - dist/ has been committed to
       # this repo before (like docs/ was), so a checkout can restore stale
@@ -197,9 +198,10 @@ jobs:
 
       # Build the Rust package tool first, then use it for all subsequent builds.
       - name: Build tools
+        shell: bash
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
-        run: cargo build --release --bin package && cp target/release/package .
+        run: cargo build --release --bin package && cp target/release/package* .
 
       # Same reasoning as build-terminal: don't trust a checked-out
       # dist/ to be empty.
@@ -273,9 +275,10 @@ jobs:
 
       # Build the Rust package tool first, then use it for all subsequent builds.
       - name: Build tools
+        shell: bash
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
-        run: cargo build --release --bin package && cp target/release/package .
+        run: cargo build --release --bin package && cp target/release/package* .
 
       # Same reasoning as the other two jobs: don't trust a checked-out
       # dist/ to be empty.

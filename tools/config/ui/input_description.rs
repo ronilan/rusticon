@@ -1,19 +1,17 @@
 use incredible::*;
-use incredible_elements::{TextArea, TextAreaOptions};
+use incredible_elements::TextArea;
 
 use crate::state::{State, validate};
 use crate::ui::configure::shortcuts;
 
 pub fn build_input_description() -> TextArea<State> {
-    let mut input_description: TextArea<State> = TextArea::new(TextAreaOptions {
-        respond_to_enter: false,
-        ..Default::default()
-    });
+    let mut input_description: TextArea<State> = TextArea::default();
     input_description
         .x(2)
         .y(13)
         .width(64)
         .height(6)
+        .respond_to_enter(false)
         .label("Description")
         .focused(false)
         .paste_enabled(true);

@@ -96,9 +96,10 @@ jobs:
 
       # Build the Rust package tool, then use it for the WASM build.
       - name: Build tools
+        shell: bash
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: "true"
-        run: cargo build --release --bin package && cp target/release/package .
+        run: cargo build --release --bin package && cp target/release/package* .
 
       # Runs the project's package tool to build WASM assets, which
       # invokes wasm-pack/cargo to compile the Rust code to WASM.

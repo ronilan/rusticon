@@ -112,11 +112,7 @@ objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSWindow", "N
 
 [target.'cfg(target_os = "windows")'.dependencies]
 incredible_window_windows = { git = "https://github.com/ronilan/incredible-alpha", optional = true }
-windows = { version = "0.62", features = [
-    "Win32_Foundation",
-    "Win32_UI_WindowsAndMessaging",
-    "Win32_UI_Shell",
-] }
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_System_LibraryLoader", "Win32_Storage_FileSystem"] }
 
 
 [profile.release]
