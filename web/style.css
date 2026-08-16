@@ -35,6 +35,7 @@ html, body {
   height: 100%;
   -webkit-text-size-adjust: 100%; /* For iOS Safari and older legacy WebKit engines */
   text-size-adjust: 100%;         /* Standard property for modern Chromium browsers */
+  touch-action: manipulation;
 }
 
 body {
@@ -53,7 +54,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   overflow: hidden;
   position: relative;
@@ -94,8 +95,10 @@ body {
   padding: 0;
   user-select: none;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
 }
 
 /* HTML backend child: <pre> injected by HtmlOutput::new() */
@@ -106,6 +109,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  pointer-events: none;
 }
 
 #surface > pre span {
@@ -124,7 +128,6 @@ body {
   text-align: center;
   vertical-align: bottom;
 }
-
 /* Fixed-width 1-cell character — forces any glyph into exactly 1ch.
    Used for CTL scripts (Devanagari, etc.) whose natural font width
    differs from the Latin character cell. */
