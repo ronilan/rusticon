@@ -12,7 +12,7 @@ use crate::{
 use incredible_elements_extra::DroppedItem;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::{JsFuture, spawn_local};
-use web_sys::{FileSystemFileHandle, FileSystemWritableFileStream};
+use web_sys::{Blob, FileSystemFileHandle, FileSystemWritableFileStream, HtmlAnchorElement, Url};
 
 pub type FileHandle = JsValue;
 
@@ -75,6 +75,48 @@ impl WasmIo {
 
         self.save_to_handle(handle_js.clone(), content).await?;
         Ok((handle_js, name))
+    }
+
+    /// Classic <a download> fallback for browsers without showSaveFilePicker
+    /// (Firefox, Safari, …).
+    fn download_file(&self, content: &str, filename: &str) -> Result<(), JsValue> {
+        let window = web_sys::window().ok_or(JsValue::from_str("no window"))?;
+        let document = window.document().ok_or(JsValue::from_str("no document"))?;
+
+        // Blob (no options variant — keeps required web-sys features minimal)
+        let parts = js_sys::Array::new();
+        parts.push(&JsValue::from_str(content));
+        let blob = Blob::new_with_str_sequence(&parts)?;
+
+        // Object URL
+        let url = Url::create_object_url_with_blob(&blob)?;
+
+        // Hidden <a download>
+        let a = document
+            .create_element("a")?
+            .dyn_into::<HtmlAnchorElement>()?;
+        a.set_href(&url);
+        a.set_download(filename);
+        a.style().set_property("display", "none")?;
+
+        let body = document.body().ok_or(JsValue::from_str("no body"))?;
+        body.append_child(&a)?;
+        a.click();
+        body.remove_child(&a)?;
+
+        Url::revoke_object_url(&url)?;
+        Ok(())
+    }
+
+    fn has_save_file_picker() -> bool {
+        let window = match web_sys::window() {
+            Some(w) => w,
+            None => return false,
+        };
+        match js_sys::Reflect::get(&window, &JsValue::from_str("showSaveFilePicker")) {
+            Ok(v) => v.is_function(),
+            Err(_) => false,
+        }
     }
 }
 
@@ -157,6 +199,21 @@ impl RusticonIo for WasmIo {
         let suggested_name = state.editor.file_path.clone();
 
         spawn_local(async move {
+            // Firefox / Safari: no showSaveFilePicker → download fallback
+            if !WasmIo::has_save_file_picker() {
+                match io.download_file(&svg, &suggested_name) {
+                    Ok(()) => {
+                        // Keep the name so the UI stays consistent; no reusable handle.
+                        let mut launch = LAUNCH_STATE.lock().unwrap();
+                        launch.pending_file_path = Some(suggested_name);
+                        // pending_handle stays None
+                    }
+                    Err(_) => io.report_message("Save failed.", 196),
+                }
+                return;
+            }
+
+            // Chromium path
             if let Some(h) = handle {
                 if let Err(_) = io.save_to_handle(h, svg).await {
                     io.report_message("Save failed.", 196);
