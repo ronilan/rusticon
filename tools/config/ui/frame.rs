@@ -9,6 +9,7 @@ pub fn build_frame() -> ScrollArea<State> {
         .width(80)
         .height(22)
         .kind(Some(FrameKind::Rounded))
+        .focused_kind(Some(FrameKind::Rounded))
         .label("Config")
         .next_combination(Some(KeyCombination::new(Key::Tab, &[])))
         .prev_combination(Some(KeyCombination::new(Key::BackTab, &[])))

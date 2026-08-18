@@ -11,6 +11,7 @@ pub fn build_select(select_height: usize) -> Select<State> {
         .width(36)
         .height(select_height)
         .frame_kind(Some(FrameKind::Rounded))
+        .focused_frame_kind(Some(FrameKind::Rounded))
         .label("Run")
         .add_item("Terminal", "terminal")
         .add_item("Web", "wasm");
