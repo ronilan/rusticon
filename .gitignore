@@ -34,3 +34,11 @@ Cargo.lock
 **/node_modules
 pnpm-debug.log*
 .pnpm-store*
+
+# Built tools
+/config
+/package
+/run
+/config.exe
+/package.exe
+/run.exe

@@ -12,9 +12,14 @@ pub fn build() -> Element<State> {
         .look(Look::from((15, 2, ' ')))
         .on_state(|el, state| {
             if let Some(bg) = state.paintbrush {
-                el.background(Some(Color::Ansi(bg)));
+                el.decoration
+                    .style
+                    .base
+                    .decor
+                    .background
+                    .set(Some(Color::Ansi(bg)));
             } else {
-                el.background(None);
+                el.decoration.style.base.decor.background.set(None);
             }
 
             reposition(el, X, Y, state);

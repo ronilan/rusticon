@@ -12,7 +12,7 @@ pub fn build() -> Element<State> {
         .look(Look::from("Exit"))
         .on_mouse(|_el, _state, event| {
             if event.mouse == Mouse::Click {
-                exit();
+                exit(0);
             }
         })
         .on_state(|el, state| {

@@ -1,14 +1,16 @@
-use incredible::{run as tui_run, setup, Globals, Providers};
+use incredible::{run as tui_run, setup, Globals, Platform, Providers};
 
+#[cfg(not(target_arch = "wasm32"))]
+use incredible_clipboard_terminal::TerminalClipboard;
 #[cfg(not(target_arch = "wasm32"))]
 use incredible_event_loop_terminal::run_event_loop as looper;
 #[cfg(not(target_arch = "wasm32"))]
 use incredible_input_crossterm::CrosstermInput;
 #[cfg(not(target_arch = "wasm32"))]
 use incredible_output_terminal::TerminalOutput;
-#[cfg(not(target_arch = "wasm32"))]
-use incredible_clipboard_terminal::TerminalClipboard;
 
+#[cfg(target_arch = "wasm32")]
+use incredible_clipboard_browser::BrowserClipboard;
 #[cfg(target_arch = "wasm32")]
 use incredible_event_loop_browser::run_event_loop as looper;
 #[cfg(target_arch = "wasm32")]
@@ -16,17 +18,18 @@ use incredible_input_browser::BrowserInput;
 #[cfg(target_arch = "wasm32")]
 use incredible_output_html::HtmlOutput;
 #[cfg(target_arch = "wasm32")]
-use incredible_clipboard_browser::BrowserClipboard;
-#[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::Closure, JsCast};
 
-use crate::{core::io::RusticonIo, platform::FileHandle, rusticon_screen, splash_screen, SplashState, State};
+use crate::ui::{APP_HEIGHT, APP_WIDTH};
+use crate::{
+    core::io::RusticonIo, platform::FileHandle, rusticon_screen, splash_screen, SplashState, State,
+};
 
 #[cfg(not(target_arch = "wasm32"))]
 fn setup_runtime<S: Clone + PartialEq + 'static>() {
     setup(Providers {
         input: Box::new(CrosstermInput::new()),
-        output: Box::new(TerminalOutput::new(Box::new(CrosstermInput::new()))),
+        output: Box::new(TerminalOutput::new()),
         clipboard: Box::new(TerminalClipboard),
     });
 }
@@ -56,9 +59,12 @@ fn build_initial_state(
         canvas8_data = data;
     }
 
+    let centered_x = (Platform::columns().saturating_sub(APP_WIDTH) / 2) as isize;
+    let centered_y = (Platform::rows().saturating_sub(APP_HEIGHT) / 2) as isize;
+
     State {
-        app_x: 0,
-        app_y: 0,
+        app_x: centered_x,
+        app_y: centered_y,
         candidate: None,
         paintbrush: palette[0],
         prev_color_on_canvas: None,

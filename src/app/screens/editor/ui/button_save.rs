@@ -13,7 +13,7 @@ pub fn build() -> Element<State> {
         .on_loop(|_el, state, _event| {
             if state.save_flag {
                 // wait till next loop to exit
-                exit();
+                exit(0);
             }
         })
         .on_mouse(|_el, state, event| {

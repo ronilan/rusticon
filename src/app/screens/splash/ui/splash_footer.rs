@@ -15,9 +15,9 @@ pub fn build() -> Element<SplashState> {
         let text = "Made with Rust";
         el.x((term_cols.saturating_sub(text.len() as isize)) / 2)
             .y(term_rows.saturating_sub(1))
-            .look(Look::from(text))
-            .faint(true)
-            .bold(true);
+            .look(Look::from(text));
+        el.decoration.style.base.decor.faint.set(Some(true));
+        el.decoration.style.base.decor.bold.set(Some(true));
 
         el.draw();
 
@@ -29,7 +29,7 @@ pub fn build() -> Element<SplashState> {
                 .map(|start| Globals::now() - start)
                 .unwrap_or(0.0);
             if done && elapsed >= MIN_SPLASH_MS {
-                exit();
+                exit(0);
             }
         }
     });

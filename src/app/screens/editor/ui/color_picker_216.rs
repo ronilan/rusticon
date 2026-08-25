@@ -18,13 +18,13 @@ pub fn build() -> Element<State> {
                             // original crumb formula: (row * 12) + (col * 16)
                             let ansi_code = (row * 12 + col + 16).min(231) as u8;
                             let decor = Decor::new(
-                                false,
-                                false,
+                                Some(false),
+                                Some(false),
                                 None,
                                 None,
-                                false,
-                                false,
-                                false,
+                                Some(false),
+                                Some(false),
+                                Some(false),
                                 None,
                                 Some(Color::Ansi(ansi_code)),
                             );

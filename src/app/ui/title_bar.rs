@@ -24,7 +24,8 @@ pub fn build() -> Element<State> {
             );
             line.replace_range(0..text.len().min(cols), &text);
 
-            el.look(Look::from(line)).inverse(true);
+            el.look(Look::from(line));
+            el.decoration.style.base.decor.inverse.set(Some(true));
             el.decorate();
             el.draw();
         });

@@ -27,9 +27,14 @@ pub fn draw_message(msg: &str, color_code: u8) {
 
     // Draw element
     let el: Element<()> = Element::new();
-    el.look(look)
-        .bold(true)
-        .color(Some(Color::Ansi(color_code)));
+    el.look(look);
+    el.decoration.style.base.decor.bold.set(Some(true));
+    el.decoration
+        .style
+        .base
+        .decor
+        .color
+        .set(Some(Color::Ansi(color_code)));
     decorate(&el);
     draw(&el);
 }

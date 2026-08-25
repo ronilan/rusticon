@@ -1,6 +1,6 @@
-use image::{imageops::FilterType, DynamicImage, GenericImageView};
 #[cfg(not(target_arch = "wasm32"))]
 use image::ImageFormat;
+use image::{imageops::FilterType, DynamicImage, GenericImageView};
 use incredible::Colors;
 use std::path::Path;
 
@@ -74,7 +74,9 @@ pub fn load_and_resize_image_bytes(bytes: &[u8]) -> Result<Vec<Vec<[u8; 4]>>, St
     let img = match image::guess_format(bytes) {
         Ok(format) => image::load_from_memory_with_format(bytes, format)
             .map_err(|e| format!("Failed to load image: {}", e))?,
-        Err(_) => image::load_from_memory(bytes).map_err(|e| format!("Failed to load image: {}", e))?,
+        Err(_) => {
+            image::load_from_memory(bytes).map_err(|e| format!("Failed to load image: {}", e))?
+        }
     };
 
     // Resize to 16x16 (forcing size)

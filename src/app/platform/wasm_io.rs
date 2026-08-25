@@ -139,7 +139,8 @@ fn setup_drop_listeners() {
     let prevent_default = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
         event.prevent_default();
     });
-    let _ = window.add_event_listener_with_callback("dragover", prevent_default.as_ref().unchecked_ref());
+    let _ = window
+        .add_event_listener_with_callback("dragover", prevent_default.as_ref().unchecked_ref());
     prevent_default.forget();
 
     let on_drop = Closure::<dyn FnMut(_)>::new(move |event: DragEvent| {
@@ -155,12 +156,13 @@ fn setup_drop_listeners() {
                 let item = items.get(0).unwrap();
                 if item.kind() == "file" {
                     // Capture handle using Reflect hack (not yet in web-sys types)
-                    let handle_promise = js_sys::Reflect::get(&item, &JsValue::from_str("getAsFileSystemHandle"))
-                        .unwrap()
-                        .dyn_into::<js_sys::Function>()
-                        .unwrap()
-                        .call0(&item)
-                        .unwrap();
+                    let handle_promise =
+                        js_sys::Reflect::get(&item, &JsValue::from_str("getAsFileSystemHandle"))
+                            .unwrap()
+                            .dyn_into::<js_sys::Function>()
+                            .unwrap()
+                            .call0(&item)
+                            .unwrap();
 
                     let handle: JsValue =
                         JsFuture::from(handle_promise.unchecked_into::<js_sys::Promise>())
@@ -185,7 +187,9 @@ fn setup_drop_listeners() {
                     // pre-filled with the corrected `.svg` name. We only keep the
                     // handle when the file name was unchanged (already SVG/Crumbicon).
                     let keep_handle = match &outcome {
-                        Ok((_, _, _, returned_path)) => returned_path.eq_ignore_ascii_case(&file_name),
+                        Ok((_, _, _, returned_path)) => {
+                            returned_path.eq_ignore_ascii_case(&file_name)
+                        }
                         Err(_) => false,
                     };
 

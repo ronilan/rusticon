@@ -18,9 +18,14 @@ pub fn build() -> Element<State> {
             };
 
             if let Some(bg) = color_source {
-                el.background(Some(Color::Ansi(bg)));
+                el.decoration
+                    .style
+                    .base
+                    .decor
+                    .background
+                    .set(Some(Color::Ansi(bg)));
             } else {
-                el.background(None);
+                el.decoration.style.base.decor.background.set(None);
             }
 
             reposition(el, X, Y, state);
