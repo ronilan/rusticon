@@ -1,13 +1,11 @@
 use incredible::*;
-use incredible_elements::{ScrollArea, Select, SelectOptions, Selectable, SelectableItem};
+use incredible_elements::{ScrollArea, Select, Selectable, SelectableItem};
 
 use crate::state::{PackageTarget, State};
 
 pub fn build_select_options() -> Select<State> {
-    let select = Select::<State>::new(SelectOptions {
-        multi: true,
-        ..Default::default()
-    });
+    let select = Select::<State>::checkbox();
+    select.multi(true);
 
     select
         .x(34)
@@ -18,6 +16,7 @@ pub fn build_select_options() -> Select<State> {
         .add_item("Bundle app package", "bundle")
         .add_item("Publish package", "publish")
         .add_item("Preview site", "preview")
+        .focused(false)
         .disabled(true);
 
     select
@@ -39,6 +38,8 @@ pub fn build_select_options() -> Select<State> {
                 state.is_publish = selected_indices.contains(&2);
                 state.is_bundle = selected_indices.contains(&1) || state.is_publish;
                 state.is_preview = selected_indices.contains(&3);
+
+                el.focused(true);
             }
         })
         .on_state(|el, state| {

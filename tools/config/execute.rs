@@ -181,6 +181,10 @@ fn transform_package_json(content: &str, npm_name: &str) -> String {
     content.to_string()
 }
 
+fn transform_dockerfile(content: &str, name: &str) -> String {
+    content.replace("incredible_app_template", name)
+}
+
 fn transform_main_ts(content: &str, name: &str) -> String {
     let mut result = String::new();
     for line in content.lines() {
@@ -261,6 +265,7 @@ pub fn apply_changes(
 
     let files = [
         "Cargo.toml",
+        "Dockerfile",
         "Info.plist",
         "package.json",
         "src/main.ts",
@@ -286,6 +291,7 @@ pub fn apply_changes(
             "Cargo.toml" => {
                 transform_cargo_toml(&original, name, app_name, desc_opt, kw_opt, &display_title)
             }
+            "Dockerfile" => transform_dockerfile(&original, name),
             "Info.plist" => transform_info_plist(&original, name, app_name),
             "package.json" => transform_package_json(&original, npm_name),
             "src/main.ts" => transform_main_ts(&original, name),

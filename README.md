@@ -14,6 +14,17 @@ It's written in [Rust](https://www.rust-lang.org/) using the [Incredible](https:
 
 Pre built binaries are provided for each [release](https://github.com/ronilan/rusticon/releases).
 
+## Linux via Docker
+
+To try the Linux terminal version, build and run:
+
+```
+docker build -t rusticon .
+docker run --rm -it rusticon
+```
+
+Type `rusticon` in the container shell to launch.
+
 ## WASM version
 
 Available on web at: https://ronilan.github.io/rusticon/
