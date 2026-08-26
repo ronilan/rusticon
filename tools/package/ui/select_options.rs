@@ -4,7 +4,8 @@ use incredible_elements::{ScrollArea, Select, Selectable, SelectableItem};
 use crate::state::{PackageTarget, State};
 
 pub fn build_select_options() -> Select<State> {
-    let select = Select::<State>::checkbox();
+    let select = Select::<State>::new();
+    select.conf_checkbox();
     select.multi(true);
 
     select

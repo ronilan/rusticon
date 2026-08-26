@@ -1,11 +1,12 @@
 use incredible::*;
-use incredible_elements::TextArea;
+use incredible_elements::{TextArea, TextAreaOptions};
 
 use crate::state::{State, validate};
 use crate::ui::configure::shortcuts;
 
 pub fn build_input_keywords() -> TextArea<State> {
-    let mut input_keywords: TextArea<State> = TextArea::single();
+    let mut input_keywords: TextArea<State> = TextArea::new(TextAreaOptions::default());
+    input_keywords.conf_single();
     input_keywords
         .x(2)
         .y(10)

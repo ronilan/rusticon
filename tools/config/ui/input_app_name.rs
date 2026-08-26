@@ -1,11 +1,12 @@
 use incredible::*;
-use incredible_elements::TextArea;
+use incredible_elements::{TextArea, TextAreaOptions};
 
 use crate::state::{State, validate};
 use crate::ui::configure::shortcuts;
 
 pub fn build_input_app_name() -> TextArea<State> {
-    let mut input_app_name: TextArea<State> = TextArea::single();
+    let mut input_app_name: TextArea<State> = TextArea::new(TextAreaOptions::default());
+    input_app_name.conf_single();
     input_app_name
         .x(2)
         .y(1)

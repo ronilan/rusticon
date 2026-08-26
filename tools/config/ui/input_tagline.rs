@@ -1,11 +1,12 @@
 use incredible::*;
-use incredible_elements::TextArea;
+use incredible_elements::{TextArea, TextAreaOptions};
 
 use crate::state::{State, validate};
 use crate::ui::configure::shortcuts;
 
 pub fn build_input_tagline() -> TextArea<State> {
-    let mut input_tagline: TextArea<State> = TextArea::single();
+    let mut input_tagline: TextArea<State> = TextArea::new(TextAreaOptions::default());
+    input_tagline.conf_single();
     input_tagline
         .x(2)
         .y(7)
