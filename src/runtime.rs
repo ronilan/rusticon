@@ -1,7 +1,7 @@
 use crate::{
-    app,
     core::model::{AppPhase, State},
     platform,
+    ui::app,
 };
 use incredible::{DeferredValue, Globals};
 

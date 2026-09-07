@@ -26,10 +26,10 @@ pub fn build() -> App<State> {
 
     let app = App::new(AppOptions {
         height: None,
-        draw_on_window_resize: false,
-        draw_on_initialization: false,
         ..Default::default()
     });
+
+    app.auto_surface(false);
 
     app.on_window(|el: &App<State>, state: &mut State, event: &EventWindow| {
         if event.window == Window::Resize {

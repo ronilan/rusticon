@@ -4,8 +4,6 @@
 )]
 
 #[cfg(feature = "windows-native")]
-mod app;
-#[cfg(feature = "windows-native")]
 mod core;
 #[cfg(feature = "windows-native")]
 mod features;

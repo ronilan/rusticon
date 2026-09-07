@@ -2,10 +2,10 @@ use crate::core::model::{AppPhase, State};
 use crate::platform;
 use incredible::*;
 use incredible_elements::App;
-use incredible_elements_extra::{FileDrop, FileDropOptions};
+use incredible_elements_extra::FileDrop;
 
 pub fn build() -> FileDrop<State> {
-    let file_drop = FileDrop::new(FileDropOptions::default());
+    let file_drop = FileDrop::default();
     file_drop.width(80).height(24).showed(false).fused(true);
 
     // Own the drop handling on the element itself (same integration as the

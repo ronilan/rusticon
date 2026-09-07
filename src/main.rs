@@ -1,4 +1,3 @@
-mod app;
 mod core;
 mod features;
 mod platform;

@@ -1,6 +1,4 @@
 #[cfg(feature = "macos-native")]
-mod app;
-#[cfg(feature = "macos-native")]
 mod core;
 #[cfg(feature = "macos-native")]
 mod features;
