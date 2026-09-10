@@ -72,15 +72,9 @@ jobs:
         run: |
           git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
 
-      # Installs the pnpm CLI on the runner (pnpm isn't preinstalled like npm is).
-      # Needed before any `pnpm install` / `pnpm run` calls below.
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
       # Prepares the runner for a GitHub Pages deployment (sets up Pages-specific
-      # env/config) and ensures Node.js is available. This does NOT install project
-      # dependencies — that's the separate "Install dependencies" step below.
-      - name: Setup Pages & Node
+      # env/config).
+      - name: Setup Pages
         uses: actions/configure-pages@v6 
 
       # wasm-pack compiles Rust -> WebAssembly and packages it for JS consumption.
@@ -88,11 +82,6 @@ jobs:
       # explicitly via its installer script.
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-
-      # Installs JS dependencies declared in package.json (via pnpm-lock.yaml).
-      # Required before running any pnpm scripts, including build:wasm below.
-      - name: Install dependencies
-        run: pnpm install
 
       # Build the Rust package tool, then use it for the WASM build.
       - name: Build tools

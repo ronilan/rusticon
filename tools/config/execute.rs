@@ -166,21 +166,6 @@ fn transform_info_plist(content: &str, name: &str, app_name: &str) -> String {
     r
 }
 
-fn transform_package_json(content: &str, npm_name: &str) -> String {
-    if let Ok(mut v) = serde_json::from_str::<serde_json::Value>(content) {
-        if let Some(obj) = v.as_object_mut() {
-            obj.insert(
-                "name".to_string(),
-                serde_json::Value::String(npm_name.to_string()),
-            );
-        }
-        if let Ok(s) = serde_json::to_string_pretty(&v) {
-            return s + "\n";
-        }
-    }
-    content.to_string()
-}
-
 fn transform_dockerfile(content: &str, name: &str) -> String {
     content.replace("incredible_app_template", name)
 }
@@ -188,9 +173,9 @@ fn transform_dockerfile(content: &str, name: &str) -> String {
 fn transform_main_ts(content: &str, name: &str) -> String {
     let mut result = String::new();
     for line in content.lines() {
-        if line.starts_with("import init, { main } from \"../pkg/") {
+        if line.starts_with("import init, { main } from \"./pkg/") {
             result.push_str(&format!(
-                "import init, {{ main }} from \"../pkg/{}.js\";\n",
+                "import init, {{ main }} from \"./pkg/{}.js\";\n",
                 name
             ));
         } else {
@@ -242,7 +227,6 @@ fn transform_html(
 pub fn apply_changes(
     name: &str,
     app_name: &str,
-    npm_name: &str,
     tagline: &str,
     keywords: &str,
     description: &str,
@@ -267,9 +251,7 @@ pub fn apply_changes(
         "Cargo.toml",
         "Dockerfile",
         "Info.plist",
-        "package.json",
-        "src/main.ts",
-        "docs/index.html",
+        "src/main.js",
         "web/index.html",
     ];
 
@@ -293,8 +275,7 @@ pub fn apply_changes(
             }
             "Dockerfile" => transform_dockerfile(&original, name),
             "Info.plist" => transform_info_plist(&original, name, app_name),
-            "package.json" => transform_package_json(&original, npm_name),
-            "src/main.ts" => transform_main_ts(&original, name),
+            "src/main.js" => transform_main_ts(&original, name),
             _ => transform_html(&original, &display_title, desc_opt, kw_opt),
         };
         if transformed != original {

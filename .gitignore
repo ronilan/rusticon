@@ -38,7 +38,3 @@ Cargo.lock
 /package.exe
 /run.exe
 
-# JavaScript / pnpm workspace
-**/node_modules
-pnpm-debug.log*
-.pnpm-store*

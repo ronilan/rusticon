@@ -6,7 +6,7 @@
 
 This tool allows you to select a packaging target (All, Terminal, Web, macOS Native) and configure task flags (Clean, Bundle, Publish, Preview site).
 
-It is defined in the workspace `Cargo.toml` as:
+The tool is defined in the root `Cargo.toml` as:
 
 ```toml
 [[bin]]
@@ -24,6 +24,7 @@ Provide a target parameter and optional flag arguments:
 ./package --all            # Packages all targets
 ./package --terminal       # Packages terminal CLI target
 ./package --wasm           # Builds WASM + site (production)
+./package --wasm --preview # Builds WASM + serves docs/ at http://localhost:4627
 ./package --macos          # Packages macOS native binary
 ./package --clean --all    # Cleans build output and packages all
 ```
@@ -44,17 +45,26 @@ Omit target parameters to open the interactive selection menu:
 
 | Flag | Description |
 |------|-------------|
-| `--clean` | Runs clean script (`node scripts/clean.js`) before packaging |
-| `--preview` | After WASM build completes, runs `npx vite preview` to serve the site |
-| `--bundle` | Executes platform bundle script (`bundle.js` / `bundle_windows.js`) |
-| `--publish` | Runs publish script (`node scripts/publish.js`) after packaging |
+| `--clean` | Cleans all build output before packaging |
+| `--preview` | After the WASM build completes, serves the built site in `docs/` locally at http://localhost:4627 |
+| `--bundle` | Executes platform-specific bundle step to produce the macOS app bundle / Windows standalone EXE |
+| `--publish` | Publishes packaged artifacts as a GitHub release after packaging |
+
+## Web target
+
+The `wasm` target needs **wasm-pack** installed (see [development prerequisites](../../markdowns/DEVELOPMENT_PREREQUISITES.md)) and is otherwise pure Rust:
+
+1. Runs `wasm-pack build --target web --release` (all Rust code is compiled to WASM).
+2. Assembles `docs/`: copies static assets from `web/`, the browser glue from `src/main.js`, and the compiled `pkg/` output, injecting metadata (`title`, description, keywords, version, mobile min-width/height, CNAME) from `Cargo.toml` into `docs/index.html`.
+
+With `--preview` the tool then serves `docs/` over HTTP at http://localhost:4627. No bundler is involved — `docs/` is deployable as-is (GitHub Pages, any static host).
 
 ## Building & Copying the binary
 
 To build the release binary and copy it to the root directory as `./package` (or `./package.exe` on Windows):
 
 ```bash
-pnpm run build:package
+cargo build --release --bin package
 ```
 
-This runs `cargo build --release --bin package` and executes `tools/copy-package.js`.
+Then copy it to the project root (see the root [README Build Tools](../../README.md) section for macOS and Windows copy commands).

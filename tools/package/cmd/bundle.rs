@@ -36,67 +36,40 @@ pub fn macos() {
     let icon_path = Path::new(&icon_source);
     if icon_path.exists() {
         println!("Creating icon with native macOS margins");
+
+        // Render SVG to PNGs using resvg (pure Rust, no external tools),
+        // keeping the SVG inside an 80%-size inner box centered on the canvas.
+        let svg_data = fs::read(&icon_source).expect("Failed to read SVG file");
+        let rtree = resvg::usvg::Tree::from_data(&svg_data, &resvg::usvg::Options::default())
+            .expect("Failed to parse SVG");
+        let svg_width = rtree.size().width();
+        let svg_height = rtree.size().height();
+
         let iconset_dir = native_dir.join("AppIcon.iconset");
         if !iconset_dir.exists() {
             fs::create_dir_all(&iconset_dir).expect("Failed to create iconset dir");
         }
 
-        let sizes = [16usize, 32, 64, 128, 256, 512, 1024];
+        let sizes = [16u32, 32, 64, 128, 256, 512, 1024];
         for &size in &sizes {
-            let png_path = iconset_dir.join(format!("icon_{}x{}.png", size, size));
-
-            let inner_size = (size as f64 * 0.8) as u32;
-            let _ = Command::new("rsvg-convert")
-                .args([
-                    "-w",
-                    &inner_size.to_string(),
-                    "-h",
-                    &inner_size.to_string(),
-                    &icon_source,
-                ])
-                .stdout(fs::File::create(&png_path).expect("Failed to create PNG"))
-                .status();
-
-            let _ = Command::new("sips")
-                .args([
-                    "-p",
-                    &size.to_string(),
-                    &size.to_string(),
-                    &png_path.to_string_lossy(),
-                    "--out",
-                    &png_path.to_string_lossy(),
-                ])
-                .stdout(std::process::Stdio::null())
-                .stderr(std::process::Stdio::null())
-                .status();
+            render_icon(
+                &rtree,
+                svg_width,
+                svg_height,
+                &iconset_dir,
+                format!("icon_{}x{}.png", size, size),
+                size,
+            );
 
             if size <= 512 {
-                let inner_size_2x = (size as f64 * 2.0 * 0.8) as u32;
-                let png_path_2x = iconset_dir.join(format!("icon_{}x{}@2x.png", size, size));
-
-                let _ = Command::new("rsvg-convert")
-                    .args([
-                        "-w",
-                        &inner_size_2x.to_string(),
-                        "-h",
-                        &inner_size_2x.to_string(),
-                        &icon_source,
-                    ])
-                    .stdout(fs::File::create(&png_path_2x).expect("Failed to create PNG"))
-                    .status();
-
-                let _ = Command::new("sips")
-                    .args([
-                        "-p",
-                        &(size * 2).to_string(),
-                        &(size * 2).to_string(),
-                        &png_path_2x.to_string_lossy(),
-                        "--out",
-                        &png_path_2x.to_string_lossy(),
-                    ])
-                    .stdout(std::process::Stdio::null())
-                    .stderr(std::process::Stdio::null())
-                    .status();
+                render_icon(
+                    &rtree,
+                    svg_width,
+                    svg_height,
+                    &iconset_dir,
+                    format!("icon_{}x{}@2x.png", size, size),
+                    size * 2,
+                );
             }
         }
 
@@ -158,6 +131,29 @@ pub fn macos() {
     let _ = fs::remove_dir_all(&staging_dir);
     println!("Created {:?}", dmg_path);
 }
+
+fn render_icon(
+    tree: &resvg::usvg::Tree,
+    svg_width: f32,
+    svg_height: f32,
+    iconset_dir: &Path,
+    filename: String,
+    canvas: u32,
+) {
+    let canvas_f = canvas as f32;
+    let inner = canvas_f * 0.8;
+    let scale = (inner / svg_width).min(inner / svg_height);
+    let x = (canvas_f - svg_width * scale) / 2.0;
+    let y = (canvas_f - svg_height * scale) / 2.0;
+
+    let mut pixmap =
+        resvg::tiny_skia::Pixmap::new(canvas, canvas).expect("Failed to create pixmap");
+    let transform = resvg::tiny_skia::Transform::from_translate(x, y).post_scale(scale, scale);
+    resvg::render(tree, transform, &mut pixmap.as_mut());
+    let png_data = pixmap.encode_png().expect("Failed to encode PNG");
+    fs::write(iconset_dir.join(filename), png_data).expect("Failed to write PNG");
+}
+
 #[cfg(target_os = "windows")]
 pub fn windows() {
     let app_name = cargo::bundle_app_name();

@@ -34,8 +34,8 @@ permissions:
 
 jobs:
   # Builds the plain terminal binary on all
-  # four target platforms. build_terminal.js has no --target flag, so
-  # this can only cross four OS *runners*, not cross-compile from one.
+  # four target platforms. The package tool builds natively on each
+  # runner OS, so this crosses four OS *runners*, not cross-compiles.
   build-terminal:
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.terminal }}
     name: Build Terminal Binary (${{ matrix.name }})
@@ -70,17 +70,6 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
 
       # Build the Rust package tool first, then use it for all subsequent builds.
       - name: Build tools
@@ -147,7 +136,7 @@ jobs:
           path: "*-terminal-${{ matrix.name }}.zip"
 
   # Builds the macOS-native binary (built with the
-  # macos-native feature) and wraps it into a .app + .dmg via bundle.js.
+  # macos-native feature) and wraps it into a .app + .dmg.
   build-macos-native:
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.macos }}
     name: Build macOS Native (${{ matrix.name }})
@@ -178,23 +167,6 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          cache: pnpm
-
-      # librsvg provides rsvg-convert, used by bundle.js to render the app
-      # icon at multiple sizes for the .icns file. sips/iconutil/hdiutil
-      # are built into macOS, no install needed.
-      - name: Install macOS bundling deps
-        run: brew install librsvg
-
-      - name: Install dependencies
-        run: pnpm install
 
       # Build the Rust package tool first, then use it for all subsequent builds.
       - name: Build tools
@@ -261,17 +233,6 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
 
       # Build the Rust package tool first, then use it for all subsequent builds.
       - name: Build tools

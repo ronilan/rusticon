@@ -41,11 +41,9 @@ fn main() {
         && cli.description.is_some();
 
     if all_provided {
-        let npm_name = name.replace('_', "-");
         apply_changes(
             &name,
             &app_name,
-            &npm_name,
             &tagline,
             &keywords,
             &description,
@@ -77,7 +75,6 @@ fn main() {
     if final_state.should_apply {
         let final_name = final_state.name;
         let final_app_name = final_state.app_name;
-        let final_npm_name = final_name.replace('_', "-");
         let final_tagline = final_state.tagline;
         let final_keywords = final_state.keywords;
         let final_description = final_state.description;
@@ -90,7 +87,6 @@ fn main() {
         apply_changes(
             &final_name,
             &final_app_name,
-            &final_npm_name,
             &final_tagline,
             &final_keywords,
             &final_description,

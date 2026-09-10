@@ -1,7 +1,7 @@
-use crate::cmd::{build, build_all, bundle, clean, publish, release};
+use crate::cmd::{build, build_all, bundle, clean, publish, release, web};
 use crate::state::{PackageTarget, State};
 use std::path::PathBuf;
-use std::process::{self, Command};
+use std::process;
 
 pub fn execute_package(state: &State, _extra_args: &[String]) {
     let target = match state.selected_target.as_ref() {
@@ -60,13 +60,13 @@ pub fn execute_package(state: &State, _extra_args: &[String]) {
             }
             Ok::<(), std::io::Error>(())
         }
-        PackageTarget::Wasm => {
-            let _ = Command::new("node").arg("scripts/build_web.js").status();
+        PackageTarget::Wasm => web::build().and_then(|()| {
             if state.is_preview {
-                let _ = Command::new("npx").args(["vite", "preview"]).status();
+                web::serve()
+            } else {
+                Ok(())
             }
-            Ok::<(), std::io::Error>(())
-        }
+        }),
         PackageTarget::MacOs => {
             build::macos();
             if state.is_bundle || state.is_publish {

@@ -1,4 +1,4 @@
-use crate::cmd::{build, bundle};
+use crate::cmd::{build, bundle, web};
 use std::process::Command;
 
 pub fn build_all() {
@@ -8,8 +8,8 @@ pub fn build_all() {
     // Terminal (Rust)
     build::terminal();
 
-    // Web (JS-dependent - keep as node call)
-    let _ = Command::new("node").arg("scripts/build_web.js").status();
+    // Web (Rust)
+    let _ = web::build();
 
     // Platform-specific
     #[cfg(target_os = "macos")]

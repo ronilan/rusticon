@@ -4,3 +4,4 @@ pub mod bundle;
 pub mod clean;
 pub mod publish;
 pub mod release;
+pub mod web;

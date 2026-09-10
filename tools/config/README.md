@@ -4,9 +4,9 @@
 
 ## Overview
 
-This tool reads the current template name and metadata from `Cargo.toml`, lets you edit all five fields, and writes the changes back to every file that references the old name (15 source files across the repo).
+This tool reads the current template name and metadata from `Cargo.toml`, lets you edit all five fields, and writes the changes back to every file that references the old name.
 
-It is defined in the workspace `Cargo.toml` as:
+The tool is defined in the root `Cargo.toml` as:
 
 ```toml
 [[bin]]
@@ -60,32 +60,21 @@ cargo run --bin config
 
 ## Files affected
 
-The tool updates source files that reference the template name, plus description fields.
-
-### Template-name files
+The tool updates source files that reference the template name, plus metadata fields.
 
 1. `Cargo.toml` — package name, 3 bin names, metadata title + app_name + binary_name, default-run
 2. `Info.plist` — CFBundleExecutable, CFBundleName
-3. `src/main.ts` — WASM import path
-4. `docs/index.html` — HTML `<title>`
-5. `web/index.html` — HTML `<title>`
-6. `package.json` — root workspace package name
+3. `src/main.js` — WASM import path
+4. `web/index.html` — HTML `<title>`
 
-### Description field occurrences (2 total)
+> **Note:** At build time the web target reads `title`, `description`, `keywords`, `version`, `mobile-min-width`, `mobile-min-height`, and `cname` from `Cargo.toml` and injects them into `docs/index.html` (see [`tools/package/README.md`](../package/README.md#web-target)).
 
-| File | Line | Content |
-|------|------|---------|
-| `Cargo.toml` | 9 | `description = "..."` |
-| `docs/index.html` | 8 | `<meta name="description" content="...">` |
+## Building & Copying the binary
 
-> **Note:** `scripts/vite-plugin-cargo-metadata.ts` reads `metadata.description` from `Cargo.toml` and injects it into the built HTML at build time.
-
-## Copying the binary
-
-A helper script at `tools/copy-config.js` copies the built binary from `target/release/config` to the project root:
+To build the release binary and copy it to the project root as `./config` (or `./config.exe` on Windows):
 
 ```bash
-node tools/copy-config.js
+cargo build --release --bin config
 ```
 
-This is useful when you want to run the config tool as `./config` rather than via `cargo run`.
+Then copy it to the project root (see the root [README Build Tools](../../README.md) section for macOS and Windows copy commands).

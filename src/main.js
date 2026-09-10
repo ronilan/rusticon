@@ -1,4 +1,4 @@
-import init, { main } from "../pkg/rusticon.js";
+import init, { main } from "./pkg/rusticon.js";
 
 /**
  * Dynamically adjusts the mobile viewport meta tag scale factor to force
@@ -6,8 +6,8 @@ import init, { main } from "../pkg/rusticon.js";
  * The column count is read from the meta tag's data-min-width attribute
  * (set by an inline script in <head> before any paint).
  */
-function syncViewportBounds(): void {
-  const meta = document.getElementById('viewport-meta') as HTMLMetaElement | null;
+function syncViewportBounds() {
+  const meta = document.getElementById('viewport-meta');
   if (!meta) return;
 
   const cols = parseInt(meta.dataset.minWidth ?? '', 10);

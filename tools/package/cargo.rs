@@ -76,3 +76,38 @@ pub fn bundle_icon_source() -> String {
         name
     }
 }
+
+pub fn package_version() -> String {
+    let cargo_toml = fs::read_to_string("Cargo.toml").unwrap_or_default();
+    let pkg_section = extract_section(&cargo_toml, "package");
+    let v = get_field(&pkg_section, "version");
+    if v.is_empty() {
+        "0.1.0".to_string()
+    } else {
+        v
+    }
+}
+
+pub fn html_metadata() -> HtmlMetadata {
+    let cargo_toml = fs::read_to_string("Cargo.toml").unwrap_or_default();
+    let html_section = extract_section(&cargo_toml, "package.metadata.html");
+    HtmlMetadata {
+        title: get_field(&html_section, "title"),
+        description: get_field(&html_section, "description"),
+        keywords: get_field(&html_section, "keywords"),
+        min_width: get_field(&html_section, "mobile-min-width"),
+        min_height: get_field(&html_section, "mobile-min-height"),
+        cname: get_field(&html_section, "cname"),
+        version: package_version(),
+    }
+}
+
+pub struct HtmlMetadata {
+    pub title: String,
+    pub description: String,
+    pub keywords: String,
+    pub min_width: String,
+    pub min_height: String,
+    pub cname: String,
+    pub version: String,
+}

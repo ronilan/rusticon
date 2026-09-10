@@ -4,12 +4,30 @@ This project builds and packages for four platforms from a single codebase: **Te
 
 **Build the tools** (from the repo root):
 
+Build all three tools (config, package, run):
+
 ```bash
 cargo build-tools
-tools/copy.js
 ```
 
-This builds all three tools (config, package, run) and copies the binaries to the project root.
+Then copy the freshly built binaries to the project root:
+
+**macOS:**
+
+```bash
+cp target/release/config target/release/package target/release/run .
+chmod +x config package run
+```
+
+**Windows (PowerShell):**
+
+```powershell
+copy target\release\config.exe .
+copy target\release\package.exe .
+copy target\release\run.exe .
+```
+
+The tools are then executed from the project root (`./config`, `./package`, `./run` on macOS; `config.exe`, `package.exe`, `run.exe` on Windows).
 
 **Configure the app:**
 

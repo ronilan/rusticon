@@ -11,8 +11,13 @@ pub fn execute_target(target: TargetPlatform, extra_args: &[String]) {
             c
         }
         TargetPlatform::Wasm => {
-            let mut c = Command::new("node");
-            c.arg("scripts/dev.js");
+            let package_bin = if cfg!(windows) {
+                "package.exe"
+            } else {
+                "./package"
+            };
+            let mut c = Command::new(package_bin);
+            c.arg("wasm").arg("--preview");
             c
         }
         TargetPlatform::MacOs => {
