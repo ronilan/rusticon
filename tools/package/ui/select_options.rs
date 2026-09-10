@@ -43,7 +43,7 @@ pub fn build_select_options() -> Select<State> {
                 el.focused(true);
             }
         })
-        .on_state(|el, state| {
+        .on_state(|el, state, _event| {
             // No target selected: all items shown (text visible), all disabled.
             el.disabled(state.selected_target.is_none());
 

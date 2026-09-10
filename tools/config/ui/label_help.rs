@@ -12,7 +12,7 @@ pub fn build_label_help() -> Label<State> {
         .focused(false)
         .interactive(false);
 
-    label_help.on_state(|el, state| {
+    label_help.on_state(|el, state, _event| {
         let text = match state.focused_index {
             0 => " App Name: Displayed in the OS, window titles, and HTML title.",
             1 => " Name: Used for the Rust crate, binaries, and package.json.",

@@ -25,7 +25,7 @@ pub fn build_button_package() -> Button<State> {
                 state.should_execute = true;
             }
         })
-        .on_state(|el, state| {
+        .on_state(|el, state, _event| {
             el.disabled(state.selected_target.is_none());
         });
 

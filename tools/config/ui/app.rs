@@ -14,7 +14,7 @@ pub fn build_app() -> App<State> {
     });
     app.exit_combination(Some(KeyCombination::new(Key::Escape, &[])));
 
-    app.on_state(|_, state| {
+    app.on_state(|_, state, _event| {
         if state.should_apply || state.should_quit {
             exit(0);
         }

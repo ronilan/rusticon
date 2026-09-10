@@ -15,7 +15,7 @@ pub fn build() -> Rectangle<State> {
         .fill(Some(' '));
 
     wrapper
-        .on_state(|el, state| {
+        .on_state(|el, state, _event| {
             el.showed(!state.flow.viewport_too_small && state.flow.phase == AppPhase::Main);
         })
         .on_mouse(|el, state, event| {

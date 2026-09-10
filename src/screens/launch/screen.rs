@@ -9,7 +9,7 @@ use incredible_helpers_layout::{Arrangers, Flowers};
 pub fn build() -> Rectangle<State> {
     let wrapper: Rectangle<State> = Rectangle::new();
     wrapper.width(APP_WIDTH).height(APP_HEIGHT).fill(Some(' '));
-    wrapper.on_state(|el, state| {
+    wrapper.on_state(|el, state, _event| {
         el.showed(!state.flow.viewport_too_small && state.flow.phase == AppPhase::Launch);
     });
 

@@ -14,7 +14,7 @@ pub fn build() -> Rectangle<State> {
         .width(15)
         .height(2)
         .fill(Some(' '))
-        .on_state(|el, state| {
+        .on_state(|el, state, _event| {
             let color_source = if state.editor.picker_mode {
                 state.editor.candidate
             } else {

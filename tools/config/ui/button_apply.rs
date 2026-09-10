@@ -28,7 +28,7 @@ pub fn build_button_apply() -> Button<State> {
                 state.focused_index = 6;
             }
         })
-        .on_state(|el, state| {
+        .on_state(|el, state, _event| {
             el.disabled(!state.is_valid);
         });
     button_apply

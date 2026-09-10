@@ -44,7 +44,7 @@ pub fn build<'a>() -> Element<State> {
                 }
             }
         })
-        .on_state(|el, state| {
+        .on_state(|el, state, _event| {
             let pl = state.editor.palette_index;
             let pll = &state.editor.palette_colors;
 

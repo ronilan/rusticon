@@ -11,7 +11,7 @@ pub fn build() -> Text<State> {
         .x(X)
         .y(Y)
         .text("")
-        .on_state(|el, state| {
+        .on_state(|el, state, _event| {
             let text = if state.editor.picker_mode {
                 match state.editor.candidate {
                     Some(c) => format!("{:<3}   {}", c, Colors::ansi8_to_hex(c)),

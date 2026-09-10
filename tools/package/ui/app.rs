@@ -30,7 +30,7 @@ pub fn build_app() -> App<State> {
             el.elements_to_left();
             el.draw();
         })
-        .on_state(|_, state| {
+        .on_state(|_, state, _event| {
             if state.should_execute {
                 exit(0);
             }

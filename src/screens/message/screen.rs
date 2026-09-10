@@ -14,7 +14,7 @@ pub fn build() -> Rectangle<State> {
         .width(APP_WIDTH)
         .height(APP_HEIGHT.saturating_sub(1))
         .fill(Some(' '));
-    wrapper.on_state(|el, state| {
+    wrapper.on_state(|el, state, _event| {
         el.showed(!state.flow.viewport_too_small && state.flow.phase == AppPhase::Message);
     });
 

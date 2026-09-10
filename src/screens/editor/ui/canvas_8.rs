@@ -54,7 +54,7 @@ pub fn build() -> Element<State> {
             let look = canvas_look_from_data(8, &state.editor.canvas8_data);
             el.look(look);
         })
-        .on_state(|el, state| {
+        .on_state(|el, state, _event| {
             let active = state.flow.phase == AppPhase::Main && state.editor.size == 8;
             el.showed(active);
             if !active {

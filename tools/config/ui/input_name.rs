@@ -46,7 +46,7 @@ pub fn build_input_name() -> TextArea<State> {
                 state.rule_invalid = inv;
             }
         });
-    input_name.on_state(|el, state| {
+    input_name.on_state(|el, state, _event| {
         if !el.status().focused.get() {
             el.text(&state.name);
         }

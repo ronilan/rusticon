@@ -20,7 +20,7 @@ pub fn build() -> Text<State> {
     title_bar.x(0).y(0).showed(false);
     title_bar.inverse(Some(true)).fused(true);
 
-    title_bar.on_state(|el, state| {
+    title_bar.on_state(|el, state, _event| {
         let visible = !state.flow.viewport_too_small && state.flow.phase == AppPhase::Main;
         el.showed(visible);
         if visible {

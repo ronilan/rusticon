@@ -19,7 +19,7 @@ pub fn build() -> Rectangle<State> {
     message.add(text);
     message.elements_to_center();
 
-    message.on_state(|el, state| {
+    message.on_state(|el, state, _event| {
         if state.flow.phase != AppPhase::Message {
             return;
         }

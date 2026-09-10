@@ -53,7 +53,7 @@ pub fn build() -> Element<State> {
                 }
             }
         })
-        .on_state(|el, _state| {
+        .on_state(|el, _state, _event| {
             el.draw();
         });
 

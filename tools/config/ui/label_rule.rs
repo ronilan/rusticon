@@ -13,7 +13,7 @@ pub fn build_label_rule() -> Label<State> {
         .focused(false)
         .interactive(false);
 
-    label_rule.on_state(|el, state| {
+    label_rule.on_state(|el, state, _event| {
         el.text(&format!(" {}", state.rule_text));
         if state.rule_invalid {
             el.color(Some(Color::from(1)));
