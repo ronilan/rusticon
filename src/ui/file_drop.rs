@@ -12,7 +12,7 @@ pub fn build() -> FileDrop<State> {
     // incredible-playground FileDrop examples): on each loop tick the hidden
     // FileDrop reports any newly dropped items, and we kick off the import.
     file_drop.on_loop(move |el: &FileDrop<State>, state: &mut State, _event| {
-        let Some(items) = el.take_new_items() else {
+        let Some(items) = el.take_new_items_action() else {
             return;
         };
         if state.flow.phase == AppPhase::Splash {
