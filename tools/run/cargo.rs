@@ -38,7 +38,7 @@ pub fn get_package_name() -> String {
     let pkg_section = extract_section(&cargo_toml, "package");
     let name = get_field(&pkg_section, "name");
     if name.is_empty() {
-        "incredible_app_template".to_string()
+        "incredible_app".to_string()
     } else {
         name
     }

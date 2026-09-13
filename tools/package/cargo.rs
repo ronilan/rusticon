@@ -38,7 +38,7 @@ pub fn package_name() -> String {
     let pkg_section = extract_section(&cargo_toml, "package");
     let name = get_field(&pkg_section, "name");
     if name.is_empty() {
-        "incredible_app_template".to_string()
+        "incredible_app".to_string()
     } else {
         name
     }
@@ -49,7 +49,7 @@ pub fn bundle_app_name() -> String {
     let bundle_section = extract_section(&cargo_toml, "package.metadata.bundle");
     let name = get_field(&bundle_section, "app_name");
     if name.is_empty() {
-        "Incredible Template".to_string()
+        "An Incredible App".to_string()
     } else {
         name
     }

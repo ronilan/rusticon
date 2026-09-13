@@ -155,6 +155,15 @@ fn transform_info_plist(content: &str, name: &str, app_name: &str) -> String {
             }
         }
     }
+    if let Some(start) = r.find("<key>CFBundleIdentifier</key>") {
+        if let Some(s) = r[start..].find("<string>") {
+            let abs_s = start + s + 8;
+            if let Some(e) = r[abs_s..].find("</string>") {
+                let identifier = format!("com.ronilan.{}", name.replace('_', "-"));
+                r = format!("{}{}{}", &r[..abs_s], identifier, &r[abs_s + e..]);
+            }
+        }
+    }
     if let Some(start) = r.find("<key>CFBundleName</key>") {
         if let Some(s) = r[start..].find("<string>") {
             let abs_s = start + s + 8;
@@ -167,7 +176,31 @@ fn transform_info_plist(content: &str, name: &str, app_name: &str) -> String {
 }
 
 fn transform_dockerfile(content: &str, name: &str) -> String {
-    content.replace("incredible_app_template", name)
+    let mut lines: Vec<String> = Vec::new();
+    for line in content.lines() {
+        let trimmed = line.trim_start();
+        let leading = &line[..line.len() - trimmed.len()];
+        if trimmed.starts_with("https://github.com/ronilan/") {
+            lines.push(format!(
+                "{}https://github.com/ronilan/{}/releases/latest/download/{}-terminal-linux.zip \\",
+                leading, name, name
+            ));
+        } else if trimmed.starts_with("-o /tmp/") {
+            lines.push(format!("{}-o /tmp/{}.zip \\", leading, name));
+        } else if trimmed.starts_with("&& unzip -o /tmp/") {
+            lines.push(format!(
+                "{}&& unzip -o /tmp/{}.zip -d /usr/local/bin \\",
+                leading, name
+            ));
+        } else if trimmed.starts_with("&& rm /tmp/") {
+            lines.push(format!("{}&& rm /tmp/{}.zip \\", leading, name));
+        } else if trimmed.starts_with("&& chmod +x /usr/local/bin/") {
+            lines.push(format!("{}&& chmod +x /usr/local/bin/{}", leading, name));
+        } else {
+            lines.push(line.to_string());
+        }
+    }
+    lines.join("\n")
 }
 
 fn transform_main_ts(content: &str, name: &str) -> String {

@@ -277,6 +277,13 @@ jobs:
   publish-release:
     name: Publish binaries
     needs: [build-terminal, build-macos-native, build-windows-native]
+    # Run when at least one build job succeeded. Default `needs` behavior
+    # requires ALL of them to succeed (and a skipped job blocks dependents
+    # too), so without this a single failed build — or a manual dispatch
+    # with only some targets checked — would skip publishing entirely.
+    # `!cancelled()` keeps `always()`-like behavior but still stops on
+    # workflow cancellation.
+    if: ${{ !cancelled() && (needs.build-terminal.result == 'success' || needs.build-macos-native.result == 'success' || needs.build-windows-native.result == 'success') }}
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts

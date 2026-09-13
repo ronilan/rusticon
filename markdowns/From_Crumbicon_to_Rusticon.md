@@ -4,7 +4,7 @@
 
 Rusticon is a Rust-based port of [Crumbicon](https://github.com/ronilan/crumbicon), originally written in the [Crumb programming language](https://github.com/liam-ilan/crumb). It replicates the same functionality and user experience (and then extends it a little). 
 
-<p align=center><img src="./media/crumbicon-to-rusticon.png" alt="banner" width="640" style="border: 1px solid #999; border-radius: 5px"/></p>
+<p align=center><img src="../media/crumbicon-to-rusticon.png" alt="banner" width="640" style="border: 1px solid #999; border-radius: 5px"/></p>
 
 
 Below is a brief recap of the porting task from a technical perspective.

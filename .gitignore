@@ -19,9 +19,6 @@ Icon
 .Spotlight-V100
 .Trashes
 
-# Rust
-Cargo.lock
-
 # Rust build artifacts
 /target
 
