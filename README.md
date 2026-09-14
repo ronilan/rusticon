@@ -44,18 +44,30 @@ Rusticon also has an experimental browser build. This is not publicly available 
 
 ## Setup
 
-From this repository root:
-```sh
-pnpm install
-```
+You need:
+- Rust (with the `wasm32-unknown-unknown` target)
+- [wasm-pack](https://rustwasm.github.io/wasm-pack/) — `curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh`
 
 ## Run (dev)
 
+From this repository root:
 ```sh
-pnpm run dev
+./run --wasm
+```
+or directly:
+```sh
+scripts/build_web.sh --dev --serve
 ```
 
-This builds the wasm package and starts Vite (served from `web/`).
+This compiles the WASM package with wasm-pack, assembles the static site into `docs/` (no node/bundler involved), and serves it at http://localhost:4627.
+
+## Build
+
+```sh
+scripts/build_web.sh
+```
+
+Writes the ready-to-deploy static site into `docs/` (used by the GitHub Pages workflow).
 
 ## URL params
 
@@ -64,7 +76,7 @@ Browser mode supports hash params:
 - `#size=8` or `#size=16` sets initial canvas size (default `8`)
 
 Example:
-- `http://localhost:3000/#name=my_icon.svg&size=16`
+- `http://localhost:4627/#name=my_icon.svg&size=16`
 
 ## Save behavior in browser
 

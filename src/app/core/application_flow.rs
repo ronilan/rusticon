@@ -149,6 +149,11 @@ fn do_flow(io: impl RusticonIo + Clone + 'static, reopen: bool) {
     Globals::set_tick_rate(10.0);
     setup_runtime::<SplashState>();
 
+    // The HTML output keeps a persistent cell buffer across runs. Wipe any
+    // cells left over from a previous run (e.g. the editor when a file is
+    // dropped to re-open) before the splash draws.
+    Platform::clear_screen();
+
     let splash_handle = tui_run(splash_root, splash_state, looper, |_| {});
     let io_after_splash = io.clone();
 
@@ -174,6 +179,10 @@ fn do_flow(io: impl RusticonIo + Clone + 'static, reopen: bool) {
 
                     Globals::set_tick_rate(33.0);
                     setup_runtime::<State>();
+
+                    // The splash run has ended and its cells are still in the
+                    // HTML buffer; wipe them so the editor starts clean.
+                    Platform::clear_screen();
 
                     let main_handle = tui_run(root, ui_state, looper, |_| {});
                     let io_after_main = io_for_main.clone();

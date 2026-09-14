@@ -30,11 +30,6 @@ Cargo.lock
 /docs
 /release
 
-# JavaScript / pnpm workspace
-**/node_modules
-pnpm-debug.log*
-.pnpm-store*
-
 # Built tools
 /config
 /package

@@ -204,7 +204,7 @@ fn setup_drop_listeners() {
                     // `drop_ready` but the editor would keep running and never
                     // hand off to the next file. Exit here so the running app's
                     // `on_set` detects the drop and re-runs the flow.
-                    incredible::exit();
+                    incredible::exit(0);
                 }
             }
         });

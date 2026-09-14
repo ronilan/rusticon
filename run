@@ -28,7 +28,7 @@ case $PLATFORM in
         cargo run --bin rusticon_macos --features macos-native -- $ARGS
         ;;
     wasm)
-        pnpm run dev -- $ARGS
+        ./scripts/build_web.sh --dev --serve
         ;;
     *)
         echo "Invalid platform. Use: --terminal, --macos, or --wasm"
