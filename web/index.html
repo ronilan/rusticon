@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta id="viewport-meta" name="viewport" data-min-width="0" data-min-height="0" content="width=device-width, initial-scale=1.0">
+    <meta id="viewport-meta" name="viewport" data-min-width="80" data-min-height="24" content="width=device-width, initial-scale=1.0">
     <script>
       // Runs before any body content is parsed or painted. Sets the initial
       // viewport scale so the terminal grid fits the device from the first frame.
@@ -23,7 +23,10 @@
           if (cw > devW) s = Math.min(s, devW / cw);
         }
         if (rows) {
-          var ch = rows * LINE_HEIGHT;
+          // Fake extra rows: forces earlier shrinking where browser chrome
+          // eats space the device metrics don't report.
+          var FAKE_ROWS = 50;
+          var ch = (rows + FAKE_ROWS) * LINE_HEIGHT;
           var dh = window.screen.height;
           if (ch > dh) s = Math.min(s, dh / ch);
         }

@@ -30,7 +30,10 @@ function syncViewportBounds() {
   }
 
   if (rows) {
-    const content_height = rows * LINE_HEIGHT;
+    // Fake extra rows: forces earlier shrinking where browser chrome
+    // eats space the device metrics don't report.
+    const FAKE_ROWS = 50;
+    const content_height = (rows + FAKE_ROWS) * LINE_HEIGHT;
     const device_height = window.screen.height;
     if (content_height > device_height) scale = Math.min(scale, device_height / content_height);
   }
@@ -43,7 +46,8 @@ function syncViewportBounds() {
 
 await init();
 
-// Attach listeners for orientation flips and window adjustments
+// Fit on first paint, then track flips and window adjustments.
+syncViewportBounds();
 window.addEventListener('resize', syncViewportBounds);
 window.addEventListener('orientationchange', syncViewportBounds);
 

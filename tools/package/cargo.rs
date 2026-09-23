@@ -27,6 +27,16 @@ fn get_field(section: &str, key: &str) -> String {
                 if val.starts_with('"') && val.ends_with('"') && val.len() >= 2 {
                     return val[1..val.len() - 1].to_string();
                 }
+                // Bare values (e.g. integers like mobile-min-width).
+                let bare: String = val
+                    .split_whitespace()
+                    .next()
+                    .unwrap_or_default()
+                    .trim_end_matches(',')
+                    .to_string();
+                if !bare.is_empty() {
+                    return bare;
+                }
             }
         }
     }
