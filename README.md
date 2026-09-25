@@ -25,6 +25,20 @@ docker run --rm -it rusticon
 
 Type `rusticon` in the container shell to launch.
 
+## TUI Install / Uninstall
+
+Installs the latest release binary — `/usr/local/bin` (macOS/Linux) or `C:\Program Files\rusticon` (Windows). No clone or build required:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/ronilan/rusticon/main/install.sh | bash
+```
+
+```powershell
+irm https://raw.githubusercontent.com/ronilan/rusticon/main/install.ps1 | iex
+```
+
+Uninstall the same way with `uninstall.sh` / `uninstall.ps1`. If the release lookup fails, pass the binary name explicitly: `bash uninstall.sh <binary-name>` / `uninstall.ps1 -BinName <name>`.
+
 ## WASM version
 
 Available on web at: https://ronilan.github.io/rusticon/
