@@ -66,6 +66,7 @@ The tool updates source files that reference the template name, plus metadata fi
 2. `Info.plist` — CFBundleExecutable, CFBundleName
 3. `src/main.js` — WASM import path
 4. `web/index.html` — HTML `<title>`
+5. `install.sh`, `uninstall.sh`, `install.ps1`, `uninstall.ps1`, `README.md`, `Dockerfile` — `owner/repo` auto-discovered from `git remote get-url origin`
 
 > **Note:** At build time the web target reads `title`, `description`, `keywords`, `version`, `mobile-min-width`, `mobile-min-height`, and `cname` from `Cargo.toml` and injects them into `docs/index.html` (see [`tools/package/README.md`](../package/README.md#web-target)).
 

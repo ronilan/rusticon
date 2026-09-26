@@ -4,8 +4,7 @@
 # clone or checkout required. Installs the binary into a subfolder of
 # C:\Program Files and adds that folder to the system PATH.
 #
-# If `gh` (the GitHub CLI) is installed and authenticated, it is used for the
-# API calls and the asset download; otherwise anonymous access is used.
+# The repository and its release assets must be publicly accessible.
 #
 # Usage:
 #   powershell -ExecutionPolicy Bypass -File install.ps1
@@ -56,27 +55,15 @@ if (-not $isAdmin) {
 $Dest = Join-Path $env:ProgramFiles $folderName
 
 # --- 2. Resolve the asset's download URL from the latest release -------------
-# Anonymous lookup first (works for public repos with nothing installed);
-# authenticated gh only as fallback (e.g. private repos).
-$gh = Get-Command gh -ErrorAction SilentlyContinue
-$useGh = $false
-if ($gh) {
-    gh auth status *> $null
-    if ($LASTEXITCODE -eq 0) { $useGh = $true }
-}
 Write-Host "Looking up latest release for ${repoOwnerAndName}..."
 $release = $null
 try {
     $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$repoOwnerAndName/releases?per_page=1" |
         Select-Object -First 1
 } catch { $release = $null }
-if ((-not $release) -and $useGh) {
-    Write-Host "(anonymous lookup failed, retrying authenticated...)"
-    $release = (gh api "repos/$repoOwnerAndName/releases?per_page=1") | ConvertFrom-Json | Select-Object -First 1
-}
 $assetObj = $release.assets | Where-Object { $_.name -match '-terminal-windows\.zip$' } | Select-Object -First 1
 if (-not $assetObj) {
-    Write-Error "No *-terminal-windows.zip asset found in the latest release. If the repository is not publicly accessible, install the GitHub CLI and authenticate first (https://cli.github.com, then gh auth login)."
+    Write-Error "No *-terminal-windows.zip asset found in the latest release. Verify that $repoOwnerAndName and its release assets are publicly accessible."
 }
 
 # The asset is "<binary>-terminal-windows.zip" containing the bare exe (the
@@ -89,16 +76,7 @@ $url = $assetObj.browser_download_url
 $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("install_" + [Guid]::NewGuid().ToString("N"))
 New-Item -ItemType Directory -Path $tmp | Out-Null
 try {
-    $downloaded = $false
-    try {
-        Invoke-WebRequest -Uri $url -OutFile (Join-Path $tmp $assetObj.name)
-        $downloaded = $true
-    } catch { $downloaded = $false }
-    if ((-not $downloaded) -and $useGh) {
-        gh release download $release.tag_name --repo $repoOwnerAndName --pattern $assetObj.name --dir $tmp --clobber
-    } elseif (-not $downloaded) {
-        throw "Download failed for $($assetObj.name)"
-    }
+    Invoke-WebRequest -Uri $url -OutFile (Join-Path $tmp $assetObj.name)
     Expand-Archive -Path (Join-Path $tmp $assetObj.name) -DestinationPath $tmp -Force
 
     # --- 4. Install into the destination folder ------------------------------

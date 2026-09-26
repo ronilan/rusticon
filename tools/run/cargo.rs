@@ -1,4 +1,5 @@
 use std::fs;
+use std::process;
 
 fn extract_section(text: &str, header: &str) -> String {
     let marker = format!("[{}]", header);
@@ -38,7 +39,8 @@ pub fn get_package_name() -> String {
     let pkg_section = extract_section(&cargo_toml, "package");
     let name = get_field(&pkg_section, "name");
     if name.is_empty() {
-        "incredible_app".to_string()
+        eprintln!("Error: cannot determine package name (Cargo.toml unreadable).");
+        process::exit(1);
     } else {
         name
     }

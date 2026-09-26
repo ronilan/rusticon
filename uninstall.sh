@@ -7,7 +7,7 @@
 #   bash uninstall.sh                 # standard uninstall
 #   bash uninstall.sh <binary-name>   # fallback if the release lookup fails
 #
-# Requires: gh (optional; used when available), sudo.
+# Requires: curl, sudo.
 
 set -euo pipefail
 
@@ -30,16 +30,13 @@ else
   echo "Looking up binary name from the latest release of ${REPO}..."
   assets=$(curl -fsSL --retry 3 "https://api.github.com/repos/${REPO}/releases?per_page=1") \
     || assets=""
-  if [ -z "$assets" ] && command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
-    assets=$(gh api "repos/${REPO}/releases?per_page=1") || assets=""
-  fi
   bin_name=$(printf '%s' "$assets" \
     | grep -o '"name": *"[^"]*-terminal-[^"]*\.zip"' \
     | head -n 1 | cut -d'"' -f4 \
     | sed -E 's/-terminal-[^.]*\.zip$//') || true
   [ -n "$bin_name" ] || {
     echo "error: could not determine the binary name from the latest release." >&2
-    echo "If the repository is not publicly accessible, install/authenticate the GitHub CLI (gh auth login)." >&2
+    echo "Verify that ${REPO} and its release assets are publicly accessible." >&2
     echo "Pass it explicitly: $0 <binary-name>   (e.g. the name you installed)" >&2
     exit 1
   }

@@ -1,6 +1,7 @@
 mod cargo;
 mod cli;
 mod execute;
+mod repo;
 mod state;
 mod ui;
 

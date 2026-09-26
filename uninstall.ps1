@@ -59,17 +59,8 @@ if ($BinName) {
             Select-Object -First 1
         $assetObj = $release.assets | Where-Object { $_.name -match '-terminal-windows\.zip$' } | Select-Object -First 1
     } catch { $assetObj = $null }
-    if ((-not $assetObj) -and (Get-Command gh -ErrorAction SilentlyContinue)) {
-        gh auth status *> $null
-        if ($LASTEXITCODE -eq 0) {
-            try {
-                $release = (gh api "repos/$DefaultRepo/releases?per_page=1") | ConvertFrom-Json | Select-Object -First 1
-                $assetObj = $release.assets | Where-Object { $_.name -match '-terminal-windows\.zip$' } | Select-Object -First 1
-            } catch { $assetObj = $null }
-        }
-    }
     if (-not $assetObj) {
-        Write-Error "Could not determine the binary name from the latest release. If the repository is not publicly accessible, install/authenticate the GitHub CLI (gh auth login), or pass the name explicitly: -BinName <name>"
+        Write-Error "Could not determine the binary name from the latest release. Verify that $DefaultRepo and its release assets are publicly accessible, or pass the name explicitly: -BinName <name>"
     }
     $binName = $assetObj.name -replace '-terminal-windows\.zip$', ''
 }

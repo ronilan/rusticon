@@ -175,15 +175,15 @@ fn transform_info_plist(content: &str, name: &str, app_name: &str) -> String {
     r
 }
 
-fn transform_dockerfile(content: &str, name: &str) -> String {
+fn transform_dockerfile(content: &str, name: &str, repo: &str) -> String {
     let mut lines: Vec<String> = Vec::new();
     for line in content.lines() {
         let trimmed = line.trim_start();
         let leading = &line[..line.len() - trimmed.len()];
         if trimmed.starts_with("https://github.com/ronilan/") {
             lines.push(format!(
-                "{}https://github.com/ronilan/{}/releases/latest/download/{}-terminal-linux.zip \\",
-                leading, name, name
+                "{}https://github.com/{}/releases/latest/download/{}-terminal-linux.zip \\",
+                leading, repo, name
             ));
         } else if trimmed.starts_with("-o /tmp/") {
             lines.push(format!("{}-o /tmp/{}.zip \\", leading, name));
@@ -288,6 +288,11 @@ pub fn apply_changes(
         "web/index.html",
     ];
 
+    // Owner/repo for the Dockerfile URL: discovered remote first, the
+    // scripts' current value second, binary name as last resort.
+    let repo = crate::repo::discover_repo()
+        .or_else(read_current_repo)
+        .unwrap_or_else(|| name.to_string());
     let mut updated = 0usize;
     for file in &files {
         let path = Path::new(file);
@@ -306,7 +311,7 @@ pub fn apply_changes(
             "Cargo.toml" => {
                 transform_cargo_toml(&original, name, app_name, desc_opt, kw_opt, &display_title)
             }
-            "Dockerfile" => transform_dockerfile(&original, name),
+            "Dockerfile" => transform_dockerfile(&original, name, &repo),
             "Info.plist" => transform_info_plist(&original, name, app_name),
             "src/main.js" => transform_main_ts(&original, name),
             _ => transform_html(&original, &display_title, desc_opt, kw_opt),
@@ -324,4 +329,75 @@ pub fn apply_changes(
         }
     }
     println!("\nDone! {} file(s) updated.", updated);
+
+    // Repo-scoped files: auto-discovered from the git remote, no flags.
+    match crate::repo::discover_repo() {
+        Some(new) => match read_current_repo() {
+            Some(old) if old != new => update_repo_scoped_files(&old, &new),
+            Some(_) => println!("Repo unchanged."),
+            None => eprintln!("Skip repo-scoped files: install.sh not found."),
+        },
+        None => eprintln!("Skip repo-scoped files: no git remote found."),
+    }
+}
+
+/// Previous `owner/repo` value, read from the scripts themselves.
+fn read_current_repo() -> Option<String> {
+    if let Ok(sh) = fs::read_to_string("install.sh") {
+        for line in sh.lines() {
+            let t = line.trim_start();
+            if let Some(rest) = t.strip_prefix("REPO=\"") {
+                if let Some(end) = rest.find('"') {
+                    return Some(rest[..end].to_string());
+                }
+            }
+        }
+    }
+    if let Ok(ps1) = fs::read_to_string("install.ps1") {
+        for line in ps1.lines() {
+            let t = line.trim_start();
+            if let Some(rest) = t.strip_prefix("$DefaultRepo = \"") {
+                if let Some(end) = rest.find('"') {
+                    return Some(rest[..end].to_string());
+                }
+            }
+        }
+    }
+    None
+}
+
+/// Plain `old` -> `new` replacement; binary names never match `owner/repo`.
+fn update_repo_scoped_files(old: &str, new: &str) {
+    let mut updated = 0usize;
+    for file in &[
+        "install.sh",
+        "uninstall.sh",
+        "install.ps1",
+        "uninstall.ps1",
+        "README.md",
+        "Dockerfile",
+    ] {
+        let path = Path::new(file);
+        if !path.exists() {
+            continue;
+        }
+        match fs::read_to_string(path) {
+            Ok(original) => {
+                let transformed = original.replace(old, new);
+                if transformed != original {
+                    match fs::write(path, &transformed) {
+                        Ok(_) => {
+                            println!("Updated: {}", file);
+                            updated += 1;
+                        }
+                        Err(e) => eprintln!("Error writing {}: {}", file, e),
+                    }
+                } else {
+                    println!("Unchanged: {}", file);
+                }
+            }
+            Err(e) => eprintln!("Error reading {}: {}", file, e),
+        }
+    }
+    println!("\nDone! {} repo file(s) updated.", updated);
 }
