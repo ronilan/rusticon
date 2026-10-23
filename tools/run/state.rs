@@ -36,4 +36,5 @@ impl TargetPlatform {
 pub struct State {
     pub selected_target: Option<TargetPlatform>,
     pub should_run: bool,
+    pub args_text: String,
 }

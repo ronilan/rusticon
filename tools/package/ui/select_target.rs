@@ -13,6 +13,7 @@ pub fn build_select_target() -> Select<State> {
         .y(1)
         .width(32)
         .height(6)
+        .label("Platform")
         .focused(true)
         .add_item("All Targets", "all")
         .add_item("Terminal", "terminal")

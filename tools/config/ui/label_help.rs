@@ -10,7 +10,7 @@ pub fn build_label_help() -> Label<State> {
         .y(19)
         .wrap_at(76)
         .focused(false)
-        .interactive(false);
+        .attention_keys(AttentionLevel::Never);
 
     label_help.on_state(|el, state, _event| {
         let text = match state.focused_index {

@@ -42,13 +42,7 @@ fn main() {
         && cli.description.is_some();
 
     if all_provided {
-        apply_changes(
-            &name,
-            &app_name,
-            &tagline,
-            &keywords,
-            &description,
-        );
+        apply_changes(&name, &app_name, &tagline, &keywords, &description);
         return;
     }
 

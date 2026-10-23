@@ -11,7 +11,7 @@ pub fn build_label_rule() -> Label<State> {
         .y(20)
         .wrap_at(76)
         .focused(false)
-        .interactive(false);
+        .attention_keys(AttentionLevel::Never);
 
     label_rule.on_state(|el, state, _event| {
         el.text(&format!(" {}", state.rule_text));

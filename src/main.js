@@ -46,8 +46,7 @@ function syncViewportBounds() {
 
 await init();
 
-// Fit on first paint, then track flips and window adjustments.
-syncViewportBounds();
+// Track flips and window adjustments.
 window.addEventListener('resize', syncViewportBounds);
 window.addEventListener('orientationchange', syncViewportBounds);
 

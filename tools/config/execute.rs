@@ -257,13 +257,7 @@ fn transform_html(
     r
 }
 
-pub fn apply_changes(
-    name: &str,
-    app_name: &str,
-    tagline: &str,
-    keywords: &str,
-    description: &str,
-) {
+pub fn apply_changes(name: &str, app_name: &str, tagline: &str, keywords: &str, description: &str) {
     let display_title = if !tagline.is_empty() {
         format!("{} :: {}", app_name, tagline)
     } else {

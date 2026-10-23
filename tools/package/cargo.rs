@@ -91,11 +91,7 @@ pub fn package_version() -> String {
     let cargo_toml = fs::read_to_string("Cargo.toml").unwrap_or_default();
     let pkg_section = extract_section(&cargo_toml, "package");
     let v = get_field(&pkg_section, "version");
-    if v.is_empty() {
-        "0.1.0".to_string()
-    } else {
-        v
-    }
+    if v.is_empty() { "0.1.0".to_string() } else { v }
 }
 
 pub fn html_metadata() -> HtmlMetadata {

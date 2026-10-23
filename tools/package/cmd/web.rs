@@ -61,7 +61,10 @@ fn inject_html(html: &str, meta: &HtmlMetadata) -> String {
             meta.keywords
         ));
     }
-    extra.push_str(&format!("<meta name=\"version\" content=\"{}\">\n", meta.version));
+    extra.push_str(&format!(
+        "<meta name=\"version\" content=\"{}\">\n",
+        meta.version
+    ));
 
     if let Some(pos) = out.find("</head>") {
         out.insert_str(pos, &extra);
@@ -95,11 +98,7 @@ fn replace_attr(html: &str, attr: &str, value: &str) -> String {
         }
         i += 1;
     }
-    if replaced {
-        result
-    } else {
-        out
-    }
+    if replaced { result } else { out }
 }
 
 pub fn build() -> io::Result<()> {
@@ -235,11 +234,7 @@ fn send_status(stream: &mut TcpStream, code: u16, text: &str) -> io::Result<()> 
 }
 
 fn mime_for(path: &Path) -> &'static str {
-    match path
-        .extension()
-        .and_then(|e| e.to_str())
-        .unwrap_or("")
-    {
+    match path.extension().and_then(|e| e.to_str()).unwrap_or("") {
         "html" => "text/html; charset=utf-8",
         "css" => "text/css; charset=utf-8",
         "js" => "text/javascript; charset=utf-8",

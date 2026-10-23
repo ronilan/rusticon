@@ -13,6 +13,7 @@ pub fn build_select_options() -> Select<State> {
         .y(1)
         .width(32)
         .height(6)
+        .label("Options")
         .add_item("Clean before build", "clean")
         .add_item("Bundle app package", "bundle")
         .add_item("Publish package", "publish")

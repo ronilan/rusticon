@@ -27,7 +27,12 @@ Provide a target platform parameter to immediately execute the selected target w
 ./run --windows         # Launches Windows native GUI binary via cargo run (Windows only)
 ```
 
-Target short names are also supported (e.g., `t`, `web`, `mac`, `win`). Any extra arguments passed after the target are forwarded directly to the underlying command.
+Target short names are also supported (e.g., `t`, `web`, `mac`, `win`). Any extra arguments passed after the target are forwarded directly to the underlying command. An explicit `--` separator is allowed: `./run terminal -- foo.txt`.
+
+```bash
+./run terminal foo.txt       # forwards foo.txt to the terminal binary
+./run terminal -- foo.txt    # same, explicit separator
+```
 
 ### Interactive TUI mode
 
@@ -39,7 +44,9 @@ Omit target parameters (or pass an unknown parameter) to open the interactive se
 ```
 
 - Navigate through options using Arrow keys.
-- Press **Enter** or **Left Mouse Click** to execute the selected target.
+- Press **Enter** or **Left Mouse Click** on a target to execute it with the shown args.
+- The **Args** label below the list shows extra args forwarded to the target. Prefill it from the command line: `./run foo.txt` opens the menu with `foo.txt` shown — just pick Terminal and press **Enter**. Args with spaces can be quoted: `./run "my file.txt"`.
+- `Escape` exits without running anything.
 
 ## Options & OS Gating
 
