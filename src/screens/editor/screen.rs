@@ -12,7 +12,7 @@ pub fn build() -> Rectangle<State> {
         .y(1)
         .width(APP_WIDTH)
         .height(APP_HEIGHT.saturating_sub(1))
-        .fill(Some(incredible_elements::FillKind::Space));
+        .fill(Some(incredible_elements::FillKind::Custom(' ')));
 
     wrapper
         .on_state(|el, state, _event| {

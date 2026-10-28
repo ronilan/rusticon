@@ -13,7 +13,7 @@ pub fn build() -> Rectangle<State> {
         .y(Y)
         .width(15)
         .height(2)
-        .fill(Some(incredible_elements::FillKind::Space))
+        .fill(Some(incredible_elements::FillKind::Custom(' ')))
         .on_state(|el, state, _event| {
             if let Some(bg) = state.editor.paintbrush {
                 el.background(Some(Color::Ansi(bg)));

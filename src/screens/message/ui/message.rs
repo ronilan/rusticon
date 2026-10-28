@@ -12,7 +12,7 @@ pub fn build() -> Rectangle<State> {
     message
         .width(APP_WIDTH)
         .height(APP_HEIGHT.saturating_sub(1))
-        .fill(Some(incredible_elements::FillKind::Space));
+        .fill(Some(incredible_elements::FillKind::Custom(' ')));
 
     let text: Text<State> = Text::default();
     text.text("App Terminated");
