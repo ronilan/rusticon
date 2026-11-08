@@ -1,10 +1,10 @@
 use crate::core::model::State;
 use incredible::*;
-use incredible_elements::TextButton;
+use incredible_elements::Button;
 use incredible_helpers_styling::*;
 
-pub fn build() -> TextButton<State> {
-    let button: TextButton<State> = TextButton::default();
+pub fn build() -> Button<State> {
+    let button: Button<State> = Button::default();
     button
         .y(20)
         .focused(false)

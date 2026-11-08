@@ -14,17 +14,6 @@ It's written in [Rust](https://www.rust-lang.org/) using the [Incredible](https:
 
 Pre built binaries are provided for each [release](https://github.com/ronilan/rusticon/releases).
 
-## Linux via Docker
-
-To try the Linux terminal version, build and run:
-
-```
-docker build -t rusticon .
-docker run --rm -it rusticon
-```
-
-Type `rusticon` in the container shell to launch.
-
 ## TUI Install / Uninstall
 
 Installs the latest release binary — `/usr/local/bin` (macOS/Linux) or `C:\Program Files\rusticon` (Windows).
@@ -38,6 +27,21 @@ irm https://raw.githubusercontent.com/ronilan/rusticon/main/install.ps1 | iex
 ```
 
 Uninstall the same way with `uninstall.sh` / `uninstall.ps1`. 
+
+## Linux via Docker
+
+To try the Linux terminal version, fetch the repository's `Dockerfile` and build the image (it downloads the latest Linux release, so no source checkout is needed):
+
+```bash
+mkdir docker-build && cd docker-build
+curl -fsSL https://raw.githubusercontent.com/ronilan/rusticon/main/Dockerfile -o Dockerfile
+docker build -t rusticon .
+docker run --rm -it rusticon
+```
+
+Run the commands in an **empty folder** (not your home directory) so Docker's build context doesn't include large/system folders like `~/.Trash`.
+
+Type `rusticon` in the container shell to launch.
 
 ## WASM version
 

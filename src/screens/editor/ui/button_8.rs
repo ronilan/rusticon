@@ -1,13 +1,14 @@
 use crate::core::model::State;
 use incredible::*;
-use incredible_elements::TextButton;
+use incredible_elements::Button;
 use incredible_helpers_styling::*;
 
 static X: isize = 67;
 static Y: isize = 2;
 
-pub fn build() -> TextButton<State> {
-    let button_8: TextButton<State> = TextButton::default();
+pub fn build() -> Button<State> {
+    let button_8: Button<State> = Button::default();
+    button_8.conf_text();
     button_8
         .x(X)
         .y(Y)

@@ -23,9 +23,6 @@ pub use crate::core::model::{AppPhase, MIN_SPLASH_MS, State};
 
 #[cfg(feature = "windows-native")]
 fn main() {
-    incredible_window_windows::set_window_title(
-        option_env!("APP_NAME").unwrap_or("An Incredible App"),
-    );
     platform::init();
     incredible_window_windows::run_app(runtime::run);
 }

@@ -39,11 +39,6 @@ pub fn macos() {
     let bin_name = format!("{}_macos", name);
 
     println!("Building macOS native: {}", app_name);
-    // SAFETY: Setting environment variable before spawning child process;
-    // no other threads are reading it at this point.
-    unsafe {
-        std::env::set_var("APP_NAME", &app_name);
-    }
 
     let status = Command::new("cargo")
         .args([
@@ -78,11 +73,6 @@ pub fn windows() {
     let bin_name = format!("{}_windows", name);
 
     println!("Building Windows native: {}", app_name);
-    // SAFETY: Setting environment variable before spawning child process;
-    // no other threads are reading it at this point.
-    unsafe {
-        std::env::set_var("APP_NAME", &app_name);
-    }
 
     let status = Command::new("cargo")
         .args([

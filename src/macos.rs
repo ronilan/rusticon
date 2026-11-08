@@ -18,9 +18,6 @@ pub use crate::core::model::{AppPhase, MIN_SPLASH_MS, State};
 
 #[cfg(feature = "macos-native")]
 fn main() {
-    incredible_window_macos::set_window_title(
-        option_env!("APP_NAME").unwrap_or("An Incredible App"),
-    );
     platform::init();
     incredible_window_macos::run_app(runtime::run);
 }

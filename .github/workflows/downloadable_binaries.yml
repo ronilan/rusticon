@@ -1,7 +1,7 @@
 name: Create Downloadable Binaries
 
-# Builds native downloadable binaries.
-# Sibling to "Deploy to GitHub Pages" - that  builds the WASM/web version.
+# Builds native downloadable binaries (terminal, macOS app, Windows exe).
+# Sibling to "Deploy to GitHub Pages", which builds the WASM/web version.
 on:
   # # Triggers the workflow on push events but only for the main branch
   # push:
@@ -23,7 +23,7 @@ on:
         description: Windows
         type: boolean
         default: false
-        
+
   # Runs automatically whenever a GitHub Release is published - builds and
   # attaches binaries to that release.
   release:
@@ -32,10 +32,19 @@ on:
 permissions:
   contents: write
 
+# CARGO_NET_GIT_FETCH_WITH_CLI makes Cargo use the system `git`; Cargo's
+# built-in libgit2 fetcher would ignore the credential rewrite set up in each
+# job's "Allow Cargo to fetch the private dependency" step.
+# GIT_TERMINAL_PROMPT=0 makes any auth failure fail immediately instead of
+# trying to prompt on a runner that has no terminal.
+env:
+  CARGO_NET_GIT_FETCH_WITH_CLI: "true"
+  GIT_TERMINAL_PROMPT: "0"
+
 jobs:
-  # Builds the plain terminal binary on all
-  # four target platforms. The package tool builds natively on each
-  # runner OS, so this crosses four OS *runners*, not cross-compiles.
+  # Builds the plain terminal binary on four platforms. The package tool
+  # builds natively on each runner OS, so this spans four OS *runners*; it
+  # does not cross-compile.
   build-terminal:
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.terminal }}
     name: Build Terminal Binary (${{ matrix.name }})
@@ -57,31 +66,41 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
-      # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
-      # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
-      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
-      # (Settings > Secrets and variables > Actions). If this step is ever
-      # removed, the WASM build step below will fail with an auth/404-style
-      # error on the private dependency, not an obvious "auth failed" message.
-      - name: Configure Git for Private Dependency
+      # Cargo.toml depends on a PRIVATE repo (incredible-alpha). Anonymous git
+      # over HTTPS can't clone it, so this rewrites every "https://github.com/"
+      # URL to carry a PAT (repo secret INCREDIBLE_ALPHA; Settings > Secrets and
+      # variables > Actions). Without it the build fails with git asking for a
+      # username rather than an obvious "auth failed" message.
+      #
+      # Exported through GIT_CONFIG_* env vars (via GITHUB_ENV) rather than
+      # `git config --global`, so it doesn't depend on ~/.gitconfig or
+      # credential helpers, which differ between runner images (notably macOS
+      # arm). It must run AFTER checkout: checkout fetches this repo with its
+      # own token, and the rewrite would override that with a PAT that may not
+      # have access to this repo.
+      - name: Allow Cargo to fetch the private dependency
+        shell: bash
+        env:
+          TOKEN: ${{ secrets.INCREDIBLE_ALPHA }}
         run: |
-          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
+          {
+            echo "GIT_CONFIG_COUNT=1"
+            echo "GIT_CONFIG_KEY_0=url.https://x-access-token:${TOKEN}@github.com/.insteadOf"
+            echo "GIT_CONFIG_VALUE_0=https://github.com/"
+          } >> "$GITHUB_ENV"
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # Build the Rust package tool first, then use it for all subsequent builds.
+      # The `package` binary is the repo's own build tool; every later build
+      # step runs through it.
       - name: Build tools
         shell: bash
-        env:
-          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: cargo build --release --bin package && cp target/release/package* .
 
-      # Ensure a clean dist/ before building - dist/ has been committed to
-      # this repo before (like docs/ was), so a checkout can restore stale
-      # binaries from git history. Don't rely on the working tree being
-      # spotless; wipe it explicitly before every build.
+      # dist/ has been committed to this repo before (as docs/ was), so a
+      # checkout can restore stale binaries from git history. Wipe it so only
+      # freshly built output gets zipped and published.
       - name: Clean previous build output (Unix)
         if: matrix.name != 'windows'
         shell: bash
@@ -92,32 +111,20 @@ jobs:
         shell: pwsh
         run: Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue
 
-      # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
-      # `git` binary instead of using its built-in libgit2 fetcher. This matters
-      # because only the system git picks up the credential rewrite configured
-      # above (`git config --global url...insteadOf`) - libgit2 ignores it and
-      # will fail to fetch the private incredible-alpha dependency without this.
       - name: Build terminal binary
-        env:
-          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: ./package terminal
 
-      # Zip immediately, in this job, right after building - BEFORE the
-      # binary ever goes through upload-artifact. upload-artifact does not
-      # preserve Unix file permissions (all files become 644 on upload),
-      # which silently strips the executable bit from macOS/Linux binaries.
-      # A zip created here, on the same filesystem that just built the
-      # binary, preserves the executable bit internally, so a later job can
-      # unzip a binary that's still actually runnable.
+      # Zip here, before upload-artifact. upload-artifact resets every file to
+      # mode 644, which would strip the executable bit from macOS/Linux
+      # binaries; a zip made on the build filesystem keeps it.
       #
-      # Split into two steps because the Windows runner's Git Bash doesn't
-      # ship a `zip` binary - only macOS/Linux runners have it preinstalled.
-      # Windows uses PowerShell's built-in Compress-Archive instead.
+      # Two steps because the Windows runner's Git Bash has no `zip`; Windows
+      # uses PowerShell's Compress-Archive instead.
       - name: Zip terminal binary (Unix)
         if: matrix.name != 'windows'
         shell: bash
         run: |
-          # Find the binary filename inside dist/cli without changing directories
+          # The binary's name comes from the package tool, so look it up.
           file=$(ls dist/cli | head -n 1)
           zip -j "${file}-terminal-${{ matrix.name }}.zip" "dist/cli/$file"
 
@@ -135,8 +142,8 @@ jobs:
           name: terminal-${{ matrix.name }}
           path: "*-terminal-${{ matrix.name }}.zip"
 
-  # Builds the macOS-native binary (built with the
-  # macos-native feature) and wraps it into a .app + .dmg.
+  # Builds the macOS-native binary (the macos-native feature) and wraps it
+  # into a .app + .dmg.
   build-macos-native:
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.macos }}
     name: Build macOS Native (${{ matrix.name }})
@@ -154,48 +161,49 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
-      # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
-      # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
-      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
-      # (Settings > Secrets and variables > Actions). If this step is ever
-      # removed, the WASM build step below will fail with an auth/404-style
-      # error on the private dependency, not an obvious "auth failed" message.
-      - name: Configure Git for Private Dependency
+      # Cargo.toml depends on a PRIVATE repo (incredible-alpha). Anonymous git
+      # over HTTPS can't clone it, so this rewrites every "https://github.com/"
+      # URL to carry a PAT (repo secret INCREDIBLE_ALPHA; Settings > Secrets and
+      # variables > Actions). Without it the build fails with git asking for a
+      # username rather than an obvious "auth failed" message.
+      #
+      # Exported through GIT_CONFIG_* env vars (via GITHUB_ENV) rather than
+      # `git config --global`, so it doesn't depend on ~/.gitconfig or
+      # credential helpers, which differ between runner images (notably macOS
+      # arm). It must run AFTER checkout: checkout fetches this repo with its
+      # own token, and the rewrite would override that with a PAT that may not
+      # have access to this repo.
+      - name: Allow Cargo to fetch the private dependency
+        shell: bash
+        env:
+          TOKEN: ${{ secrets.INCREDIBLE_ALPHA }}
         run: |
-          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
+          {
+            echo "GIT_CONFIG_COUNT=1"
+            echo "GIT_CONFIG_KEY_0=url.https://x-access-token:${TOKEN}@github.com/.insteadOf"
+            echo "GIT_CONFIG_VALUE_0=https://github.com/"
+          } >> "$GITHUB_ENV"
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # Build the Rust package tool first, then use it for all subsequent builds.
       - name: Build tools
         shell: bash
-        env:
-          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: cargo build --release --bin package && cp target/release/package* .
 
-      # Same reasoning as build-terminal: don't trust a checked-out
-      # dist/ to be empty.
+      # Remove any committed dist/ so stale output isn't bundled.
       - name: Clean previous build output
         shell: bash
         run: rm -rf dist
 
-      # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
-      # `git` binary instead of using its built-in libgit2 fetcher. This matters
-      # because only the system git picks up the credential rewrite configured
-      # above (`git config --global url...insteadOf`) - libgit2 ignores it and
-      # will fail to fetch the private incredible-alpha dependency without this.
       - name: Build & bundle macOS native binary
-        env:
-          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: ./package macos --bundle
 
-      # Zip the .dmg here, right after bundling - same permission-loss
-      # reasoning as build-terminal above. A .dmg itself doesn't carry a
-      # meaningful Unix executable bit, but zipping here keeps every job's
-      # output handled identically for publish-release downstream. macOS
-      # runners have `zip` preinstalled, so no Windows-style split needed.
+      # Zipped here so every job hands publish-release the same shape of
+      # output (a ready-made zip). A .dmg has no meaningful executable bit,
+      # but upload-artifact would still flatten permissions on anything else.
+      # The zip name is derived from the .dmg name, lowercased, spaces to
+      # underscores.
       - name: Zip macOS native artifact
         shell: bash
         run: |
@@ -209,9 +217,8 @@ jobs:
           name: macos-native-${{ matrix.name }}
           path: "*-macos-native-${{ matrix.name }}.zip"
 
-  # Builds the Windows-native binary. Output filename
-  # is dynamic - dist/<AppName>.exe, where <AppName> comes from Cargo.toml's
-  # [package.metadata.bundle] app_name.
+  # Builds the Windows-native binary. The output is dist/native/<AppName>.exe,
+  # where <AppName> comes from Cargo.toml's [package.metadata.bundle] app_name.
   build-windows-native:
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.windows }}
     name: Build Windows Native
@@ -220,47 +227,47 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # This repo depends on a PRIVATE repo (incredible-alpha) via Cargo.toml.
-      # Anonymous `git` over HTTPS can't clone private repos, so we rewrite every
-      # "https://github.com/" URL to embed a PAT as credentials before Cargo/git
-      # tries to fetch it. The token lives in repo secret INCREDIBLE_ALPHA
-      # (Settings > Secrets and variables > Actions). If this step is ever
-      # removed, the WASM build step below will fail with an auth/404-style
-      # error on the private dependency, not an obvious "auth failed" message.
-      - name: Configure Git for Private Dependency
+      # Cargo.toml depends on a PRIVATE repo (incredible-alpha). Anonymous git
+      # over HTTPS can't clone it, so this rewrites every "https://github.com/"
+      # URL to carry a PAT (repo secret INCREDIBLE_ALPHA; Settings > Secrets and
+      # variables > Actions). Without it the build fails with git asking for a
+      # username rather than an obvious "auth failed" message.
+      #
+      # Exported through GIT_CONFIG_* env vars (via GITHUB_ENV) rather than
+      # `git config --global`, so it doesn't depend on ~/.gitconfig or
+      # credential helpers, which differ between runner images (notably macOS
+      # arm). It must run AFTER checkout: checkout fetches this repo with its
+      # own token, and the rewrite would override that with a PAT that may not
+      # have access to this repo.
+      - name: Allow Cargo to fetch the private dependency
+        shell: bash
+        env:
+          TOKEN: ${{ secrets.INCREDIBLE_ALPHA }}
         run: |
-          git config --global url."https://${{ secrets.INCREDIBLE_ALPHA }}@github.com/".insteadOf "https://github.com/"
+          {
+            echo "GIT_CONFIG_COUNT=1"
+            echo "GIT_CONFIG_KEY_0=url.https://x-access-token:${TOKEN}@github.com/.insteadOf"
+            echo "GIT_CONFIG_VALUE_0=https://github.com/"
+          } >> "$GITHUB_ENV"
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # Build the Rust package tool first, then use it for all subsequent builds.
       - name: Build tools
         shell: bash
-        env:
-          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: cargo build --release --bin package && cp target/release/package* .
 
-      # Same reasoning as the other two jobs: don't trust a checked-out
-      # dist/ to be empty.
+      # Remove any committed dist/ so stale output isn't bundled.
       - name: Clean previous build output
         shell: pwsh
         run: Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue
 
-      # CARGO_NET_GIT_FETCH_WITH_CLI tells Cargo to shell out to the system's
-      # `git` binary instead of using its built-in libgit2 fetcher. This matters
-      # because only the system git picks up the credential rewrite configured
-      # above (`git config --global url...insteadOf`) - libgit2 ignores it and
-      # will fail to fetch the private incredible-alpha dependency without this.
       - name: Build & bundle Windows native binary
-        env:
-          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
         run: ./package windows --bundle
 
-      # Windows runners don't ship `zip` in their Git Bash - use
-      # PowerShell's built-in Compress-Archive instead. .exe files don't
-      # carry a Unix executable bit to lose, but zipping here keeps this
-      # job's output handled the same way as the other two.
+      # Zipped here so every job hands publish-release the same shape of
+      # output. Uses PowerShell's Compress-Archive because Git Bash on the
+      # Windows runner has no `zip`. The exe name is dynamic, so look it up.
       - name: Zip Windows native artifact
         shell: pwsh
         run: |
@@ -277,12 +284,11 @@ jobs:
   publish-release:
     name: Publish binaries
     needs: [build-terminal, build-macos-native, build-windows-native]
-    # Run when at least one build job succeeded. Default `needs` behavior
-    # requires ALL of them to succeed (and a skipped job blocks dependents
-    # too), so without this a single failed build — or a manual dispatch
-    # with only some targets checked — would skip publishing entirely.
-    # `!cancelled()` keeps `always()`-like behavior but still stops on
-    # workflow cancellation.
+    # Runs when at least one build job succeeded. By default `needs` requires
+    # ALL jobs to succeed and a skipped job blocks dependents, so a single
+    # failed build, or a manual dispatch with only some targets checked, would
+    # otherwise skip publishing. `!cancelled()` behaves like `always()` but
+    # still stops when the workflow is cancelled.
     if: ${{ !cancelled() && (needs.build-terminal.result == 'success' || needs.build-macos-native.result == 'success' || needs.build-windows-native.result == 'success') }}
     runs-on: ubuntu-latest
     steps:
@@ -291,9 +297,7 @@ jobs:
         with:
           path: artifacts
 
-      # Every artifact is already a ready-made zip (created in its own
-      # build job, before upload-artifact could strip permissions) - just
-      # collect them, nothing left to build or rename here.
+      # Each artifact is already a finished zip, so just gather them.
       - name: Collect zips for release
         shell: bash
         run: |
@@ -301,11 +305,10 @@ jobs:
           find artifacts -name '*.zip' -exec cp {} release-assets/ \;
           ls -la release-assets
 
-      # When triggered by an actual published Release, attach the zips to
-      # that release (versioned, permanent - no tag_name needed, the
-      # action attaches to the release that triggered the run). When
-      # triggered by push/workflow_dispatch, fall back to the rolling
-      # "latest" tag so there's always a stable link even between releases.
+      # On a published Release, attach the zips to that release (versioned,
+      # permanent; the action finds the release from the triggering event).
+      # On workflow_dispatch, publish to a rolling "latest" tag so there is
+      # always a stable download link between releases.
       - name: Publish release assets
         uses: softprops/action-gh-release@v2
         with:
@@ -313,5 +316,3 @@ jobs:
           name: ${{ github.event_name != 'release' && 'Latest Build' || '' }}
           prerelease: ${{ github.event_name != 'release' }}
           files: release-assets/*.zip
-
-
