@@ -98,7 +98,7 @@ pub(crate) fn flood_fill(
 pub(crate) fn canvas_data_from_click(
     el: &Element<State>,
     size: usize,
-    data: &mut Vec<Option<u8>>,
+    data: &mut [Option<u8>],
     paintbrush: Option<u8>,
     mouse_x: isize,
     mouse_y: isize,
