@@ -3,12 +3,12 @@ use crate::{
     ui::{APP_HEIGHT, APP_WIDTH},
 };
 use incredible::*;
-use incredible_elements::Rectangle;
+use incredible_elements::{FillKind, Rectangle};
 use incredible_helpers_layout::{Arrangers, Flowers};
 
 pub fn build() -> Rectangle<State> {
     let wrapper: Rectangle<State> = Rectangle::new();
-    wrapper.width(APP_WIDTH).height(APP_HEIGHT).fill(Some(incredible_elements::FillKind::Custom(' ')));
+    wrapper.width(APP_WIDTH).height(APP_HEIGHT).fill(Some(FillKind::Custom(' ')));
     wrapper.on_state(|el, state, _event| {
         el.showed(!state.flow.viewport_too_small && state.flow.phase == AppPhase::Splash);
     });

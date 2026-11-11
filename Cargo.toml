@@ -119,3 +119,10 @@ windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_System_
 opt-level = 3
 lto = "thin"
 codegen-units = 1
+
+[lints.clippy]
+collapsible-if = "allow"
+module_inception = "allow"
+# Listener callback table + traversal helpers are inherently complex generic
+# types. Aliasing them would leak into public API docs for no benefit.
+type_complexity = "allow"

@@ -3,8 +3,8 @@ use incredible_helpers_styling::*;
 
 /// Draws a full-screen message centered in the terminal
 pub fn draw_message(msg: &str, color_code: u8) {
-    let term_cols = Platform::columns() as usize;
-    let term_rows = Platform::rows() as usize;
+    let term_cols = Platform::columns();
+    let term_rows = Platform::rows();
 
     // Split message into lines
     let message_lines: Vec<String> = msg.lines().map(|s| s.to_string()).collect();

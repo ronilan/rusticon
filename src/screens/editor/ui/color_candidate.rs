@@ -1,6 +1,6 @@
 use crate::core::model::State;
 use incredible::*;
-use incredible_elements::Rectangle;
+use incredible_elements::{FillKind, Rectangle};
 use incredible_helpers_styling::*;
 
 static X: isize = 61;
@@ -13,7 +13,7 @@ pub fn build() -> Rectangle<State> {
         .y(Y)
         .width(15)
         .height(2)
-        .fill(Some(incredible_elements::FillKind::Custom(' ')))
+        .fill(Some(FillKind::Custom(' ')))
         .on_state(|el, state, _event| {
             let color_source = if state.editor.picker_mode {
                 state.editor.candidate

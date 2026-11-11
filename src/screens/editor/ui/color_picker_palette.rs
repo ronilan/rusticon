@@ -5,7 +5,7 @@ use incredible_helpers_styling::*;
 static X: isize = 23;
 static Y: isize = 21;
 
-pub fn build<'a>() -> Element<State> {
+pub fn build() -> Element<State> {
     let color_picker_palette: Element<State> = Element::new();
     color_picker_palette
         .x(X)

@@ -4,7 +4,7 @@ use crate::{
     ui::{APP_HEIGHT, APP_WIDTH},
 };
 use incredible::*;
-use incredible_elements::Rectangle;
+use incredible_elements::{FillKind, Rectangle};
 
 pub fn build() -> Rectangle<State> {
     let wrapper: Rectangle<State> = Rectangle::new();
@@ -13,7 +13,7 @@ pub fn build() -> Rectangle<State> {
         .y(1)
         .width(APP_WIDTH)
         .height(APP_HEIGHT.saturating_sub(1))
-        .fill(Some(incredible_elements::FillKind::Custom(' ')));
+        .fill(Some(FillKind::Custom(' ')));
     wrapper.on_state(|el, state, _event| {
         el.showed(!state.flow.viewport_too_small && state.flow.phase == AppPhase::Message);
     });

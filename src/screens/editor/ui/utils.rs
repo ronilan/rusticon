@@ -2,7 +2,7 @@ use crate::core::model::State;
 use incredible::*;
 
 // Palette helpers
-pub(crate) fn ideal_palette_index(curr: usize, palette: &Vec<Option<u8>>) -> usize {
+pub(crate) fn ideal_palette_index(curr: usize, palette: &[Option<u8>]) -> usize {
     match palette.iter().position(|c| c.is_none()) {
         Some(idx) => idx, // first empty slot
         None => curr,     // stay in place if full
@@ -54,7 +54,7 @@ pub(crate) fn canvas_look_from_data(size: usize, data: &[Option<u8>]) -> Look {
 
 /// Simple 4-way iterative flood fill
 pub(crate) fn flood_fill(
-    data: &mut Vec<Option<u8>>,
+    data: &mut [Option<u8>],
     size: usize,
     row: usize,
     col: usize,
@@ -90,6 +90,11 @@ pub(crate) fn flood_fill(
     }
 }
 
+/// 8 args is a lot, but each is a distinct, independently-tunable piece of the
+/// click handler (offset source, canvas size, brush, mouse position, prior
+/// color, fill mode). Splitting them into a struct would just move the same
+/// fields somewhere else, so the count is left as-is.
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn canvas_data_from_click(
     el: &Element<State>,
     size: usize,

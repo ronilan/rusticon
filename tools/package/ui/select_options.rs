@@ -54,7 +54,7 @@ pub fn build_select_options() -> Select<State> {
                     if items.len() >= 4 {
                         let target = state.selected_target.as_ref();
 
-                        let no_target = matches!(target, None);
+                        let no_target = target.is_none();
                         let is_wasm = matches!(target, Some(PackageTarget::Wasm));
                         let is_terminal = matches!(target, Some(PackageTarget::Terminal));
 

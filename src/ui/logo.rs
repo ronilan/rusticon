@@ -37,7 +37,7 @@ pub fn build() -> FigletStr<State> {
             return;
         }
         if let Some(anim) = el.get_animation() {
-            if let Some(_) = anim.progress {
+            if anim.progress.is_some() {
                 el.draw();
             }
         }

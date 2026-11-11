@@ -52,9 +52,9 @@ pub fn load_and_resize_image_bytes(bytes: &[u8]) -> Result<Vec<Vec<[u8; 4]>>, St
 
     // Convert to 2D vector of RGBA
     let mut pixels_2d = vec![vec![[0u8; 4]; 16]; 16];
-    for y in 0..16 {
-        for x in 0..16 {
-            pixels_2d[y][x] = resized
+    for (y, row) in pixels_2d.iter_mut().enumerate() {
+        for (x, pixel) in row.iter_mut().enumerate() {
+            *pixel = resized
                 .get_pixel(x.try_into().unwrap(), y.try_into().unwrap())
                 .0;
         }

@@ -3,7 +3,7 @@ use crate::{
     ui::{APP_HEIGHT, APP_WIDTH},
 };
 use incredible::*;
-use incredible_elements::{Rectangle, Text};
+use incredible_elements::{FillKind, Rectangle, Text};
 use incredible_helpers_layout::Arrangers;
 use incredible_helpers_styling::*;
 
@@ -12,7 +12,7 @@ pub fn build() -> Rectangle<State> {
     message
         .width(APP_WIDTH)
         .height(APP_HEIGHT.saturating_sub(1))
-        .fill(Some(incredible_elements::FillKind::Custom(' ')));
+        .fill(Some(FillKind::Custom(' ')));
 
     let text: Text<State> = Text::default();
     text.text("App Terminated");
