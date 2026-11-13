@@ -13,7 +13,6 @@ pub fn build() -> Button<State> {
         .x(X)
         .y(Y)
         .focused(false)
-        .pointer(Some(PointerShape::Pointer))
         .text("16x16")
         .underline(Some(UnderlineKind::Dotted))
         .on_mouse(|_el, state, event| {

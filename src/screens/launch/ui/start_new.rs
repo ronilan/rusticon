@@ -8,7 +8,6 @@ pub fn build() -> Button<State> {
     button
         .y(20)
         .focused(false)
-        .pointer(Some(PointerShape::Pointer))
         .text("New Icon File")
         .underline(Some(UnderlineKind::Dotted))
         .on_mouse(|_el, state, event| {
