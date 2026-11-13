@@ -5,6 +5,7 @@ use incredible_helpers_styling::*;
 
 pub fn build() -> Button<State> {
     let button: Button<State> = Button::default();
+    button.conf_text();
     button
         .y(20)
         .focused(false)
